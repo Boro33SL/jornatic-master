@@ -1,9 +1,23 @@
 {
-  "name": "cakephp/app",
-  "description": "CakePHP skeleton app",
+  "name": "boro33/jornatic-master",
+  "description": "Proyecto basado en CakePHP que implementa gestión completa para Jonatic App con autenticación, autorización y gestión de activos, utilizando PHP 8.1+, Composer y herramientas modernas de desarrollo.",
+  "authors": [
+    {
+      "name": "Boro33 S.L.",
+      "email": "it@boro-33.com",
+      "homepage": "https://boro-33.com",
+      "role": "Owner"
+    },
+    {
+      "name": "Jesús Sánchez a.k.a. VincentTeresa/Shimo",
+      "email": "jsg@boro-33.com",
+      "homepage": "https://michemura.dev",
+      "role": "Developer"
+    }
+  ],
   "license": "MIT",
   "type": "project",
-  "homepage": "https://cakephp.org",
+  "homepage": "https://master.jornatic.es",
   "repositories": [
     {
       "type": "vcs",

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Event\EventInterface;
+use JornaticCore\Model\Table\PlansTable;
 
 /**
  * Plans Controller
@@ -14,6 +15,7 @@ use Cake\Event\EventInterface;
  */
 class PlansController extends AppController
 {
+    protected PlansTable $Plans;
     /**
      * Initialization hook method.
      *
@@ -46,7 +48,7 @@ class PlansController extends AppController
         // Query base con relaciones
         $query = $this->Plans->find()
             ->contain(['Features', 'Prices', 'Subscriptions'])
-            ->orderBy(['Plans.sort_order' => 'ASC', 'Plans.created' => 'DESC']);
+            ->orderBy(['Plans.created' => 'DESC']);
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
@@ -288,7 +290,7 @@ class PlansController extends AppController
 
         $plans = $this->Plans->find()
             ->contain(['Prices', 'Features'])
-            ->orderBy(['Plans.sort_order' => 'ASC'])
+            ->orderBy(['Plans.order' => 'ASC'])
             ->toArray();
 
         // Preparar datos CSV
@@ -323,7 +325,7 @@ class PlansController extends AppController
                 $plan->max_users ?? '',
                 $monthlyPrice,
                 $annualPrice,
-                0, // sort_order no existe en Plan
+                $plan->order ?? 0,
                 $plan->is_trial ? __('_TRIAL') : __('_NORMAL'),
                 count($plan->subscriptions ?? []),
                 $plan->created->format('Y-m-d'),

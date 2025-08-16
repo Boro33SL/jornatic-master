@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 namespace App\View;
 
+use App\View\Helper\IconHelper;
 use Cake\View\View;
 
 /**
@@ -26,6 +27,8 @@ use Cake\View\View;
  */
 class AppView extends View
 {
+    private IconHelper $Icon;
+
     /**
      * Initialization hook method.
      *

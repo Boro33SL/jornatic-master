@@ -8,35 +8,56 @@
 ?>
 
 <div class="container mx-auto px-4 py-6">
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
             <h1 class="text-3xl font-bold text-base-content"><?= __('_GESTION_PLANES') ?></h1>
             <p class="text-base-content/60 mt-1"><?= __('_ADMINISTRAR_PLANES_SUSCRIPCION') ?></p>
         </div>
         <div class="flex gap-2">
-            <?= $this->Html->link(__('_NUEVO_PLAN'), ['action' => 'add'], ['class' => 'btn btn-primary btn-sm']) ?>
-            <?= $this->Html->link(__('_EXPORTAR_CSV'), ['action' => 'export'], ['class' => 'btn btn-outline btn-sm']) ?>
+            <?= $this->Html->link(
+                $this->Icon->render('plus', 'solid', ['class' => 'w-5 h-5 mr-2 text-white']) . __('_NUEVO_PLAN'),
+                ['action' => 'add'],
+                [
+                    'class' => 'btn btn-primary btn-sm',
+                    'escape' => false
+                ]
+            ) ?>
+            <?= $this->Html->link(
+                $this->Icon->render('arrow-down-tray', 'solid', ['class' => 'w-5 h-5 mr-2']) . __('_EXPORTAR_CSV'),
+                ['action' => 'export'],
+                [
+                    'class' => 'btn btn-outline btn-sm',
+                    'escape' => false
+                ]
+            ) ?>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="stat-value text-2xl text-primary"><?= number_format($stats['total']) ?></div>
-                <div class="stat-title"><?= __('_TOTAL_PLANES') ?></div>
+    <!-- Stats Cards -->
+    <div class="stats stats-horizontal shadow mb-6 w-full">
+        <div class="stat">
+            <div class="stat-figure text-primary">
+                <?= $this->Icon->render('document-text', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_TOTAL_PLANES') ?></div>
+            <div class="stat-value text-primary"><?= number_format($stats['total']) ?></div>
         </div>
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="stat-value text-2xl text-success"><?= number_format($stats['with_subscriptions']) ?></div>
-                <div class="stat-title"><?= __('_CON_SUSCRIPCIONES') ?></div>
+        
+        <div class="stat">
+            <div class="stat-figure text-success">
+                <?= $this->Icon->render('check-circle', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_PLANES_ASOCIADOS') ?></div>
+            <div class="stat-value text-success"><?= number_format($stats['with_subscriptions']) ?></div>
         </div>
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="stat-value text-2xl text-info"><?= number_format($stats['total_active_subscriptions']) ?></div>
-                <div class="stat-title"><?= __('_SUSCRIPCIONES_ACTIVAS') ?></div>
+        
+        <div class="stat">
+            <div class="stat-figure text-info">
+                <?= $this->Icon->render('users', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_SUSCRIPCIONES_ACTIVAS') ?></div>
+            <div class="stat-value text-info"><?= number_format($stats['total_active_subscriptions']) ?></div>
         </div>
     </div>
 
@@ -89,9 +110,35 @@
                             <td><span class="badge badge-primary"><?= count($plan->subscriptions ?? []) ?></span></td>
                             <td>
                                 <div class="flex justify-center gap-1">
-                                    <?= $this->Html->link(__('_VER'), ['action' => 'view', $plan->id], ['class' => 'btn btn-ghost btn-xs']) ?>
-                                    <?= $this->Html->link(__('_EDITAR'), ['action' => 'edit', $plan->id], ['class' => 'btn btn-ghost btn-xs']) ?>
-                                    <?= $this->Html->link(__('_PRECIOS'), ['action' => 'prices', $plan->id], ['class' => 'btn btn-ghost btn-xs']) ?>
+                                    <?= $this->Html->link(
+                                        $this->Icon->render('eye', 'solid', ['class' => 'w-4 h-4']),
+                                        ['action' => 'view', $plan->id],
+                                        [
+                                            'class' => 'btn btn-ghost btn-xs',
+                                            'escape' => false,
+                                            'title' => __('_VER_DETALLES')
+                                        ]
+                                    ) ?>
+                                    
+                                    <?= $this->Html->link(
+                                        $this->Icon->render('pencil-square', 'solid', ['class' => 'w-4 h-4']),
+                                        ['action' => 'edit', $plan->id],
+                                        [
+                                            'class' => 'btn btn-ghost btn-xs',
+                                            'escape' => false,
+                                            'title' => __('_EDITAR')
+                                        ]
+                                    ) ?>
+                                    
+                                    <?= $this->Html->link(
+                                        $this->Icon->render('currency-euro', 'solid', ['class' => 'w-4 h-4']),
+                                        ['action' => 'prices', $plan->id],
+                                        [
+                                            'class' => 'btn btn-ghost btn-xs',
+                                            'escape' => false,
+                                            'title' => __('_PRECIOS')
+                                        ]
+                                    ) ?>
                                 </div>
                             </td>
                         </tr>

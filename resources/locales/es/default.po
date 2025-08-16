@@ -824,6 +824,9 @@ msgstr "Precio Anual"
 msgid "_PRECIO_MENSUAL"
 msgstr "Precio Mensual"
 
+msgid "_PRECIOS"
+msgstr "Precios"
+
 msgid "_PRECIOS_ACTUALIZADOS_CORRECTAMENTE"
 msgstr "Precios actualizados correctamente"
 
@@ -1111,3 +1114,27 @@ msgstr "Volver a Logs"
 
 msgid "_VOLVER_AL_LISTADO"
 msgstr "Volver al Listado"
+
+msgid "_ADMINISTRAR_PLANES_SUSCRIPCION"
+msgstr "Administrar planes de suscripción"
+
+msgid "_TOTAL_PLANES"
+msgstr "Total de Planes"
+
+msgid "_PLANES"
+msgstr "Planes"
+
+msgid "_INFORMACION_PLAN"
+msgstr "Información del Plan"
+
+msgid "_PLAN_TRIAL"
+msgstr "Plan de Prueba"
+
+msgid "_PLAN_NORMAL"
+msgstr "Plan Normal"
+
+msgid "_NO_HAY_PRECIOS_CONFIGURADOS"
+msgstr "No hay precios configurados"
+
+msgid "_GESTIONAR_PRECIOS"
+msgstr "Gestionar Precios"
