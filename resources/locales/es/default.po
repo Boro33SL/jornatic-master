@@ -1,0 +1,186 @@
+# Mensajes comunes
+msgid "_DASHBOARD"
+msgstr "Dashboard"
+
+msgid "_SI"
+msgstr "Sí"
+
+msgid "_NO"
+msgstr "No"
+
+msgid "_FECHA"
+msgstr "Fecha"
+
+msgid "_USUARIO"
+msgstr "Usuario"
+
+msgid "_ACCION"
+msgstr "Acción"
+
+msgid "_RECURSO"
+msgstr "Recurso"
+
+msgid "_RECURSO_ID"
+msgstr "ID del Recurso"
+
+msgid "_IP_ADDRESS"
+msgstr "Dirección IP"
+
+msgid "_USER_AGENT"
+msgstr "Navegador"
+
+msgid "_EXITO"
+msgstr "Éxito"
+
+msgid "_DETALLES"
+msgstr "Detalles"
+
+msgid "_ACCIONES"
+msgstr "Acciones"
+
+msgid "_FILTRAR"
+msgstr "Filtrar"
+
+msgid "_LIMPIAR"
+msgstr "Limpiar"
+
+msgid "_EXPORTAR_CSV"
+msgstr "Exportar CSV"
+
+msgid "_VER_DETALLES"
+msgstr "Ver Detalles"
+
+msgid "_VOLVER_A_LOGS"
+msgstr "Volver a Logs"
+
+# Logs de Auditoría
+msgid "_LOGS_DE_AUDITORIA"
+msgstr "Logs de Auditoría"
+
+msgid "_REGISTRO_ACTIVIDADES_MASTERS"
+msgstr "Registro de actividades de usuarios master"
+
+msgid "_TOTAL_HOY"
+msgstr "Total Hoy"
+
+msgid "_ACCIONES_REALIZADAS"
+msgstr "Acciones realizadas"
+
+msgid "_EXITOSAS"
+msgstr "Exitosas"
+
+msgid "_OPERACIONES_CORRECTAS"
+msgstr "Operaciones correctas"
+
+msgid "_FALLIDAS"
+msgstr "Fallidas"
+
+msgid "_OPERACIONES_INCORRECTAS"
+msgstr "Operaciones incorrectas"
+
+msgid "_IPS_UNICAS"
+msgstr "IPs Únicas"
+
+msgid "_DIRECCIONES_DIFERENTES"
+msgstr "Direcciones diferentes"
+
+msgid "_FILTROS_DE_BUSQUEDA"
+msgstr "Filtros de Búsqueda"
+
+msgid "_USUARIO_MASTER"
+msgstr "Usuario Master"
+
+msgid "_TODOS_LOS_USUARIOS"
+msgstr "Todos los usuarios"
+
+msgid "_TODAS_LAS_ACCIONES"
+msgstr "Todas las acciones"
+
+msgid "_RESULTADO"
+msgstr "Resultado"
+
+msgid "_TODOS_LOS_RESULTADOS"
+msgstr "Todos los resultados"
+
+msgid "_EXITOSO"
+msgstr "Exitoso"
+
+msgid "_FALLIDO"
+msgstr "Fallido"
+
+msgid "_DIRECCION_IP"
+msgstr "Dirección IP"
+
+msgid "_FECHA_DESDE"
+msgstr "Fecha Desde"
+
+msgid "_FECHA_HASTA"
+msgstr "Fecha Hasta"
+
+msgid "_NO_HAY_LOGS_DISPONIBLES"
+msgstr "No hay logs disponibles"
+
+msgid "_NO_SE_ENCONTRARON_REGISTROS_CON_LOS_FILTROS_APLICADOS"
+msgstr "No se encontraron registros con los filtros aplicados"
+
+msgid "_MOSTRANDO_REGISTROS_DEL_TOTAL"
+msgstr "Mostrando {0} a {1} de {2} registros"
+
+msgid "_USUARIO_ANONIMO"
+msgstr "Usuario Anónimo"
+
+# Detalle de Log
+msgid "_DETALLE_LOG_AUDITORIA"
+msgstr "Detalle de Log de Auditoría"
+
+msgid "_INFORMACION_COMPLETA_DEL_REGISTRO"
+msgstr "Información completa del registro"
+
+msgid "_INFORMACION_PRINCIPAL"
+msgstr "Información Principal"
+
+msgid "_FECHA_Y_HORA"
+msgstr "Fecha y Hora"
+
+msgid "_ACCION_REALIZADA"
+msgstr "Acción Realizada"
+
+msgid "_OPERACION_EXITOSA"
+msgstr "Operación Exitosa"
+
+msgid "_OPERACION_FALLIDA"
+msgstr "Operación Fallida"
+
+msgid "_RECURSO_AFECTADO"
+msgstr "Recurso Afectado"
+
+msgid "_DETALLES_ADICIONALES"
+msgstr "Detalles Adicionales"
+
+msgid "_INFORMACION_TECNICA"
+msgstr "Información Técnica"
+
+msgid "_NAVEGADOR_DISPOSITIVO"
+msgstr "Navegador / Dispositivo"
+
+msgid "_LOGS_RELACIONADOS"
+msgstr "Logs Relacionados"
+
+msgid "_OTRAS_ACTIVIDADES_MISMO_USUARIO_MISMO_DIA"
+msgstr "Otras actividades del mismo usuario en el mismo día"
+
+msgid "_VER"
+msgstr "Ver"
+
+# Mensajes de autenticación
+msgid "_EMAIL_O_PASSWORD_INCORRECTOS"
+msgstr "Email o contraseña incorrectos"
+
+msgid "_SESION_CERRADA_CORRECTAMENTE"
+msgstr "Sesión cerrada correctamente"
+
+msgid "_USUARIO_MASTER_CREADO_CORRECTAMENTE"
+msgstr "Usuario master creado correctamente"
+
+msgid "_ERROR_AL_CREAR_USUARIO_MASTER"
+msgstr "Error al crear usuario master"

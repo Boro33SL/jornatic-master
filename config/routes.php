@@ -51,11 +51,16 @@ return function (RouteBuilder $routes): void {
 
     $routes->scope('/', function (RouteBuilder $builder): void {
         /*
-         * Here, we are connecting '/' (base path) to a controller called 'Pages',
-         * its action called 'display', and we pass a param to select the view file
-         * to use (in this case, templates/Pages/home.php)...
+         * Master authentication routes
          */
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        $builder->connect('/masters/login', ['controller' => 'Masters', 'action' => 'login']);
+        $builder->connect('/masters/logout', ['controller' => 'Masters', 'action' => 'logout']);
+        $builder->connect('/masters/dashboard', ['controller' => 'Masters', 'action' => 'dashboard']);
+        
+        /*
+         * Redirect root to master dashboard (requires authentication)
+         */
+        $builder->connect('/', ['controller' => 'Masters', 'action' => 'dashboard']);
 
         /*
          * ...and connect the rest of 'Pages' controller's URLs.

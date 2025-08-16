@@ -1,0 +1,72 @@
+@import "tailwindcss";
+@import "tailwindcss/utilities";
+@plugin "daisyui";
+
+/* Tema personalizado DaisyUI para Master */
+[data-theme="master"] {
+  --p: 30 58 138;              /* primary: #1e3a8a */
+  --pc: 255 255 255;           /* primary-content: #ffffff */
+  --s: 15 23 42;               /* secondary: #0f172a */
+  --sc: 255 255 255;           /* secondary-content: #ffffff */
+  --a: 3 105 161;              /* accent: #0369a1 */
+  --ac: 255 255 255;           /* accent-content: #ffffff */
+  --n: 55 65 81;               /* neutral: #374151 */
+  --nc: 255 255 255;           /* neutral-content: #ffffff */
+  --b1: 255 255 255;           /* base-100: #ffffff */
+  --b2: 248 250 252;           /* base-200: #f8fafc */
+  --b3: 226 232 240;           /* base-300: #e2e8f0 */
+  --bc: 31 41 55;              /* base-content: #1f2937 */
+  --in: 14 165 233;            /* info: #0ea5e9 */
+  --inc: 255 255 255;          /* info-content: #ffffff */
+  --su: 34 197 94;             /* success: #22c55e */
+  --suc: 255 255 255;          /* success-content: #ffffff */
+  --wa: 245 158 11;            /* warning: #f59e0b */
+  --wac: 255 255 255;          /* warning-content: #ffffff */
+  --er: 239 68 68;             /* error: #ef4444 */
+  --erc: 255 255 255;          /* error-content: #ffffff */
+  --rounded-box: 1rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+}
+
+/* Estilos personalizados para la aplicación master */
+.master-gradient {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 100%);
+}
+
+.master-card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.1), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
+}
+
+.master-border {
+  border-color: #e2e8f0;
+}
+
+/* Personalización de componentes DaisyUI para master */
+.navbar-master {
+  background: linear-gradient(90deg, #1e3a8a 0%, #0369a1 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-master {
+  background: rgba(30, 58, 138, 0.02);
+  border: 1px solid #e2e8f0;
+}
+
+.btn-master {
+  background: linear-gradient(45deg, #1e3a8a 0%, #0369a1 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-master:hover {
+  background: linear-gradient(45deg, #1e40af 0%, #0284c7 100%);
+  transform: translateY(-1px);
+}

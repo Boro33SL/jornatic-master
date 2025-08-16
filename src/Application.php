@@ -16,6 +16,15 @@ declare(strict_types=1);
  */
 namespace App;
 
+use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Middleware\AuthenticationMiddleware;
+use Authorization\AuthorizationService;
+use Authorization\AuthorizationServiceInterface;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\Policy\OrmResolver;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
@@ -27,6 +36,8 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Cake\Routing\Router;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Application setup class.
@@ -36,7 +47,9 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  *
  * @extends \Cake\Http\BaseApplication<\App\Application>
  */
-class Application extends BaseApplication
+class Application extends BaseApplication implements
+    AuthenticationServiceProviderInterface,
+    AuthorizationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -48,9 +61,17 @@ class Application extends BaseApplication
         // Call parent to load bootstrap from files.
         parent::bootstrap();
 
+        // Cargar plugins ANTES de configurar TableLocator para evitar conflictos
+        $this->addPlugin('JornaticCore');
+        $this->addPlugin('Authentication');
+        $this->addPlugin('Authorization');
+
+        // Configurar TableLocator DESPUÉS de cargar plugins
         if (PHP_SAPI !== 'cli') {
-            // The bake plugin requires fallback table classes to work properly
-            FactoryLocator::add('Table', (new TableLocator())->allowFallbackClass(false));
+            FactoryLocator::add(
+                'Table',
+                new TableLocator()->allowFallbackClass(false),
+            );
         }
     }
 
@@ -83,6 +104,12 @@ class Application extends BaseApplication
             // https://book.cakephp.org/5/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
+            // Authentication middleware - debe ir antes de Authorization
+            ->add(new AuthenticationMiddleware($this))
+
+            // Authorization middleware - después de Authentication
+            ->add(new AuthorizationMiddleware($this))
+
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
             ->add(new CsrfProtectionMiddleware([
@@ -101,5 +128,60 @@ class Application extends BaseApplication
      */
     public function services(ContainerInterface $container): void
     {
+    }
+
+    /**
+     * Returns an authorization service instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authorization\AuthorizationServiceInterface
+     */
+    public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+    {
+        // Usar ORM resolver para entidades
+        $resolver = new OrmResolver();
+
+        return new AuthorizationService($resolver);
+    }
+
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => Router::url('/masters/login'),
+            'queryParam' => 'redirect',
+            'logoutRedirect' => '/masters/login',
+        ]);
+
+        // Load identifiers, ensure we check email and password fields
+        $service->loadIdentifier('Authentication.Password', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password',
+            ],
+            'resolver' => [
+                'className' => 'Authentication.Orm',
+                'userModel' => 'Masters',
+                'finder' => 'auth',
+            ],
+        ]);
+
+        // Load the authenticators, you want session first
+        $service->loadAuthenticator('Authentication.Session');
+        // Configure form data check to pick email and password
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password',
+            ],
+            'loginUrl' => Router::url('/masters/login'),
+        ]);
+
+        return $service;
     }
 }
