@@ -136,6 +136,10 @@ class AttendancesController extends AppController
         // Obtener estadísticas del día
         $dayStats = $this->_getDayAttendanceStats($attendance);
 
+        // Debug temporal para verificar datos
+        $this->log('DayStats: ' . json_encode($dayStats), 'debug');
+        $this->log('RelatedAttendances count: ' . count($relatedAttendances), 'debug');
+
         $this->set(compact('attendance', 'relatedAttendances', 'dayStats'));
     }
 
@@ -434,29 +438,91 @@ class AttendancesController extends AppController
             ->orderBy(['Attendances.timestamp' => 'ASC'])
             ->toArray();
 
+        // Debug temporal
+        $this->log("Date filter: $date, User ID: $userId", 'debug');
+        $this->log('Day attendances found: ' . count($dayAttendances), 'debug');
+        foreach ($dayAttendances as $att) {
+            $this->log("Attendance type: {$att->type}, time: {$att->timestamp->format('H:i:s')}", 'debug');
+        }
+
         $checkIns = array_filter($dayAttendances, function($att) {
-            return $att->action === 'check_in';
+            return $att->type === 'in';
         });
         
         $checkOuts = array_filter($dayAttendances, function($att) {
-            return $att->action === 'check_out';
+            return $att->type === 'out';
+        });
+        
+        $breakStarts = array_filter($dayAttendances, function($att) {
+            return $att->type === 'break_start';
+        });
+        
+        $breakEnds = array_filter($dayAttendances, function($att) {
+            return $att->type === 'break_end';
         });
 
-        // Calcular horas trabajadas
+        // Calcular horas trabajadas descontando descansos
         $hoursWorked = 0;
+        $totalHoursFormatted = null;
+        
         if (count($checkIns) > 0 && count($checkOuts) > 0) {
-            $firstCheckIn = reset($checkIns);
-            $lastCheckOut = end($checkOuts);
+            // Ordenar todas las asistencias por tiempo
+            usort($dayAttendances, function($a, $b) {
+                return $a->timestamp <=> $b->timestamp;
+            });
             
-            $diff = $firstCheckIn->timestamp->diff($lastCheckOut->datetime);
-            $hoursWorked = $diff->h + ($diff->i / 60);
+            $workingMinutes = 0;
+            $isWorking = false;
+            $lastTimestamp = null;
+            
+            foreach ($dayAttendances as $attendance) {
+                switch ($attendance->type) {
+                    case 'in':
+                    case 'break_end':
+                        // Inicio de período de trabajo
+                        if (!$isWorking) {
+                            $isWorking = true;
+                            $lastTimestamp = $attendance->timestamp;
+                        }
+                        break;
+                        
+                    case 'break_start':
+                    case 'out':
+                        // Fin de período de trabajo
+                        if ($isWorking && $lastTimestamp) {
+                            $diff = $lastTimestamp->diff($attendance->timestamp);
+                            $workingMinutes += ($diff->h * 60) + $diff->i;
+                            $isWorking = false;
+                            $lastTimestamp = null;
+                        }
+                        break;
+                }
+            }
+            
+            // Convertir minutos trabajados a formato "X horas Y minutos"
+            $hours = intval($workingMinutes / 60);
+            $minutes = $workingMinutes % 60;
+            
+            $totalHoursFormatted = null;
+            if ($workingMinutes > 0) {
+                if ($hours > 0 && $minutes > 0) {
+                    $totalHoursFormatted = $hours . ' horas ' . $minutes . ' minutos';
+                } elseif ($hours > 0) {
+                    $totalHoursFormatted = $hours . ' horas';
+                } else {
+                    $totalHoursFormatted = $minutes . ' minutos';
+                }
+            }
+            
+            $this->log("Working minutes calculated: $workingMinutes (= $hours hours, $minutes minutes)", 'debug');
         }
 
         return [
             'total_attendances' => count($dayAttendances),
             'check_ins' => count($checkIns),
             'check_outs' => count($checkOuts),
-            'hours_worked' => round($hoursWorked, 2),
+            'breaks' => count($breakStarts), // Usar break_start como referencia para contar descansos
+            'total_hours' => $totalHoursFormatted,
             'first_check_in' => count($checkIns) > 0 ? reset($checkIns)->timestamp->format('H:i') : null,
             'last_check_out' => count($checkOuts) > 0 ? end($checkOuts)->timestamp->format('H:i') : null,
         ];
