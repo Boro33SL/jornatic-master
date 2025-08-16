@@ -51,4 +51,20 @@ class AppController extends Controller
          */
         //$this->loadComponent('FormProtection');
     }
+
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        
+        // Skip authorization for DebugKit routes
+        $request = $this->getRequest();
+        if (str_starts_with($request->getPath(), '/debug-kit')) {
+            $this->Authorization->skipAuthorization();
+        }
+    }
+
+    protected function getTable(string $name): mixed
+    {
+        return $this->fetchTable($name);
+    }
 }

@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "build:css": "tailwindcss -i ./webroot/css/app.css -o ./webroot/css/dist/master.css",
+    "build:css:watch": "tailwindcss -i ./webroot/css/app.css -o ./webroot/css/dist/master.css --watch",
+    "build:css:prod": "tailwindcss -i ./webroot/css/app.css -o ./webroot/css/dist/master.css --minify"
+  },
   "devDependencies": {
     "daisyui": "^5.0.46"
   },

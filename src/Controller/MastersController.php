@@ -11,6 +11,7 @@ use Cake\Event\EventInterface;
  * Handles authentication for master users
  *
  * @property \App\Model\Table\MastersTable $Masters
+ * * @property \App\Controller\Component\LoggingComponent $Logging
  */
 class MastersController extends AppController
 {
@@ -27,15 +28,21 @@ class MastersController extends AppController
         $this->loadComponent('Logging');
 
         // Allow unauthenticated access to login only
-        $this->Authorization->skipAuthorization(['login', 'add']);
+        $this->Authorization->skipAuthorization(['login']);
     }
 
+    /**
+     * Metodo beforeFilter
+     *
+     * @param EventInterface $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
 
         // Allow unauthenticated access to login
-        $this->Authentication->allowUnauthenticated(['login', 'add']);
+        $this->Authentication->allowUnauthenticated(['login']);
     }
 
     /**
@@ -142,6 +149,133 @@ class MastersController extends AppController
         $this->Logging->logView('dashboard');
 
         $master = $this->Authentication->getIdentity();
-        $this->set(compact('master'));
+        
+        // Cargar tablas necesarias para estadísticas
+        $Companies = $this->getTable('JornaticCore.Companies');
+        $Subscriptions = $this->getTable('JornaticCore.Subscriptions');
+        $Plans = $this->getTable('JornaticCore.Plans');
+        $Prices = $this->getTable('JornaticCore.Prices');
+        $MasterAccessLogs = $this->fetchTable('MasterAccessLogs');
+        
+        // Obtener estadísticas de empresas
+        $totalCompanies = $Companies->find()->count();
+        
+        // Obtener suscripciones activas
+        $activeSubscriptions = $Subscriptions->find()
+            ->where(['status' => 'active'])
+            ->count();
+        
+        // Calcular ingresos mensuales - versión simplificada sin join directo
+        $activeSubscriptionsThisMonth = $Subscriptions->find()
+            ->contain(['Plans'])
+            ->where([
+                'Subscriptions.status' => 'active',
+                'MONTH(Subscriptions.created)' => date('m'),
+                'YEAR(Subscriptions.created)' => date('Y')
+            ])
+            ->toArray();
+        
+        $monthlyRevenueAmount = 0;
+        foreach ($activeSubscriptionsThisMonth as $subscription) {
+            // Buscar el precio correspondiente al plan y período
+            $price = $Prices->find()
+                ->where([
+                    'plan_id' => $subscription->plan_id,
+                    'period' => $subscription->period
+                ])
+                ->first();
+            if ($price) {
+                $monthlyRevenueAmount += (float)$price->amount;
+            }
+        }
+        
+        // Obtener logs de auditoría recientes
+        $recentLogs = $MasterAccessLogs->find()
+            ->contain(['Masters'])
+            ->orderBy(['MasterAccessLogs.created' => 'DESC'])
+            ->limit(10)
+            ->toArray();
+        
+        // Estadísticas de logs del día
+        $today = date('Y-m-d');
+        $todayLogsCount = $MasterAccessLogs->find()
+            ->where(['DATE(created)' => $today])
+            ->count();
+        
+        // Estadísticas de éxito/fallo del día
+        $todaySuccessCount = $MasterAccessLogs->find()
+            ->where([
+                'DATE(created)' => $today,
+                'success' => true
+            ])
+            ->count();
+            
+        $todayFailedCount = $MasterAccessLogs->find()
+            ->where([
+                'DATE(created)' => $today,
+                'success' => false
+            ])
+            ->count();
+        
+        // Preparar datos para los gráficos (últimos 6 meses)
+        $revenueData = [];
+        $subscriptionData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = date('Y-m', strtotime("-$i months"));
+            
+            // Ingresos por mes - versión simplificada
+            $monthSubscriptions = $Subscriptions->find()
+                ->where([
+                    'Subscriptions.status' => 'active',
+                    'DATE_FORMAT(Subscriptions.created, "%Y-%m") =' => $month
+                ])
+                ->toArray();
+            
+            $monthTotal = 0;
+            foreach ($monthSubscriptions as $sub) {
+                $price = $Prices->find()
+                    ->where([
+                        'plan_id' => $sub->plan_id,
+                        'period' => $sub->period
+                    ])
+                    ->first();
+                if ($price) {
+                    $monthTotal += (float)$price->amount;
+                }
+            }
+            $revenueData[] = $monthTotal;
+            
+            // Suscripciones nuevas por mes
+            $monthSubs = $Subscriptions->find()
+                ->where(['DATE_FORMAT(Subscriptions.created, "%Y-%m") =' => $month])
+                ->count();
+            $subscriptionData[] = $monthSubs;
+        }
+        
+        // Distribución por planes con nombres
+        $planDistribution = $Subscriptions->find()
+            ->contain(['Plans'])
+            ->select([
+                'Plans.name',
+                'count' => 'COUNT(Subscriptions.id)'
+            ])
+            ->where(['Subscriptions.status' => 'active'])
+            ->group(['Subscriptions.plan_id', 'Plans.name'])
+            ->toArray();
+        
+        // Preparar datos para la vista
+        $this->set(compact(
+            'master',
+            'totalCompanies',
+            'activeSubscriptions',
+            'monthlyRevenueAmount',
+            'recentLogs',
+            'todayLogsCount',
+            'todaySuccessCount',
+            'todayFailedCount',
+            'revenueData',
+            'subscriptionData',
+            'planDistribution'
+        ));
     }
 }

@@ -29,7 +29,7 @@ $this->assign('title', 'Dashboard');
             </svg>
         </div>
         <div class="stat-title">Empresas</div>
-        <div class="stat-value text-primary">-</div>
+        <div class="stat-value text-primary"><?= number_format($totalCompanies ?? 0) ?></div>
         <div class="stat-desc">Total registradas</div>
     </div>
 
@@ -40,7 +40,7 @@ $this->assign('title', 'Dashboard');
             </svg>
         </div>
         <div class="stat-title">Suscripciones Activas</div>
-        <div class="stat-value text-accent">-</div>
+        <div class="stat-value text-accent"><?= number_format($activeSubscriptions ?? 0) ?></div>
         <div class="stat-desc">Clientes pagando</div>
     </div>
 
@@ -51,7 +51,7 @@ $this->assign('title', 'Dashboard');
             </svg>
         </div>
         <div class="stat-title">Ingresos Mensuales</div>
-        <div class="stat-value text-success">€-</div>
+        <div class="stat-value text-success">€<?= number_format($monthlyRevenueAmount ?? 0, 2, ',', '.') ?></div>
         <div class="stat-desc">Mes actual</div>
     </div>
 
@@ -61,9 +61,12 @@ $this->assign('title', 'Dashboard');
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
         </div>
-        <div class="stat-title">Estado del Sistema</div>
-        <div class="stat-value text-success">✓</div>
-        <div class="stat-desc text-success">Operativo</div>
+        <div class="stat-title">Logs Hoy</div>
+        <div class="stat-value text-info"><?= number_format($todayLogsCount ?? 0) ?></div>
+        <div class="stat-desc">
+            <span class="text-success"><?= $todaySuccessCount ?? 0 ?> exitosos</span> / 
+            <span class="text-error"><?= $todayFailedCount ?? 0 ?> fallidos</span>
+        </div>
     </div>
 </div>
 
@@ -111,31 +114,20 @@ $this->assign('title', 'Dashboard');
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="<?= $this->Url->build(['controller' => 'Masters', 'action' => 'add']) ?>" class="card bg-gradient-to-br from-success/5 to-success/10 hover:from-success/10 hover:to-success/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-                <div class="card-body text-center">
-                    <div class="text-success mb-2">
-                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-success">Crear Usuario Master</h3>
-                    <p class="text-sm text-base-content/70 mt-1">Añadir nuevo administrador</p>
-                </div>
-            </a>
-
-            <a href="#" class="card bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <!-- Fila 1: Gestión Principal -->
+            <a href="<?= $this->Url->build(['controller' => 'Companies', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
                 <div class="card-body text-center">
                     <div class="text-primary mb-2">
                         <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-primary">Gestionar Empresas</h3>
-                    <p class="text-sm text-base-content/70 mt-1">Ver y editar configuraciones</p>
+                    <h3 class="font-bold text-primary">Empresas</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Gestionar clientes empresariales</p>
                 </div>
             </a>
 
-            <a href="#" class="card bg-gradient-to-br from-accent/5 to-accent/10 hover:from-accent/10 hover:to-accent/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <a href="<?= $this->Url->build(['controller' => 'Subscriptions', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-accent/5 to-accent/10 hover:from-accent/10 hover:to-accent/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
                 <div class="card-body text-center">
                     <div class="text-accent mb-2">
                         <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +135,105 @@ $this->assign('title', 'Dashboard');
                         </svg>
                     </div>
                     <h3 class="font-bold text-accent">Suscripciones</h3>
-                    <p class="text-sm text-base-content/70 mt-1">Monitorizar facturación</p>
+                    <p class="text-sm text-base-content/70 mt-1">Facturación y pagos</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Plans', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-secondary/5 to-secondary/10 hover:from-secondary/10 hover:to-secondary/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-secondary mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-secondary">Planes</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Configurar ofertas</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-info/5 to-info/10 hover:from-info/10 hover:to-info/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-info mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-info">Usuarios</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Empleados del sistema</p>
+                </div>
+            </a>
+
+            <!-- Fila 2: Gestión Operativa -->
+            <a href="<?= $this->Url->build(['controller' => 'Departments', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-warning/5 to-warning/10 hover:from-warning/10 hover:to-warning/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-warning mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-warning">Departamentos</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Organización empresarial</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Contracts', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-success/5 to-success/10 hover:from-success/10 hover:to-success/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-success mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-success">Contratos</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Relaciones laborales</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Attendances', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-error/5 to-error/10 hover:from-error/10 hover:to-error/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-error mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-error">Asistencias</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Control de fichajes</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Features', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-neutral/5 to-neutral/10 hover:from-neutral/10 hover:to-neutral/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-neutral mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-neutral">Características</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Funcionalidades sistema</p>
+                </div>
+            </a>
+
+            <!-- Fila 3: Administración -->
+            <a href="<?= $this->Url->build(['controller' => 'Holidays', 'action' => 'index']) ?>" class="card bg-gradient-to-br from-purple-500/5 to-purple-500/10 hover:from-purple-500/10 hover:to-purple-500/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-purple-500 mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-purple-500">Festivos</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Calendario empresarial</p>
+                </div>
+            </a>
+
+            <a href="<?= $this->Url->build(['controller' => 'Masters', 'action' => 'add']) ?>" class="card bg-gradient-to-br from-success/5 to-success/10 hover:from-success/10 hover:to-success/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="card-body text-center">
+                    <div class="text-success mb-2">
+                        <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-success">Usuario Master</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Añadir administrador</p>
                 </div>
             </a>
 
@@ -154,20 +244,20 @@ $this->assign('title', 'Dashboard');
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-info">Logs de Auditoría</h3>
-                    <p class="text-sm text-base-content/70 mt-1">Registro de actividades</p>
+                    <h3 class="font-bold text-info">Logs Auditoría</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Registro actividades</p>
                 </div>
             </a>
 
-            <a href="#" class="card bg-gradient-to-br from-success/5 to-success/10 hover:from-success/10 hover:to-success/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <a href="<?= $this->Url->build(['controller' => 'Attendances', 'action' => 'reports']) ?>" class="card bg-gradient-to-br from-orange-500/5 to-orange-500/10 hover:from-orange-500/10 hover:to-orange-500/20 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
                 <div class="card-body text-center">
-                    <div class="text-success mb-2">
+                    <div class="text-orange-500 mb-2">
                         <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 109.75 9.75A9.75 9.75 0 0012 2.25z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-success">Herramientas Soporte</h3>
-                    <p class="text-sm text-base-content/70 mt-1">Utilidades de soporte</p>
+                    <h3 class="font-bold text-orange-500">Reportes</h3>
+                    <p class="text-sm text-base-content/70 mt-1">Informes y estadísticas</p>
                 </div>
             </a>
         </div>
@@ -186,7 +276,7 @@ document.addEventListener('alpine:init', () => {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                     datasets: [{
                         label: 'Ingresos (€)',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: <?= json_encode($revenueData ?? [0, 0, 0, 0, 0, 0]) ?>,
                         borderColor: '#1e3a8a',
                         backgroundColor: 'rgba(30, 58, 138, 0.1)',
                         tension: 0.4,
@@ -225,9 +315,9 @@ document.addEventListener('alpine:init', () => {
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Starter', 'Professional', 'Business'],
+                    labels: <?= json_encode(array_column($planDistribution ?? [], 'name') ?: ['Starter', 'Professional', 'Business']) ?>,
                     datasets: [{
-                        data: [0, 0, 0],
+                        data: <?= json_encode(array_column($planDistribution ?? [], 'count') ?: [0, 0, 0]) ?>,
                         backgroundColor: [
                             '#0369a1',
                             '#1e3a8a', 

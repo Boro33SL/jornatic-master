@@ -108,7 +108,9 @@ class Application extends BaseApplication implements
             ->add(new AuthenticationMiddleware($this))
 
             // Authorization middleware - después de Authentication
-            ->add(new AuthorizationMiddleware($this))
+            ->add(new AuthorizationMiddleware($this, [
+                'requireAuthorizationCheck' => false
+            ]))
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware

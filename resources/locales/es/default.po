@@ -1,149 +1,675 @@
 # Mensajes comunes
-msgid "_DASHBOARD"
-msgstr "Dashboard"
-
-msgid "_SI"
-msgstr "Sí"
-
-msgid "_NO"
-msgstr "No"
-
-msgid "_FECHA"
-msgstr "Fecha"
-
-msgid "_USUARIO"
-msgstr "Usuario"
-
 msgid "_ACCION"
 msgstr "Acción"
 
-msgid "_RECURSO"
-msgstr "Recurso"
-
-msgid "_RECURSO_ID"
-msgstr "ID del Recurso"
-
-msgid "_IP_ADDRESS"
-msgstr "Dirección IP"
-
-msgid "_USER_AGENT"
-msgstr "Navegador"
-
-msgid "_EXITO"
-msgstr "Éxito"
-
-msgid "_DETALLES"
-msgstr "Detalles"
+msgid "_ACCION_REALIZADA"
+msgstr "Acción Realizada"
 
 msgid "_ACCIONES"
 msgstr "Acciones"
 
-msgid "_FILTRAR"
-msgstr "Filtrar"
-
-msgid "_LIMPIAR"
-msgstr "Limpiar"
-
-msgid "_EXPORTAR_CSV"
-msgstr "Exportar CSV"
-
-msgid "_VER_DETALLES"
-msgstr "Ver Detalles"
-
-msgid "_VOLVER_A_LOGS"
-msgstr "Volver a Logs"
-
-# Logs de Auditoría
-msgid "_LOGS_DE_AUDITORIA"
-msgstr "Logs de Auditoría"
-
-msgid "_REGISTRO_ACTIVIDADES_MASTERS"
-msgstr "Registro de actividades de usuarios master"
-
-msgid "_TOTAL_HOY"
-msgstr "Total Hoy"
+msgid "_ACCIONES_RAPIDAS"
+msgstr "Acciones Rápidas"
 
 msgid "_ACCIONES_REALIZADAS"
 msgstr "Acciones realizadas"
 
-msgid "_EXITOSAS"
-msgstr "Exitosas"
+msgid "_ACTIVA"
+msgstr "Activa"
 
-msgid "_OPERACIONES_CORRECTAS"
-msgstr "Operaciones correctas"
+msgid "_ACTIVAR"
+msgstr "Activar"
 
-msgid "_FALLIDAS"
-msgstr "Fallidas"
+msgid "_ACTIVAS"
+msgstr "Activas"
 
-msgid "_OPERACIONES_INCORRECTAS"
-msgstr "Operaciones incorrectas"
+msgid "_ACTIVO"
+msgstr "Activo"
 
-msgid "_IPS_UNICAS"
-msgstr "IPs Únicas"
+msgid "_ACTIVOS_HOY"
+msgstr "Activos Hoy"
 
-msgid "_DIRECCIONES_DIFERENTES"
-msgstr "Direcciones diferentes"
+msgid "_ADMINISTRAR_EMPLEADOS_SISTEMA"
+msgstr "Administrar empleados del sistema"
 
-msgid "_FILTROS_DE_BUSQUEDA"
-msgstr "Filtros de Búsqueda"
+msgid "_ADMINISTRAR_EMPRESAS_ECOSISTEMA"
+msgstr "Administrar empresas del ecosistema"
 
-msgid "_USUARIO_MASTER"
-msgstr "Usuario Master"
+msgid "_ANUAL"
+msgstr "Anual"
 
-msgid "_TODOS_LOS_USUARIOS"
-msgstr "Todos los usuarios"
+msgid "_APELLIDOS"
+msgstr "Apellidos"
 
-msgid "_TODAS_LAS_ACCIONES"
-msgstr "Todas las acciones"
+msgid "_ASISTENCIA_ACTUALIZADA_CORRECTAMENTE"
+msgstr "Asistencia actualizada correctamente"
 
-msgid "_RESULTADO"
-msgstr "Resultado"
+msgid "_ASISTENCIA_ELIMINADA_CORRECTAMENTE"
+msgstr "Asistencia eliminada correctamente"
 
-msgid "_TODOS_LOS_RESULTADOS"
-msgstr "Todos los resultados"
+# Mensajes de error - Características
 
-msgid "_EXITOSO"
-msgstr "Exitoso"
+msgid "_BUSCAR"
+msgstr "Buscar"
 
-msgid "_FALLIDO"
-msgstr "Fallido"
+msgid "_BUSCAR_EMPRESAS"
+msgstr "Buscar empresas..."
+
+msgid "_BUSCAR_NOMBRE_EMAIL"
+msgstr "Buscar por nombre o email"
+
+msgid "_BUSCAR_POR_NOMBRE_EMAIL"
+msgstr "Buscar por nombre o email"
+
+# Acciones básicas
+
+msgid "_CALLE_NUMERO"
+msgstr "Calle y número"
+
+msgid "_CAMBIOS_PUEDEN_AFECTAR_USUARIOS"
+msgstr "Los cambios pueden afectar a los usuarios"
+
+msgid "_CANCELAR"
+msgstr "Cancelar"
+
+msgid "_CARACTERISTICA_ACTUALIZADA_CORRECTAMENTE"
+msgstr "Característica actualizada correctamente"
+
+msgid "_CARACTERISTICA_CREADA_CORRECTAMENTE"
+msgstr "Característica creada correctamente"
+
+msgid "_CARACTERISTICA_ELIMINADA_CORRECTAMENTE"
+msgstr "Característica eliminada correctamente"
+
+# Mensajes de éxito - Contratos
+
+msgid "_CARACTERISTICAS"
+msgstr "Características"
+
+msgid "_CATEGORIA_PROFESIONAL"
+msgstr "Categoría Profesional"
+
+msgid "_CIF"
+msgstr "CIF"
+
+msgid "_CIF_EMPRESA_FORMATO_VALIDO"
+msgstr "CIF en formato válido español"
+
+msgid "_CIUDAD"
+msgstr "Ciudad"
+
+msgid "_CODIGO"
+msgstr "Código"
+
+msgid "_CODIGO_POSTAL"
+msgstr "Código Postal"
+
+msgid "_COMERCIO_MINORISTA"
+msgstr "Comercio Minorista"
+
+msgid "_CON_CONTRATOS"
+msgstr "Con Contratos"
+
+msgid "_CON_SUSCRIPCION"
+msgstr "Con Suscripción"
+
+msgid "_CON_SUSCRIPCIONES"
+msgstr "Con Suscripciones"
+
+# Características
+
+msgid "_CONSTRUCCION"
+msgstr "Construcción"
+
+msgid "_CONSULTORIA"
+msgstr "Consultoría"
+
+msgid "_CONTRATO_ACTIVADO_CORRECTAMENTE"
+msgstr "Contrato activado correctamente"
+
+msgid "_CONTRATO_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Contrato actualizado correctamente"
+
+msgid "_CONTRATO_CREADO_CORRECTAMENTE"
+msgstr "Contrato creado correctamente"
+
+msgid "_CONTRATO_FINALIZADO_CORRECTAMENTE"
+msgstr "Contrato finalizado correctamente"
+
+# Mensajes de éxito - Festivos
+
+msgid "_DASHBOARD"
+msgstr "Dashboard"
+
+msgid "_DEPARTAMENTO"
+msgstr "Departamento"
+
+msgid "_DEPARTAMENTO_ACTIVADO_CORRECTAMENTE"
+msgstr "Departamento activado correctamente"
+
+msgid "_DEPARTAMENTO_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Departamento actualizado correctamente"
+
+msgid "_DEPARTAMENTO_CREADO_CORRECTAMENTE"
+msgstr "Departamento creado correctamente"
+
+msgid "_DEPARTAMENTO_DESACTIVADO_CORRECTAMENTE"
+msgstr "Departamento desactivado correctamente"
+
+msgid "_DEPARTAMENTOS"
+msgstr "Departamentos"
+
+msgid "_DESACTIVAR"
+msgstr "Desactivar"
+
+msgid "_DESCRIPCION"
+msgstr "Descripción"
+
+msgid "_DESCRIPCION_OPCIONAL_EMPRESA"
+msgstr "Descripción opcional de la empresa"
+
+msgid "_DETALLE_LOG_AUDITORIA"
+msgstr "Detalle de Log de Auditoría"
+
+msgid "_DETALLES"
+msgstr "Detalles"
+
+msgid "_DETALLES_ADICIONALES"
+msgstr "Detalles Adicionales"
+
+msgid "_DIRECCION"
+msgstr "Dirección"
 
 msgid "_DIRECCION_IP"
 msgstr "Dirección IP"
 
+msgid "_DIRECCIONES_DIFERENTES"
+msgstr "Direcciones diferentes"
+
+msgid "_DISPOSITIVO"
+msgstr "Dispositivo"
+
+# Stripe
+
+msgid "_DNI_NIE"
+msgstr "DNI/NIE"
+
+msgid "_EDITAR"
+msgstr "Editar"
+
+msgid "_EDITAR_EMPRESA"
+msgstr "Editar Empresa"
+
+msgid "_EDUCACION"
+msgstr "Educación"
+
+msgid "_EMAIL"
+msgstr "Email"
+
+msgid "_EMAIL_EMPRESA"
+msgstr "Email de la Empresa"
+
+msgid "_EMAIL_O_PASSWORD_INCORRECTOS"
+msgstr "Email o contraseña incorrectos"
+
+msgid "_EMPLEADO"
+msgstr "Empleado"
+
+msgid "_EMPLEADOS"
+msgstr "empleados"
+
+msgid "_EMPLEADOS_ACTIVOS"
+msgstr "Empleados Activos"
+
+msgid "_EMPLEADOS_RECIENTES"
+msgstr "Empleados Recientes"
+
+msgid "_EMPRESA"
+msgstr "Empresa"
+
+msgid "_EMPRESA_ACTIVA"
+msgstr "Empresa Activa"
+
+msgid "_EMPRESA_ACTIVADA_CORRECTAMENTE"
+msgstr "Empresa activada correctamente"
+
+msgid "_EMPRESA_ACTUALIZADA_CORRECTAMENTE"
+msgstr "Empresa actualizada correctamente"
+
+msgid "_EMPRESA_CON_EMPLEADOS"
+msgstr "Empresa con Empleados"
+
+msgid "_EMPRESA_CON_SUSCRIPCION"
+msgstr "Empresa con Suscripción"
+
+msgid "_EMPRESA_DESACTIVADA_CORRECTAMENTE"
+msgstr "Empresa desactivada correctamente"
+
+msgid "_EMPRESAS"
+msgstr "Empresas"
+
+msgid "_EMPRESAS_ACTIVAS"
+msgstr "Empresas Activas"
+
+msgid "_ENTRADA"
+msgstr "Entrada"
+
+msgid "_ERROR_AL_ACTIVAR_CONTRATO"
+msgstr "Error al activar contrato"
+
+msgid "_ERROR_AL_ACTIVAR_DEPARTAMENTO"
+msgstr "Error al activar departamento"
+
+# === OTRAS TRADUCCIONES ===
+
+msgid "_ERROR_AL_ACTIVAR_EMPRESA"
+msgstr "Error al activar empresa"
+
+msgid "_ERROR_AL_ACTIVAR_USUARIO"
+msgstr "Error al activar usuario"
+
+msgid "_ERROR_AL_ACTUALIZAR_ASISTENCIA"
+msgstr "Error al actualizar asistencia"
+
+msgid "_ERROR_AL_ACTUALIZAR_CARACTERISTICA"
+msgstr "Error al actualizar característica"
+
+msgid "_ERROR_AL_ACTUALIZAR_CONTRATO"
+msgstr "Error al actualizar contrato"
+
+msgid "_ERROR_AL_ACTUALIZAR_DEPARTAMENTO"
+msgstr "Error al actualizar departamento"
+
+msgid "_ERROR_AL_ACTUALIZAR_EMPRESA"
+msgstr "Error al actualizar empresa"
+
+msgid "_ERROR_AL_ACTUALIZAR_FESTIVO"
+msgstr "Error al actualizar festivo"
+
+msgid "_ERROR_AL_ACTUALIZAR_PLAN"
+msgstr "Error al actualizar plan"
+
+msgid "_ERROR_AL_ACTUALIZAR_PRECIOS"
+msgstr "Error al actualizar precios"
+
+# Mensajes de error - Suscripciones
+
+msgid "_ERROR_AL_ACTUALIZAR_SUSCRIPCION"
+msgstr "Error al actualizar suscripción"
+
+msgid "_ERROR_AL_ACTUALIZAR_USUARIO"
+msgstr "Error al actualizar usuario"
+
+msgid "_ERROR_AL_CANCELAR_SUSCRIPCION"
+msgstr "Error al cancelar suscripción"
+
+msgid "_ERROR_AL_CREAR_CARACTERISTICA"
+msgstr "Error al crear característica"
+
+msgid "_ERROR_AL_CREAR_CONTRATO"
+msgstr "Error al crear contrato"
+
+msgid "_ERROR_AL_CREAR_DEPARTAMENTO"
+msgstr "Error al crear departamento"
+
+msgid "_ERROR_AL_CREAR_FESTIVO"
+msgstr "Error al crear festivo"
+
+msgid "_ERROR_AL_CREAR_PLAN"
+msgstr "Error al crear plan"
+
+msgid "_ERROR_AL_CREAR_USUARIO_MASTER"
+msgstr "Error al crear usuario master"
+
+msgid "_ERROR_AL_DESACTIVAR_DEPARTAMENTO"
+msgstr "Error al desactivar departamento"
+
+msgid "_ERROR_AL_DESACTIVAR_EMPRESA"
+msgstr "Error al desactivar empresa"
+
+msgid "_ERROR_AL_DESACTIVAR_USUARIO"
+msgstr "Error al desactivar usuario"
+
+# Mensajes de error - Asistencias
+
+msgid "_ERROR_AL_ELIMINAR_ASISTENCIA"
+msgstr "Error al eliminar asistencia"
+
+# Mensajes de error - Generales
+
+msgid "_ERROR_AL_ELIMINAR_CARACTERISTICA"
+msgstr "Error al eliminar característica"
+
+# Mensajes de error - Contratos
+
+msgid "_ERROR_AL_ELIMINAR_FESTIVO"
+msgstr "Error al eliminar festivo"
+
+# Mensajes de error - Planes
+
+msgid "_ERROR_AL_ELIMINAR_PLAN"
+msgstr "Error al eliminar plan"
+
+msgid "_ERROR_AL_FINALIZAR_CONTRATO"
+msgstr "Error al finalizar contrato"
+
+# Mensajes de error - Festivos
+
+msgid "_ERROR_AL_REACTIVAR_SUSCRIPCION"
+msgstr "Error al reactivar suscripción"
+
+# Mensajes de error - Usuarios
+
+msgid "_ERROR_DATOS_OBLIGATORIOS"
+msgstr "Error: datos obligatorios"
+
+# Validaciones
+
+msgid "_ESTADO"
+msgstr "Estado"
+
+msgid "_ESTADO_SUSCRIPCION"
+msgstr "Estado de Suscripción"
+
+msgid "_EXITO"
+msgstr "Éxito"
+
+msgid "_EXITOSAS"
+msgstr "Exitosas"
+
+msgid "_EXITOSO"
+msgstr "Exitoso"
+
+msgid "_EXPORTAR_CSV"
+msgstr "Exportar CSV"
+
+msgid "_FALLIDAS"
+msgstr "Fallidas"
+
+msgid "_FALLIDO"
+msgstr "Fallido"
+
+msgid "_FECHA"
+msgstr "Fecha"
+
+msgid "_FECHA_CREACION"
+msgstr "Fecha de Creación"
+
 msgid "_FECHA_DESDE"
 msgstr "Fecha Desde"
+
+msgid "_FECHA_FIN"
+msgstr "Fecha de Fin"
 
 msgid "_FECHA_HASTA"
 msgstr "Fecha Hasta"
 
-msgid "_NO_HAY_LOGS_DISPONIBLES"
-msgstr "No hay logs disponibles"
+msgid "_FECHA_HORA"
+msgstr "Fecha y Hora"
 
-msgid "_NO_SE_ENCONTRARON_REGISTROS_CON_LOS_FILTROS_APLICADOS"
-msgstr "No se encontraron registros con los filtros aplicados"
+msgid "_FECHA_INICIO"
+msgstr "Fecha de Inicio"
 
-msgid "_MOSTRANDO_REGISTROS_DEL_TOTAL"
-msgstr "Mostrando {0} a {1} de {2} registros"
+msgid "_FECHA_REGISTRO"
+msgstr "Fecha de Registro"
 
-msgid "_USUARIO_ANONIMO"
-msgstr "Usuario Anónimo"
-
-# Detalle de Log
-msgid "_DETALLE_LOG_AUDITORIA"
-msgstr "Detalle de Log de Auditoría"
-
-msgid "_INFORMACION_COMPLETA_DEL_REGISTRO"
-msgstr "Información completa del registro"
-
-msgid "_INFORMACION_PRINCIPAL"
-msgstr "Información Principal"
+# === FORMULARIOS DE EMPRESA ===
 
 msgid "_FECHA_Y_HORA"
 msgstr "Fecha y Hora"
 
-msgid "_ACCION_REALIZADA"
-msgstr "Acción Realizada"
+msgid "_FESTIVO_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Festivo actualizado correctamente"
+
+msgid "_FESTIVO_CREADO_CORRECTAMENTE"
+msgstr "Festivo creado correctamente"
+
+msgid "_FESTIVO_ELIMINADO_CORRECTAMENTE"
+msgstr "Festivo eliminado correctamente"
+
+# Mensajes de éxito - Planes
+
+msgid "_FICHAJES_HOY"
+msgstr "Fichajes Hoy"
+
+msgid "_FILTRAR"
+msgstr "Filtrar"
+
+msgid "_FILTRAR"
+msgstr "Filtrar"
+
+msgid "_FILTROS_DE_BUSQUEDA"
+msgstr "Filtros de Búsqueda"
+
+msgid "_FILTROS_EMPRESAS"
+msgstr "Filtros de Empresas"
+
+msgid "_FIN"
+msgstr "Fin"
+
+# Asistencias
+
+msgid "_FIN_DESCANSO"
+msgstr "Fin de Descanso"
+
+msgid "_FINANZAS"
+msgstr "Finanzas"
+
+msgid "_FORMATO_CIF_INVALIDO"
+msgstr "Formato de CIF inválido"
+
+# === ASISTENCIAS ===
+
+msgid "_GESTION_ASISTENCIAS"
+msgstr "Gestión de Asistencias"
+
+msgid "_GESTION_CARACTERISTICAS"
+msgstr "Gestión de Características"
+
+msgid "_GESTION_CONTRATOS"
+msgstr "Gestión de Contratos"
+
+msgid "_GESTION_DEPARTAMENTOS"
+msgstr "Gestión de Departamentos"
+
+msgid "_GESTION_EMPRESAS"
+msgstr "Gestión de Empresas"
+
+msgid "_GESTION_FESTIVOS"
+msgstr "Gestión de Festivos"
+
+msgid "_GESTION_PLANES"
+msgstr "Gestión de Planes"
+
+msgid "_GESTION_SUSCRIPCIONES"
+msgstr "Gestión de Suscripciones"
+
+msgid "_GESTION_USUARIOS"
+msgstr "Gestión de Usuarios"
+
+msgid "_GPS"
+msgstr "GPS"
+
+msgid "_GUARDAR_CAMBIOS"
+msgstr "Guardar Cambios"
+
+msgid "_HOSTELERIA"
+msgstr "Hostelería"
+
+msgid "_HOY"
+msgstr "Hoy"
+
+msgid "_ID"
+msgstr "ID"
+
+msgid "_ID_EMPRESA"
+msgstr "ID Empresa"
+
+msgid "_INACTIVA"
+msgstr "Inactiva"
+
+msgid "_INACTIVAS"
+msgstr "Inactivas"
+
+# Campos de usuario
+
+msgid "_INACTIVO"
+msgstr "Inactivo"
+
+msgid "_INDUSTRIA"
+msgstr "Industria"
+
+msgid "_INFO_SISTEMA"
+msgstr "Info del Sistema"
+
+msgid "_INFORMACION_ADICIONAL"
+msgstr "Información Adicional"
+
+msgid "_INFORMACION_BASICA"
+msgstr "Información Básica"
+
+msgid "_INFORMACION_COMPLETA_DEL_REGISTRO"
+msgstr "Información completa del registro"
+
+msgid "_INFORMACION_EMPRESA"
+msgstr "Información de la Empresa"
+
+msgid "_INFORMACION_PRINCIPAL"
+msgstr "Información Principal"
+
+msgid "_INFORMACION_SISTEMA"
+msgstr "Información del Sistema"
+
+msgid "_INFORMACION_TECNICA"
+msgstr "Información Técnica"
+
+msgid "_INICIO"
+msgstr "Inicio"
+
+msgid "_INICIO_DESCANSO"
+msgstr "Inicio de Descanso"
+
+msgid "_IP"
+msgstr "IP"
+
+# === MENSAJES DE ÉXITO/ERROR ===
+
+msgid "_IP_ADDRESS"
+msgstr "Dirección IP"
+
+msgid "_IPS_UNICAS"
+msgstr "IPs Únicas"
+
+msgid "_LIMITE_USUARIOS"
+msgstr "Límite de Usuarios"
+
+msgid "_LIMPIAR"
+msgstr "Limpiar"
+
+msgid "_LIMPIAR"
+msgstr "Limpiar"
+
+msgid "_LOGS_DE_AUDITORIA"
+msgstr "Logs de Auditoría"
+
+msgid "_LOGS_RELACIONADOS"
+msgstr "Logs Relacionados"
+
+msgid "_MANUFACTURA"
+msgstr "Manufactura"
+
+msgid "_MEDIA_USUARIOS_EMPRESA"
+msgstr "Media de usuarios por empresa"
+
+msgid "_MENSUAL"
+msgstr "Mensual"
+
+msgid "_MOSTRANDO_REGISTROS_DEL_TOTAL"
+msgstr "Mostrando {0} a {1} de {2} registros"
+
+msgid "_NACIONAL"
+msgstr "Nacional"
+
+msgid "_NAVEGADOR_DISPOSITIVO"
+msgstr "Navegador / Dispositivo"
+
+msgid "_NO"
+msgstr "No"
+
+msgid "_NO_DISPONIBLE"
+msgstr "No disponible"
+
+msgid "_NO_ESPECIFICADO"
+msgstr "No especificado"
+
+msgid "_NO_HAY_LOGS_DISPONIBLES"
+msgstr "No hay logs disponibles"
+
+msgid "_NO_SE_CREARON_FESTIVOS_NUEVOS"
+msgstr "No se crearon festivos nuevos"
+
+# === TRADUCCIONES USUARIOS FALTANTES ===
+
+msgid "_NO_SE_ENCONTRARON_REGISTROS_CON_LOS_FILTROS_APLICADOS"
+msgstr "No se encontraron registros con los filtros aplicados"
+
+msgid "_NO_SE_PUEDE_ELIMINAR_CARACTERISTICA_EN_USO"
+msgstr "No se puede eliminar una característica en uso"
+
+msgid "_NO_SE_PUEDE_ELIMINAR_DEPARTAMENTO_CON_USUARIOS_ACTIVOS"
+msgstr "No se puede eliminar departamento con usuarios activos"
+
+msgid "_NO_SE_PUEDE_ELIMINAR_PLAN_CON_SUSCRIPCIONES_ACTIVAS"
+msgstr "No se puede eliminar un plan con suscripciones activas"
+
+msgid "_NOMBRE"
+msgstr "Nombre"
+
+msgid "_NOMBRE_COMPLETO_EMPRESA"
+msgstr "Nombre completo de la empresa"
+
+msgid "_NOMBRE_EMPRESA"
+msgstr "Nombre de la Empresa"
+
+msgid "_NOMBRE_LEGAL"
+msgstr "Nombre Legal"
+
+msgid "_NORMAL"
+msgstr "Normal"
+
+# Suscripciones
+
+msgid "_NUEVA_CARACTERISTICA"
+msgstr "Nueva Característica"
+
+msgid "_NUEVA_EMPRESA"
+msgstr "Nueva Empresa"
+
+msgid "_NUEVAS_ESTE_MES"
+msgstr "Nuevas este Mes"
+
+msgid "_NUEVO_CONTRATO"
+msgstr "Nuevo Contrato"
+
+msgid "_NUEVO_DEPARTAMENTO"
+msgstr "Nuevo Departamento"
+
+msgid "_NUEVO_FESTIVO"
+msgstr "Nuevo Festivo"
+
+msgid "_NUEVO_PLAN"
+msgstr "Nuevo Plan"
+
+msgid "_NUEVO_USUARIO"
+msgstr "Nuevo Usuario"
+
+# Estadísticas
+
+msgid "_NUEVOS_ESTE_MES"
+msgstr "Nuevos este Mes"
+
+msgid "_NUMERO_EMPLEADOS"
+msgstr "Número de Empleados"
 
 msgid "_OPERACION_EXITOSA"
 msgstr "Operación Exitosa"
@@ -151,36 +677,420 @@ msgstr "Operación Exitosa"
 msgid "_OPERACION_FALLIDA"
 msgstr "Operación Fallida"
 
-msgid "_RECURSO_AFECTADO"
-msgstr "Recurso Afectado"
+msgid "_OPERACIONES_CORRECTAS"
+msgstr "Operaciones correctas"
 
-msgid "_DETALLES_ADICIONALES"
-msgstr "Detalles Adicionales"
+msgid "_OPERACIONES_INCORRECTAS"
+msgstr "Operaciones incorrectas"
 
-msgid "_INFORMACION_TECNICA"
-msgstr "Información Técnica"
+msgid "_ORDEN"
+msgstr "Orden"
 
-msgid "_NAVEGADOR_DISPOSITIVO"
-msgstr "Navegador / Dispositivo"
-
-msgid "_LOGS_RELACIONADOS"
-msgstr "Logs Relacionados"
+# Festivos
 
 msgid "_OTRAS_ACTIVIDADES_MISMO_USUARIO_MISMO_DIA"
 msgstr "Otras actividades del mismo usuario en el mismo día"
+
+msgid "_OTRO"
+msgstr "Otro"
+
+msgid "_PAIS"
+msgstr "País"
+
+msgid "_PAUSA_FIN"
+msgstr "Pausa Fin"
+
+msgid "_PAUSA_INICIO"
+msgstr "Pausa Inicio"
+
+msgid "_PERIODO"
+msgstr "Período"
+
+msgid "_PLAN"
+msgstr "Plan"
+
+msgid "_PLAN_ACTIVO"
+msgstr "Plan Activo"
+
+msgid "_PLAN_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Plan actualizado correctamente"
+
+msgid "_PLAN_CREADO_CORRECTAMENTE"
+msgstr "Plan creado correctamente"
+
+msgid "_PLAN_ELIMINADO_CORRECTAMENTE"
+msgstr "Plan eliminado correctamente"
+
+msgid "_PLANES_ASOCIADOS"
+msgstr "Planes Asociados"
+
+msgid "_PORCENTAJE_HORAS"
+msgstr "Porcentaje de Horas"
+
+# Planes y precios
+
+msgid "_POSICION"
+msgstr "Posición"
+
+msgid "_PRECIO_ANUAL"
+msgstr "Precio Anual"
+
+msgid "_PRECIO_MENSUAL"
+msgstr "Precio Mensual"
+
+msgid "_PRECIOS_ACTUALIZADOS_CORRECTAMENTE"
+msgstr "Precios actualizados correctamente"
+
+# Mensajes de éxito - Suscripciones
+
+msgid "_PROVINCIA"
+msgstr "Provincia"
+
+msgid "_PROVINCIA_COMUNIDAD"
+msgstr "Provincia o Comunidad"
+
+msgid "_RECURRENTE"
+msgstr "Recurrente"
+
+# Gestión general
+
+msgid "_RECURSO"
+msgstr "Recurso"
+
+msgid "_RECURSO_AFECTADO"
+msgstr "Recurso Afectado"
+
+msgid "_RECURSO_ID"
+msgstr "ID del Recurso"
+
+msgid "_REGIONAL"
+msgstr "Regional"
+
+msgid "_REGISTRO_ACTIVIDADES_MASTERS"
+msgstr "Registro de actividades de usuarios master"
+
+msgid "_RESULTADO"
+msgstr "Resultado"
+
+msgid "_ROL"
+msgstr "Rol"
+
+msgid "_SALARIO"
+msgstr "Salario"
+
+msgid "_SALIDA"
+msgstr "Salida"
+
+msgid "_SALUD"
+msgstr "Salud"
+
+msgid "_SELECCIONAR_INDUSTRIA"
+msgstr "Seleccionar industria"
+
+msgid "_SELECCIONAR_RANGO"
+msgstr "Seleccionar rango"
+
+msgid "_SESION_CERRADA_CORRECTAMENTE"
+msgstr "Sesión cerrada correctamente"
+
+msgid "_SI"
+msgstr "Sí"
+
+msgid "_SIN_DEPARTAMENTO"
+msgstr "Sin Departamento"
+
+msgid "_SIN_INDUSTRIA"
+msgstr "Sin industria"
+
+msgid "_SIN_ROL"
+msgstr "Sin Rol"
+
+# Contratos
+
+msgid "_SIN_SUSCRIPCION"
+msgstr "Sin Suscripción"
+
+msgid "_SITIO_WEB"
+msgstr "Sitio Web"
+
+msgid "_STRIPE_ID"
+msgstr "Stripe ID"
+
+# Mensajes de éxito - Características
+
+msgid "_SUSCRIPCION"
+msgstr "Suscripción"
+
+msgid "_SUSCRIPCION_ACTUAL"
+msgstr "Suscripción Actual"
+
+msgid "_SUSCRIPCION_ACTUALIZADA_CORRECTAMENTE"
+msgstr "Suscripción actualizada correctamente"
+
+msgid "_SUSCRIPCION_CANCELADA_CORRECTAMENTE"
+msgstr "Suscripción cancelada correctamente"
+
+msgid "_SUSCRIPCION_REACTIVADA_CORRECTAMENTE"
+msgstr "Suscripción reactivada correctamente"
+
+# Mensajes de éxito - Usuarios
+
+msgid "_SUSCRIPCIONES"
+msgstr "Suscripciones"
+
+msgid "_SUSCRIPCIONES_ACTIVAS"
+msgstr "Suscripciones Activas"
+
+msgid "_TECNOLOGIA"
+msgstr "Tecnología"
+
+msgid "_TELEFONO"
+msgstr "Teléfono"
+
+msgid "_TIPO"
+msgstr "Tipo"
+
+msgid "_TIPO_DATO"
+msgstr "Tipo de Dato"
+
+msgid "_TIPO_SUSCRIPCION"
+msgstr "Tipo de Suscripción"
+
+msgid "_TODAS"
+msgstr "Todas"
+
+msgid "_TODAS_LAS_ACCIONES"
+msgstr "Todas las acciones"
+
+msgid "_TODAS_LAS_SUSCRIPCIONES"
+msgstr "Todas las suscripciones"
+
+msgid "_TODOS"
+msgstr "Todos"
+
+msgid "_TODOS_LOS_RESULTADOS"
+msgstr "Todos los resultados"
+
+msgid "_TODOS_LOS_USUARIOS"
+msgstr "Todos los usuarios"
+
+msgid "_TOTAL_EMPLEADOS"
+msgstr "Total Empleados"
+
+msgid "_TOTAL_EMPRESAS"
+msgstr "Total Empresas"
+
+msgid "_TOTAL_HOY"
+msgstr "Total Hoy"
+
+msgid "_TOTAL_USUARIOS"
+msgstr "Total de Usuarios"
+
+msgid "_TRANSPORTE"
+msgstr "Transporte"
+
+msgid "_TRIAL"
+msgstr "Trial"
+
+msgid "_UBICACION"
+msgstr "Ubicación"
+
+msgid "_ULTIMA_MODIFICACION"
+msgstr "Última Modificación"
+
+msgid "_USER_AGENT"
+msgstr "Navegador"
+
+msgid "_USUARIO"
+msgstr "Usuario"
+
+msgid "_USUARIO_ACTIVADO_CORRECTAMENTE"
+msgstr "Usuario activado correctamente"
+
+msgid "_USUARIO_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Usuario actualizado correctamente"
+
+msgid "_USUARIO_ANONIMO"
+msgstr "Usuario Anónimo"
+
+# Detalle de Log
+
+msgid "_USUARIO_DESACTIVADO_CORRECTAMENTE"
+msgstr "Usuario desactivado correctamente"
+
+# Mensajes de éxito - Asistencias
+
+msgid "_USUARIO_MASTER"
+msgstr "Usuario Master"
+
+msgid "_USUARIO_MASTER_CREADO_CORRECTAMENTE"
+msgstr "Usuario master creado correctamente"
+
+msgid "_USUARIOS"
+msgstr "Usuarios"
+
+msgid "_USUARIOS_ACTIVOS"
+msgstr "Usuarios Activos"
+
+msgid "_USUARIOS_PERMITIDOS"
+msgstr "Usuarios Permitidos"
+
+# Estados generales
+
+msgid "_USUARIOS_TOTAL"
+msgstr "Usuarios Total"
+
+msgid "_UUID"
+msgstr "UUID"
+
+msgid "_VENCIMIENTO"
+msgstr "Vencimiento"
 
 msgid "_VER"
 msgstr "Ver"
 
 # Mensajes de autenticación
-msgid "_EMAIL_O_PASSWORD_INCORRECTOS"
-msgstr "Email o contraseña incorrectos"
 
-msgid "_SESION_CERRADA_CORRECTAMENTE"
-msgstr "Sesión cerrada correctamente"
+msgid "_VER_ASISTENCIAS"
+msgstr "Ver Asistencias"
 
-msgid "_USUARIO_MASTER_CREADO_CORRECTAMENTE"
-msgstr "Usuario master creado correctamente"
+msgid "_VER_DEPARTAMENTOS"
+msgstr "Ver Departamentos"
 
-msgid "_ERROR_AL_CREAR_USUARIO_MASTER"
-msgstr "Error al crear usuario master"
+msgid "_VER_DETALLES"
+msgstr "Ver Detalles"
+
+msgid "_VER_EMPLEADOS"
+msgstr "Ver Empleados"
+
+msgid "_VER_EMPRESA"
+msgstr "Ver Empresa"
+
+msgid "_VER_FESTIVOS"
+msgstr "Ver Festivos"
+
+msgid "_VOLVER_A_LOGS"
+msgstr "Volver a Logs"
+
+# Logs de Auditoría
+
+# ===== NUEVAS TRADUCCIONES AGREGADAS =====
+
+# === EMPRESAS ===
+
+msgid "_VOLVER_AL_LISTADO"
+msgstr "Volver al Listado"
+
+# === GESTIÓN DE EMPRESAS ===
+
+# === TRADUCCIONES FALTANTES CRÍTICAS ===
+
+# Contratos
+msgid "_CONTRATO_ACTIVO"
+msgstr "Contrato Activo"
+
+msgid "_SIN_CONTRATO_ACTIVO"
+msgstr "Sin Contrato Activo"
+
+msgid "_TIPO"
+msgstr "Tipo"
+
+# Asistencias
+msgid "_ULTIMAS_ASISTENCIAS"
+msgstr "Últimas Asistencias"
+
+msgid "_VER_TODAS"
+msgstr "Ver Todas"
+
+msgid "_SIN_ASISTENCIAS_REGISTRADAS"
+msgstr "Sin Asistencias Registradas"
+
+msgid "_INDEFINIDO"
+msgstr "Indefinido"
+
+msgid "_JORNADA"
+msgstr "Jornada"
+
+msgid "_USUARIO_NO_HA_FICHADO"
+msgstr "El usuario no ha fichado aún"
+
+msgid "_NO_ASIGNADA"
+msgstr "No Asignada"
+
+msgid "_NO_ASIGNADO"
+msgstr "No Asignado"
+
+msgid "_NOMBRE_COMPLETO"
+msgstr "Nombre Completo"
+
+msgid "_FECHA_NACIMIENTO"
+msgstr "Fecha de Nacimiento"
+
+msgid "_INFORMACION_PERSONAL"
+msgstr "Información Personal"
+
+msgid "_INFORMACION_LABORAL"
+msgstr "Información Laboral"
+
+msgid "_FECHA_INGRESO"
+msgstr "Fecha de Ingreso"
+
+msgid "_VOLVER"
+msgstr "Volver"
+
+# Attendances
+msgid "_DETALLE_ASISTENCIA"
+msgstr "Detalle de Asistencia"
+
+msgid "_INFORMACION_ASISTENCIA"
+msgstr "Información de Asistencia"
+
+msgid "_INFORMACION_USUARIO"
+msgstr "Información del Usuario"
+
+msgid "_INFORMACION_UBICACION"
+msgstr "Información de Ubicación"
+
+msgid "_LATITUD"
+msgstr "Latitud"
+
+msgid "_LONGITUD"
+msgstr "Longitud"
+
+msgid "_PRECISION"
+msgstr "Precisión"
+
+msgid "_ORIGEN"
+msgstr "Origen"
+
+msgid "_TIPO_UBICACION"
+msgstr "Tipo de Ubicación"
+
+msgid "_RESUMEN_DIA"
+msgstr "Resumen del Día"
+
+msgid "_ENTRADAS"
+msgstr "Entradas"
+
+msgid "_SALIDAS"
+msgstr "Salidas"
+
+msgid "_DESCANSOS"
+msgstr "Descansos"
+
+msgid "_HORAS_TOTALES"
+msgstr "Horas Totales"
+
+msgid "_OTRAS_ASISTENCIAS_MISMO_DIA"
+msgstr "Otras asistencias del mismo día"
+
+msgid "_HORA"
+msgstr "Hora"
+
+msgid "_VER_USUARIO"
+msgstr "Ver Usuario"
+
+msgid "_VER_ASISTENCIAS_USUARIO"
+msgstr "Ver Asistencias del Usuario"
+
+# Estadísticas principales

@@ -11,7 +11,7 @@ $master = $this->getRequest()->getAttribute('identity');
 $isAuthenticated = !empty($master);
 ?>
 <!DOCTYPE html>
-<html lang="es" data-theme="master">
+<html lang="es" data-theme="light">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -26,7 +26,7 @@ $this->assign('title', 'Login');
                 </label>
                 <?= $this->Form->control('email', [
                     'label' => false,
-                    'class' => 'input input-bordered w-full focus:input-primary',
+                    'class' => '',
                     'placeholder' => 'admin@jornatic.com',
                     'required' => true,
                     'type' => 'email',
@@ -41,7 +41,7 @@ $this->assign('title', 'Login');
                 </label>
                 <?= $this->Form->control('password', [
                     'label' => false,
-                    'class' => 'input input-bordered w-full focus:input-primary',
+                    'class' => '',
                     'placeholder' => '••••••••',
                     'required' => true,
                     'type' => 'password',
