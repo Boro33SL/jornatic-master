@@ -19,9 +19,7 @@
         
         <div class="flex gap-2">
             <?= $this->Html->link(
-                '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-                </svg>' . __('_EXPORTAR_CSV'),
+                $this->Icon->render('arrow-down-tray', 'solid', ['class' => 'w-5 h-5 mr-2']) . __('_EXPORTAR_CSV'),
                 ['action' => 'export'] + $filters,
                 [
                     'class' => 'btn btn-outline btn-sm',
@@ -32,41 +30,37 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="flex items-center">
-                    <div class="stat-value text-2xl text-primary"><?= number_format($stats['total']) ?></div>
-                    <div class="stat-title ml-3"><?= __('_TOTAL_SUSCRIPCIONES') ?></div>
-                </div>
+    <div class="stats stats-horizontal shadow mb-6 w-full">
+        <div class="stat">
+            <div class="stat-figure text-primary">
+                <?= $this->Icon->render('clipboard-document-list', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_TOTAL_SUSCRIPCIONES') ?></div>
+            <div class="stat-value text-primary"><?= number_format($stats['total']) ?></div>
         </div>
         
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="flex items-center">
-                    <div class="stat-value text-2xl text-success"><?= number_format($stats['active']) ?></div>
-                    <div class="stat-title ml-3"><?= __('_ACTIVAS') ?></div>
-                </div>
+        <div class="stat">
+            <div class="stat-figure text-success">
+                <?= $this->Icon->render('check-circle', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_ACTIVAS') ?></div>
+            <div class="stat-value text-success"><?= number_format($stats['active']) ?></div>
         </div>
         
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="flex items-center">
-                    <div class="stat-value text-2xl text-info"><?= number_format($stats['trial']) ?></div>
-                    <div class="stat-title ml-3"><?= __('_EN_PRUEBA') ?></div>
-                </div>
+        <div class="stat">
+            <div class="stat-figure text-info">
+                <?= $this->Icon->render('clock', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_EN_PRUEBA') ?></div>
+            <div class="stat-value text-info"><?= number_format($stats['trial']) ?></div>
         </div>
         
-        <div class="card bg-base-200">
-            <div class="card-body p-4">
-                <div class="flex items-center">
-                    <div class="stat-value text-2xl text-accent">€<?= number_format($stats['monthly_revenue'], 2) ?></div>
-                    <div class="stat-title ml-3"><?= __('_INGRESOS_MENSUALES') ?></div>
-                </div>
+        <div class="stat">
+            <div class="stat-figure text-accent">
+                <?= $this->Icon->render('currency-euro', 'solid', ['class' => 'w-8 h-8']) ?>
             </div>
+            <div class="stat-title"><?= __('_INGRESOS_MENSUALES') ?></div>
+            <div class="stat-value text-accent">€<?= number_format($stats['monthly_revenue'], 2) ?></div>
         </div>
     </div>
 
@@ -138,7 +132,7 @@
                             <th><?= $this->Paginator->sort('period', __('_PERIODO')) ?></th>
                             <th><?= __('_PRECIO') ?></th>
                             <th><?= $this->Paginator->sort('status', __('_ESTADO')) ?></th>
-                            <th><?= $this->Paginator->sort('start_date', __('_INICIO') ?></th>
+                            <th><?= $this->Paginator->sort('start_date', __('_INICIO')) ?></th>
                             <th><?= $this->Paginator->sort('end_date', __('_VENCIMIENTO')) ?></th>
                             <th class="text-center"><?= __('_ACCIONES') ?></th>
                         </tr>
@@ -217,10 +211,7 @@
                             <td>
                                 <div class="flex justify-center gap-1">
                                     <?= $this->Html->link(
-                                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                        </svg>',
+                                        $this->Icon->render('eye', 'solid', ['class' => 'w-4 h-4']),
                                         ['action' => 'view', $subscription->id],
                                         [
                                             'class' => 'btn btn-ghost btn-xs',
@@ -230,9 +221,7 @@
                                     ) ?>
                                     
                                     <?= $this->Html->link(
-                                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>',
+                                        $this->Icon->render('pencil-square', 'solid', ['class' => 'w-4 h-4']),
                                         ['action' => 'edit', $subscription->id],
                                         [
                                             'class' => 'btn btn-ghost btn-xs',
@@ -243,9 +232,7 @@
                                     
                                     <?php if ($subscription->status === 'active'): ?>
                                         <?= $this->Form->postLink(
-                                            '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
-                                            </svg>',
+                                            $this->Icon->render('x-circle', 'solid', ['class' => 'w-4 h-4']),
                                             ['action' => 'cancel', $subscription->id],
                                             [
                                                 'class' => 'btn btn-error btn-xs',
@@ -256,9 +243,7 @@
                                         ) ?>
                                     <?php elseif ($subscription->status === 'canceled'): ?>
                                         <?= $this->Form->postLink(
-                                            '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>',
+                                            $this->Icon->render('check-circle', 'solid', ['class' => 'w-4 h-4']),
                                             ['action' => 'reactivate', $subscription->id],
                                             [
                                                 'class' => 'btn btn-success btn-xs',

@@ -82,6 +82,10 @@ class SubscriptionsController extends AppController
         if (!empty($filters['plan_id'])) {
             $query->where(['Subscriptions.plan_id' => $filters['plan_id']]);
         }
+        
+        if (!empty($filters['company_id'])) {
+            $query->where(['Subscriptions.company_id' => $filters['company_id']]);
+        }
 
         // Configurar paginación
         $this->paginate = [
@@ -97,8 +101,12 @@ class SubscriptionsController extends AppController
         // Obtener planes para filtros
         $Plans = $this->getTable('JornaticCore.Plans');
         $plans = $Plans->find('list')->toArray();
+        
+        // Obtener empresas para filtros
+        $Companies = $this->getTable('JornaticCore.Companies');
+        $companies = $Companies->find('list')->toArray();
 
-        $this->set(compact('subscriptions', 'filters', 'stats', 'plans'));
+        $this->set(compact('subscriptions', 'filters', 'stats', 'plans', 'companies'));
     }
 
     /**
@@ -119,21 +127,7 @@ class SubscriptionsController extends AppController
         // Registrar visualización
         $this->Logging->logView('subscriptions', (int)$id);
 
-        // Obtener historial de pagos de Stripe si existe
-        $StripeEvents = $this->getTable('JornaticCore.StripeEvents');
-        $stripeEvents = [];
-        if ($subscription->stripe_subscription_id) {
-            $stripeEvents = $StripeEvents->find()
-                ->where(['data LIKE' => '%' . $subscription->stripe_subscription_id . '%'])
-                ->orderBy(['created' => 'DESC'])
-                ->limit(10)
-                ->toArray();
-        }
-
-        // Calcular métricas de la suscripción
-        $metrics = $this->_getSubscriptionMetrics($subscription);
-
-        $this->set(compact('subscription', 'stripeEvents', 'metrics'));
+        $this->set(compact('subscription'));
     }
 
     /**
@@ -343,6 +337,29 @@ class SubscriptionsController extends AppController
             ])
             ->count();
 
+        // Calcular ingresos mensuales estimados de suscripciones activas
+        $monthlyRevenue = 0;
+        $activeSubscriptions = $this->Subscriptions->find()
+            ->contain(['Plans' => ['Prices']])
+            ->where(['status' => 'active'])
+            ->toArray();
+
+        foreach ($activeSubscriptions as $subscription) {
+            if (!empty($subscription->plan->prices)) {
+                foreach ($subscription->plan->prices as $price) {
+                    if ($price->period === $subscription->period) {
+                        if ($subscription->period === 'monthly') {
+                            $monthlyRevenue += (float)$price->amount;
+                        } elseif ($subscription->period === 'annual') {
+                            // Convertir precio anual a mensual
+                            $monthlyRevenue += (float)$price->amount / 12;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
         return [
             'total' => $total,
             'active' => $active,
@@ -351,6 +368,7 @@ class SubscriptionsController extends AppController
             'monthly' => $monthly,
             'annual' => $annual,
             'new_this_month' => $thisMonth,
+            'monthly_revenue' => $monthlyRevenue,
         ];
     }
 
