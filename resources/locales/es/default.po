@@ -611,6 +611,9 @@ msgstr "Festivo creado correctamente"
 msgid "_FESTIVO_ELIMINADO_CORRECTAMENTE"
 msgstr "Festivo eliminado correctamente"
 
+msgid "_FESTIVOS"
+msgstr "Festivos"
+
 msgid "_FESTIVOS_MISMO_ANO"
 msgstr "Festivos el Año"
 
@@ -793,6 +796,90 @@ msgstr "Información del Usuario"
 
 msgid "_INFORMES_Y_ESTADISTICAS"
 msgstr "Informes y estadísticas"
+
+msgid "_SALUD_DEL_NEGOCIO"
+msgstr "Salud del Negocio"
+
+msgid "_TASA_CONVERSION"
+msgstr "Tasa de Conversión"
+
+msgid "_TRIAL_A_PAGADAS"
+msgstr "Trial a Pagadas"
+
+msgid "_TASA_CHURN"
+msgstr "Tasa de Churn"
+
+msgid "_CANCELACIONES_MES"
+msgstr "Cancelaciones del Mes"
+
+msgid "_CRECIMIENTO_ARR"
+msgstr "Crecimiento ARR"
+
+msgid "_VS_ANO_ANTERIOR"
+msgstr "vs. Año Anterior"
+
+msgid "_CLV_PROMEDIO"
+msgstr "CLV Promedio"
+
+msgid "_VALOR_VIDA_CLIENTE"
+msgstr "Valor de Vida del Cliente"
+
+msgid "_ACTIVIDAD_TIEMPO_REAL"
+msgstr "Actividad en Tiempo Real"
+
+msgid "_EMPRESAS_ACTIVAS_HOY"
+msgstr "Empresas Activas Hoy"
+
+msgid "_CON_FICHAJES_HOY"
+msgstr "con Fichajes Hoy"
+
+msgid "_EMPLEADOS_UNICOS_HOY"
+msgstr "Empleados Únicos Hoy"
+
+msgid "_HAN_FICHADO_HOY"
+msgstr "han Fichado Hoy"
+
+msgid "_FICHAJES_POR_HORA"
+msgstr "Fichajes por Hora"
+
+msgid "_PROMEDIO_HOY"
+msgstr "Promedio Hoy"
+
+msgid "_MAS_30_DIAS_SIN_ACTIVIDAD"
+msgstr "más de 30 días sin actividad"
+
+msgid "_CRECIMIENTO_MOM"
+msgstr "Crecimiento MoM"
+
+msgid "_DISTRIBUCION_GEOGRAFICA"
+msgstr "Distribución Geográfica"
+
+msgid "_ALERTAS_Y_ATENCION"
+msgstr "Alertas y Atención"
+
+msgid "_TRIALS_EXPIRANDO"
+msgstr "Trials Expirando"
+
+msgid "_PROXIMOS_7_DIAS"
+msgstr "Próximos 7 Días"
+
+msgid "_PAGOS_FALLIDOS"
+msgstr "Pagos Fallidos"
+
+msgid "_REQUIEREN_ATENCION"
+msgstr "Requieren Atención"
+
+msgid "_SIN_ACTIVIDAD"
+msgstr "Sin Actividad"
+
+msgid "_MAS_30_DIAS"
+msgstr "más de 30 días"
+
+msgid "_SYSTEM_HEALTH"
+msgstr "System Health"
+
+msgid "_UPTIME_7_DIAS"
+msgstr "Uptime 7 días"
 
 msgid "_INGRESOS_MENSUALES"
 msgstr "Ingresos Mensuales"

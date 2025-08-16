@@ -21,7 +21,7 @@ $this->assign('title', 'Dashboard');
 </div>
 
 <!-- KPI Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="stat stat-master bg-base-100 shadow-lg">
         <div class="stat-figure text-primary">
             <?= $this->Icon->render('building-office', 'solid', ['class' => 'w-8 h-8']) ?>
@@ -62,8 +62,60 @@ $this->assign('title', 'Dashboard');
     </div>
 </div>
 
+<!-- Salud del Negocio Section -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-base-content mb-4 flex items-center">
+        <?= $this->Icon->render('heart', 'solid', ['class' => 'w-6 h-6 mr-3 text-error']) ?>
+        <?= __('_SALUD_DEL_NEGOCIO') ?>
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Conversion Rate -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-success">
+            <div class="stat-figure text-success">
+                <?= $this->Icon->render('arrow-trending-up', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_TASA_CONVERSION') ?></div>
+            <div class="stat-value text-success"><?= $conversionRate ?>%</div>
+            <div class="stat-desc"><?= __('_TRIAL_A_PAGADAS') ?></div>
+        </div>
+
+        <!-- Churn Rate -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-warning">
+            <div class="stat-figure text-warning">
+                <?= $this->Icon->render('arrow-trending-down', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_TASA_CHURN') ?></div>
+            <div class="stat-value text-warning"><?= $churnRate ?>%</div>
+            <div class="stat-desc"><?= __('_CANCELACIONES_MES') ?></div>
+        </div>
+
+        <!-- ARR Growth -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 <?= $arrGrowth >= 0 ? 'border-success' : 'border-error' ?>">
+            <div class="stat-figure <?= $arrGrowth >= 0 ? 'text-success' : 'text-error' ?>">
+                <?= $this->Icon->render($arrGrowth >= 0 ? 'chart-bar-square' : 'chart-bar', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_CRECIMIENTO_ARR') ?></div>
+            <div class="stat-value <?= $arrGrowth >= 0 ? 'text-success' : 'text-error' ?>">
+                <?= $arrGrowth >= 0 ? '+' : '' ?><?= $arrGrowth ?>%
+            </div>
+            <div class="stat-desc"><?= __('_VS_ANO_ANTERIOR') ?></div>
+        </div>
+
+        <!-- Average CLV -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-info">
+            <div class="stat-figure text-info">
+                <?= $this->Icon->render('user-circle', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_CLV_PROMEDIO') ?></div>
+            <div class="stat-value text-info">€<?= number_format($averageClv, 0, ',', '.') ?></div>
+            <div class="stat-desc"><?= __('_VALOR_VIDA_CLIENTE') ?></div>
+        </div>
+    </div>
+</div>
+
 <!-- Charts Section -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mb-8">
     <!-- Revenue Chart -->
     <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
@@ -87,6 +139,137 @@ $this->assign('title', 'Dashboard');
             <div class="w-full h-64" x-data="plansChart()">
                 <canvas x-ref="plansCanvas" class="w-full h-full"></canvas>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- MoM Growth Chart -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-success">
+                <?= $this->Icon->render('arrow-trending-up', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                <?= __('_CRECIMIENTO_MOM') ?>
+            </h2>
+            <div class="w-full h-64" x-data="momGrowthChart()">
+                <canvas x-ref="momGrowthCanvas" class="w-full h-full"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Geographic Distribution Chart -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-info">
+                <?= $this->Icon->render('map-pin', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                <?= __('_DISTRIBUCION_GEOGRAFICA') ?>
+            </h2>
+            <div class="w-full h-64" x-data="geographicChart()">
+                <canvas x-ref="geographicCanvas" class="w-full h-full"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actividad Tiempo Real Section -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-base-content mb-4 flex items-center">
+        <?= $this->Icon->render('bolt', 'solid', ['class' => 'w-6 h-6 mr-3 text-warning']) ?>
+        <?= __('_ACTIVIDAD_TIEMPO_REAL') ?>
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Empresas Activas Hoy -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-primary">
+            <div class="stat-figure text-primary">
+                <?= $this->Icon->render('building-office-2', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_EMPRESAS_ACTIVAS_HOY') ?></div>
+            <div class="stat-value text-primary"><?= number_format($activeCompaniesToday) ?></div>
+            <div class="stat-desc"><?= __('_CON_FICHAJES_HOY') ?></div>
+        </div>
+
+        <!-- Empleados Únicos Hoy -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-accent">
+            <div class="stat-figure text-accent">
+                <?= $this->Icon->render('users', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_EMPLEADOS_UNICOS_HOY') ?></div>
+            <div class="stat-value text-accent"><?= number_format($uniqueEmployeesToday) ?></div>
+            <div class="stat-desc"><?= __('_HAN_FICHADO_HOY') ?></div>
+        </div>
+
+        <!-- Fichajes por Hora -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-secondary">
+            <div class="stat-figure text-secondary">
+                <?= $this->Icon->render('clock', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_FICHAJES_POR_HORA') ?></div>
+            <div class="stat-value text-secondary"><?= $avgAttendancesPerHour ?></div>
+            <div class="stat-desc"><?= __('_PROMEDIO_HOY') ?></div>
+        </div>
+
+        <!-- Empresas Inactivas -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-error">
+            <div class="stat-figure text-error">
+                <?= $this->Icon->render('exclamation-triangle', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_EMPRESAS_INACTIVAS') ?></div>
+            <div class="stat-value text-error"><?= number_format($inactiveCompanies) ?></div>
+            <div class="stat-desc"><?= __('_MAS_30_DIAS_SIN_ACTIVIDAD') ?></div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas y Atención Section -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-base-content mb-4 flex items-center">
+        <?= $this->Icon->render('bell', 'solid', ['class' => 'w-6 h-6 mr-3 text-error']) ?>
+        <?= __('_ALERTAS_Y_ATENCION') ?>
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Trials Expirando -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-warning">
+            <div class="stat-figure text-warning">
+                <?= $this->Icon->render('calendar-days', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_TRIALS_EXPIRANDO') ?></div>
+            <div class="stat-value text-warning"><?= number_format($trialsExpiring) ?></div>
+            <div class="stat-desc"><?= __('_PROXIMOS_7_DIAS') ?></div>
+        </div>
+
+        <!-- Pagos Fallidos -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-error">
+            <div class="stat-figure text-error">
+                <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_PAGOS_FALLIDOS') ?></div>
+            <div class="stat-value text-error"><?= number_format($failedPayments) ?></div>
+            <div class="stat-desc"><?= __('_REQUIEREN_ATENCION') ?></div>
+        </div>
+
+        <!-- Empresas Sin Actividad -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 border-neutral">
+            <div class="stat-figure text-neutral">
+                <?= $this->Icon->render('building-office', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_SIN_ACTIVIDAD') ?></div>
+            <div class="stat-value text-neutral"><?= number_format($inactiveCompanies) ?></div>
+            <div class="stat-desc"><?= __('_MAS_30_DIAS') ?></div>
+        </div>
+
+        <!-- System Health -->
+        <div class="stat bg-base-100 shadow-lg border-l-4 <?= $systemHealthPercentage >= 95 ? 'border-success' : ($systemHealthPercentage >= 85 ? 'border-warning' : 'border-error') ?>">
+            <div class="stat-figure <?= $systemHealthPercentage >= 95 ? 'text-success' : ($systemHealthPercentage >= 85 ? 'text-warning' : 'text-error') ?>">
+                <?= $this->Icon->render('server', 'solid', ['class' => 'w-8 h-8']) ?>
+            </div>
+            <div class="stat-title"><?= __('_SYSTEM_HEALTH') ?></div>
+            <div class="stat-value <?= $systemHealthPercentage >= 95 ? 'text-success' : ($systemHealthPercentage >= 85 ? 'text-warning' : 'text-error') ?>">
+                <?= $systemHealthPercentage ?>%
+            </div>
+            <div class="stat-desc"><?= __('_UPTIME_7_DIAS') ?></div>
         </div>
     </div>
 </div>
@@ -297,6 +480,103 @@ document.addEventListener('alpine:init', () => {
                             labels: {
                                 padding: 20,
                                 usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }));
+
+    Alpine.data('momGrowthChart', () => ({
+        init() {
+            const ctx = this.$refs.momGrowthCanvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mes -5', 'Mes -4', 'Mes -3', 'Mes -2', 'Mes -1', 'Actual'],
+                    datasets: [{
+                        label: 'Crecimiento MoM (%)',
+                        data: <?= json_encode($momGrowthData ?? [0, 0, 0, 0, 0, 0]) ?>,
+                        borderColor: '#16a34a',
+                        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#16a34a',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }));
+
+    Alpine.data('geographicChart', () => ({
+        init() {
+            const ctx = this.$refs.geographicCanvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: <?= json_encode(array_column($geographicDistribution ?? [], 'province') ?: ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Bilbao']) ?>,
+                    datasets: [{
+                        label: 'Empresas',
+                        data: <?= json_encode(array_column($geographicDistribution ?? [], 'count') ?: [0, 0, 0, 0, 0]) ?>,
+                        backgroundColor: [
+                            '#0ea5e9',
+                            '#0369a1',
+                            '#0284c7',
+                            '#0891b2',
+                            '#0e7490'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }

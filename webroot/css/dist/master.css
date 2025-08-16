@@ -3225,6 +3225,10 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
+  .border-l-4 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 4px;
+  }
   .badge-ghost {
     border-color: var(--color-base-200);
     background-color: var(--color-base-200);
@@ -3257,11 +3261,35 @@
     color: var(--color-warning-content);
     --alert-color: var(--color-warning);
   }
+  .border-accent {
+    border-color: var(--color-accent);
+  }
   .border-base-200 {
     border-color: var(--color-base-200);
   }
   .border-base-300 {
     border-color: var(--color-base-300);
+  }
+  .border-error {
+    border-color: var(--color-error);
+  }
+  .border-info {
+    border-color: var(--color-info);
+  }
+  .border-neutral {
+    border-color: var(--color-neutral);
+  }
+  .border-primary {
+    border-color: var(--color-primary);
+  }
+  .border-secondary {
+    border-color: var(--color-secondary);
+  }
+  .border-success {
+    border-color: var(--color-success);
+  }
+  .border-warning {
+    border-color: var(--color-warning);
   }
   .table-zebra {
     tbody {
@@ -4377,6 +4405,11 @@
   .lg\:justify-between {
     @media (width >= 64rem) {
       justify-content: space-between;
+    }
+  }
+  .xl\:grid-cols-2 {
+    @media (width >= 80rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 }
