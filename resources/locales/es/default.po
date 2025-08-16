@@ -20,6 +20,9 @@ msgstr "Activa"
 msgid "_ACTIVAR"
 msgstr "Activar"
 
+msgid "_ACTIVAR_CONTRATO"
+msgstr "Activar Contrato"
+
 msgid "_ACTIVAS"
 msgstr "Activas"
 
@@ -37,6 +40,9 @@ msgstr "Administrar empleados del sistema"
 
 msgid "_ADMINISTRAR_EMPRESAS_ECOSISTEMA"
 msgstr "Administrar empresas del ecosistema"
+
+msgid "_ADMINISTRAR_PLANES_SUSCRIPCION"
+msgstr "Administrar planes de suscripción"
 
 msgid "_ADMINISTRAR_SUSCRIPCIONES_EMPRESAS"
 msgstr "Administrar suscripciones de las empresas"
@@ -59,6 +65,9 @@ msgstr "Asistencia eliminada correctamente"
 msgid "_ASISTENCIAS"
 msgstr "Asistencias"
 
+msgid "_ASISTENCIAS_REGISTRADAS"
+msgstr "Asistencias Registradas"
+
 msgid "_AUSENCIAS"
 msgstr "Ausencias"
 
@@ -73,6 +82,9 @@ msgstr "Buscar por nombre o email"
 
 msgid "_BUSCAR_POR_NOMBRE_EMAIL"
 msgstr "Buscar por nombre o email"
+
+msgid "_CALENDARIO"
+msgstr "Calendario"
 
 msgid "_CALLE_NUMERO"
 msgstr "Calle y número"
@@ -134,8 +146,23 @@ msgstr "Con Suscripción"
 msgid "_CON_SUSCRIPCIONES"
 msgstr "Con Suscripciones"
 
+msgid "_CONFIRMAR_ACTIVAR_CONTRATO"
+msgstr "¿Está seguro de que desea activar este contrato?"
+
+msgid "_CONFIRMAR_ACTIVAR_FESTIVO"
+msgstr "¿Está seguro de que desea activar este festivo?"
+
 msgid "_CONFIRMAR_CANCELAR_SUSCRIPCION"
 msgstr "¿Está seguro de que desea cancelar esta suscripción?"
+
+msgid "_CONFIRMAR_DESACTIVAR_FESTIVO"
+msgstr "¿Está seguro de que desea desactivar este festivo?"
+
+msgid "_CONFIRMAR_ELIMINAR_ASISTENCIA"
+msgstr "¿Está seguro de que desea eliminar esta asistencia?"
+
+msgid "_CONFIRMAR_FINALIZAR_CONTRATO"
+msgstr "¿Está seguro de que desea finalizar este contrato?"
 
 msgid "_CONFIRMAR_REACTIVAR_SUSCRIPCION"
 msgstr "¿Está seguro de que desea reactivar esta suscripción?"
@@ -145,6 +172,9 @@ msgstr "Construcción"
 
 msgid "_CONSULTORIA"
 msgstr "Consultoría"
+
+msgid "_CONTRATO"
+msgstr "Contrato"
 
 msgid "_CONTRATO_ACTIVADO_CORRECTAMENTE"
 msgstr "Contrato activado correctamente"
@@ -160,6 +190,18 @@ msgstr "Contrato creado correctamente"
 
 msgid "_CONTRATO_FINALIZADO_CORRECTAMENTE"
 msgstr "Contrato finalizado correctamente"
+
+msgid "_CONTRATO_VENCIDO"
+msgstr "Contrato Vencido"
+
+msgid "_CONTRATOS"
+msgstr "Contratos"
+
+msgid "_CONTROL_ASISTENCIAS_EMPLEADOS"
+msgstr "Control de asistencias de empleados"
+
+msgid "_CREACION_MASIVA"
+msgstr "Creación Masiva"
 
 msgid "_DASHBOARD"
 msgstr "Dashboard"
@@ -200,6 +242,9 @@ msgstr "Descripción opcional de la empresa"
 msgid "_DETALLE_ASISTENCIA"
 msgstr "Detalle de Asistencia"
 
+msgid "_DETALLE_CONTRATO"
+msgstr "Detalle del Contrato"
+
 msgid "_DETALLE_LOG_AUDITORIA"
 msgstr "Detalle de Log de Auditoría"
 
@@ -211,6 +256,12 @@ msgstr "Detalles"
 
 msgid "_DETALLES_ADICIONALES"
 msgstr "Detalles Adicionales"
+
+msgid "_DIAS"
+msgstr "días"
+
+msgid "_DIAS_HASTA_FESTIVO"
+msgstr "Días hasta Festivo"
 
 msgid "_DIRECCION"
 msgstr "Dirección"
@@ -229,6 +280,9 @@ msgstr "Dispositivo"
 
 msgid "_DNI_NIE"
 msgstr "DNI/NIE"
+
+msgid "_DUPLICAR_FESTIVO"
+msgstr "Duplicar Festivo"
 
 msgid "_EDITAR"
 msgstr "Editar"
@@ -257,8 +311,14 @@ msgstr "empleados"
 msgid "_EMPLEADOS_ACTIVOS"
 msgstr "Empleados Activos"
 
+msgid "_EMPLEADOS_CON_ASISTENCIAS"
+msgstr "Empleados con Asistencias"
+
 msgid "_EMPLEADOS_RECIENTES"
 msgstr "Empleados Recientes"
+
+msgid "_EMPLEADOS_REGISTRARON_ASISTENCIAS_EN_FESTIVO"
+msgstr "Empleados que registraron asistencias en este festivo"
 
 msgid "_EMPRESA"
 msgstr "Empresa"
@@ -392,11 +452,20 @@ msgstr "Error al reactivar suscripción"
 msgid "_ERROR_DATOS_OBLIGATORIOS"
 msgstr "Error: datos obligatorios"
 
+msgid "_ESTADISTICAS"
+msgstr "Estadísticas"
+
+msgid "_ESTADISTICAS_CONTRATO"
+msgstr "Estadísticas del Contrato"
+
 msgid "_ESTADISTICAS_USO"
 msgstr "Estadísticas de Uso"
 
 msgid "_ESTADO"
 msgstr "Estado"
+
+msgid "_ESTADO_CONTRATO"
+msgstr "Estado del Contrato"
 
 msgid "_ESTADO_EMPRESA"
 msgstr "Estado Empresa"
@@ -467,6 +536,108 @@ msgstr "Festivo creado correctamente"
 msgid "_FESTIVO_ELIMINADO_CORRECTAMENTE"
 msgstr "Festivo eliminado correctamente"
 
+msgid "_FESTIVOS_MISMO_ANO"
+msgstr "Festivos el Año"
+
+msgid "_FESTIVOS_MISMO_ANO"
+msgstr "Festivos Mismo Año"
+
+msgid "_FESTIVOS_RELACIONADOS_ANO"
+msgstr "Festivos relacionados del año"
+
+msgid "_REPORTES_ASISTENCIAS"
+msgstr "Reportes de Asistencias"
+
+msgid "_ANALISIS_ASISTENCIAS_PERIODO"
+msgstr "Análisis de asistencias por período"
+
+msgid "_FILTROS_PERIODO"
+msgstr "Filtros de Período"
+
+msgid "_GENERAR_REPORTE"
+msgstr "Generar Reporte"
+
+msgid "_TOTAL_ASISTENCIAS_PERIODO"
+msgstr "Total Asistencias del Período"
+
+msgid "_ENTRADAS_PERIODO"
+msgstr "Entradas del Período"
+
+msgid "_SALIDAS_PERIODO"
+msgstr "Salidas del Período"
+
+msgid "_RESUMEN_POR_EMPLEADO"
+msgstr "Resumen por Empleado"
+
+msgid "_DETALLE_ASISTENCIAS_CADA_EMPLEADO"
+msgstr "Detalle de asistencias de cada empleado"
+
+msgid "_DIAS_UNICOS"
+msgstr "Días Únicos"
+
+msgid "_PROMEDIO_DIA"
+msgstr "Promedio por Día"
+
+msgid "_MOSTRANDO_RESULTADOS_EMPLEADOS"
+msgstr "Mostrando resultados de {0} empleados"
+
+msgid "_SIN_DATOS_PERIODO"
+msgstr "Sin Datos del Período"
+
+msgid "_NO_HAY_ASISTENCIAS_PERIODO_SELECCIONADO"
+msgstr "No hay asistencias registradas en el período seleccionado"
+
+msgid "_AJUSTAR_FILTROS"
+msgstr "Ajustar Filtros"
+
+msgid "_EMPLEADOS_MAS_ACTIVOS"
+msgstr "Empleados Más Activos"
+
+msgid "_ESTADISTICAS_ADICIONALES"
+msgstr "Estadísticas Adicionales"
+
+msgid "_PROMEDIO_ASISTENCIAS_EMPLEADO"
+msgstr "Promedio Asistencias por Empleado"
+
+msgid "_PROMEDIO_DIAS_TRABAJADOS"
+msgstr "Promedio Días Trabajados"
+
+msgid "_TOTAL_DIAS_TRABAJADOS"
+msgstr "Total Días Trabajados"
+
+msgid "_TOTAL_FESTIVOS_ANO"
+msgstr "Total Festivos del Año"
+
+msgid "_ANO"
+msgstr "Año"
+
+msgid "_CON_FESTIVOS"
+msgstr "con Festivos"
+
+msgid "_MEDIA_FESTIVOS_EMPRESA"
+msgstr "Media Festivos por Empresa"
+
+msgid "_PROXIMOS_FESTIVOS"
+msgstr "Próximos Festivos"
+
+msgid "_DESDE_HOY"
+msgstr "desde Hoy"
+
+msgid "_BUSCAR_POR_NOMBRE"
+msgstr "Buscar por nombre"
+
+msgid "_TODOS_LOS_TIPOS"
+msgstr "Todos los Tipos"
+
+msgid "_SOLO_ACTIVOS"
+msgstr "Solo Activos"
+
+msgid "_ACTIVOS"
+msgstr "Activos"
+
+msgid "_INACTIVOS"
+msgstr "Inactivos"
+
 msgid "_FICHAJES_ESTE_MES"
 msgstr "Fichajes Este Mes"
 
@@ -490,6 +661,9 @@ msgstr "Fin"
 
 msgid "_FIN_DESCANSO"
 msgstr "Fin de Descanso"
+
+msgid "_FINALIZAR_CONTRATO"
+msgstr "Finalizar Contrato"
 
 msgid "_FINANZAS"
 msgstr "Finanzas"
@@ -524,6 +698,9 @@ msgstr "Gestión de Suscripciones"
 msgid "_GESTION_USUARIOS"
 msgstr "Gestión de Usuarios"
 
+msgid "_GESTIONAR_PRECIOS"
+msgstr "Gestionar Precios"
+
 msgid "_GPS"
 msgstr "GPS"
 
@@ -544,6 +721,9 @@ msgstr "Hoy"
 
 msgid "_ID"
 msgstr "ID"
+
+msgid "_ID_CONTRATO"
+msgstr "ID del Contrato"
 
 msgid "_ID_EMPRESA"
 msgstr "ID Empresa"
@@ -584,6 +764,9 @@ msgstr "Información Básica"
 msgid "_INFORMACION_COMPLETA_DEL_REGISTRO"
 msgstr "Información completa del registro"
 
+msgid "_INFORMACION_EMPLEADO"
+msgstr "Información del Empleado"
+
 msgid "_INFORMACION_EMPRESA"
 msgstr "Información de la Empresa"
 
@@ -592,6 +775,9 @@ msgstr "Información Laboral"
 
 msgid "_INFORMACION_PERSONAL"
 msgstr "Información Personal"
+
+msgid "_INFORMACION_PLAN"
+msgstr "Información del Plan"
 
 msgid "_INFORMACION_PRINCIPAL"
 msgstr "Información Principal"
@@ -653,6 +839,9 @@ msgstr "Longitud"
 msgid "_MANUFACTURA"
 msgstr "Manufactura"
 
+msgid "_MEDIA_POR_EMPRESA"
+msgstr "Media por Empresa"
+
 msgid "_MEDIA_USUARIOS_EMPRESA"
 msgstr "Media de usuarios por empresa"
 
@@ -685,6 +874,9 @@ msgstr "No especificado"
 
 msgid "_NO_HAY_LOGS_DISPONIBLES"
 msgstr "No hay logs disponibles"
+
+msgid "_NO_HAY_PRECIOS_CONFIGURADOS"
+msgstr "No hay precios configurados"
 
 msgid "_NO_SE_CREARON_FESTIVOS_NUEVOS"
 msgstr "No se crearon festivos nuevos"
@@ -776,6 +968,9 @@ msgstr "Otras asistencias del mismo día"
 msgid "_OTRO"
 msgstr "Otro"
 
+msgid "_OTROS_FESTIVOS_MISMO_ANO"
+msgstr "Otros Festivos del Mismo Año"
+
 msgid "_PAGINA_{page}_DE_{pages}_MOSTRANDO_{current}_DE_{count}_TOTAL"
 msgstr "Página {page} de {pages}, mostrando {current} de {count} total"
 
@@ -811,6 +1006,15 @@ msgstr "Plan creado correctamente"
 
 msgid "_PLAN_ELIMINADO_CORRECTAMENTE"
 msgstr "Plan eliminado correctamente"
+
+msgid "_PLAN_NORMAL"
+msgstr "Plan Normal"
+
+msgid "_PLAN_TRIAL"
+msgstr "Plan de Prueba"
+
+msgid "_PLANES"
+msgstr "Planes"
 
 msgid "_PLANES_ASOCIADOS"
 msgstr "Planes Asociados"
@@ -883,6 +1087,9 @@ msgstr "Rol"
 
 msgid "_SALARIO"
 msgstr "Salario"
+
+msgid "_SALARIO_MENSUAL"
+msgstr "Salario Mensual"
 
 msgid "_SALIDA"
 msgstr "Salida"
@@ -1001,6 +1208,9 @@ msgstr "Todos los resultados"
 msgid "_TODOS_LOS_USUARIOS"
 msgstr "Todos los usuarios"
 
+msgid "_TOTAL_ASISTENCIAS"
+msgstr "Total de Asistencias"
+
 msgid "_TOTAL_EMPLEADOS"
 msgstr "Total Empleados"
 
@@ -1009,6 +1219,9 @@ msgstr "Total Empresas"
 
 msgid "_TOTAL_HOY"
 msgstr "Total Hoy"
+
+msgid "_TOTAL_PLANES"
+msgstr "Total de Planes"
 
 msgid "_TOTAL_SUSCRIPCIONES"
 msgstr "Total Suscripciones"
@@ -1091,6 +1304,12 @@ msgstr "Ver Asistencias"
 msgid "_VER_ASISTENCIAS_USUARIO"
 msgstr "Ver Asistencias del Usuario"
 
+msgid "_VER_AUSENCIAS"
+msgstr "Ver Ausencias"
+
+msgid "_VER_CALENDARIO"
+msgstr "Ver Calendario"
+
 msgid "_VER_DEPARTAMENTOS"
 msgstr "Ver Departamentos"
 
@@ -1112,6 +1331,9 @@ msgstr "Ver Festivos"
 msgid "_VER_TODAS"
 msgstr "Ver Todas"
 
+msgid "_VER_TODOS_LOS_FESTIVOS"
+msgstr "Ver Todos los Festivos"
+
 msgid "_VER_USUARIO"
 msgstr "Ver Usuario"
 
@@ -1126,84 +1348,3 @@ msgstr "Volver a Logs"
 
 msgid "_VOLVER_AL_LISTADO"
 msgstr "Volver al Listado"
-
-msgid "_ADMINISTRAR_PLANES_SUSCRIPCION"
-msgstr "Administrar planes de suscripción"
-
-msgid "_TOTAL_PLANES"
-msgstr "Total de Planes"
-
-msgid "_PLANES"
-msgstr "Planes"
-
-msgid "_INFORMACION_PLAN"
-msgstr "Información del Plan"
-
-msgid "_PLAN_TRIAL"
-msgstr "Plan de Prueba"
-
-msgid "_PLAN_NORMAL"
-msgstr "Plan Normal"
-
-msgid "_NO_HAY_PRECIOS_CONFIGURADOS"
-msgstr "No hay precios configurados"
-
-msgid "_GESTIONAR_PRECIOS"
-msgstr "Gestionar Precios"
-
-msgid "_CONTRATOS"
-msgstr "Contratos"
-
-msgid "_CONTRATO"
-msgstr "Contrato"
-
-msgid "_DETALLE_CONTRATO"
-msgstr "Detalle del Contrato"
-
-msgid "_ESTADO_CONTRATO"
-msgstr "Estado del Contrato"
-
-msgid "_CONTRATO_VENCIDO"
-msgstr "Contrato Vencido"
-
-msgid "_SALARIO_MENSUAL"
-msgstr "Salario Mensual"
-
-msgid "_INFORMACION_EMPLEADO"
-msgstr "Información del Empleado"
-
-msgid "_ESTADISTICAS_CONTRATO"
-msgstr "Estadísticas del Contrato"
-
-msgid "_ID_CONTRATO"
-msgstr "ID del Contrato"
-
-msgid "_FINALIZAR_CONTRATO"
-msgstr "Finalizar Contrato"
-
-msgid "_ACTIVAR_CONTRATO"
-msgstr "Activar Contrato"
-
-msgid "_CONFIRMAR_FINALIZAR_CONTRATO"
-msgstr "¿Está seguro de que desea finalizar este contrato?"
-
-msgid "_CONFIRMAR_ACTIVAR_CONTRATO"
-msgstr "¿Está seguro de que desea activar este contrato?"
-
-msgid "_VER_AUSENCIAS"
-msgstr "Ver Ausencias"
-
-msgid "_DIAS"
-msgstr "días"
-
-msgid "_CONTROL_ASISTENCIAS_EMPLEADOS"
-msgstr "Control de asistencias de empleados"
-
-msgid "_TOTAL_ASISTENCIAS"
-msgstr "Total de Asistencias"
-
-msgid "_MEDIA_POR_EMPRESA"
-msgstr "Media por Empresa"
-
-msgid "_CONFIRMAR_ELIMINAR_ASISTENCIA"
-msgstr "¿Está seguro de que desea eliminar esta asistencia?"

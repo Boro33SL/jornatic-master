@@ -43,13 +43,26 @@ class HolidaysController extends AppController
         // Registrar acceso
         $this->Logging->logView('holidays_list');
 
-        // Query base con relaciones
-        $query = $this->Holidays->find()
-            ->contain(['Companies'])
-            ->orderBy(['Holidays.date' => 'DESC']);
-
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
+        
+        // Filtrar por año actual por defecto
+        $currentYear = date('Y');
+        $year = $filters['year'] ?? $currentYear;
+        
+        // Query base con relaciones y filtro de año
+        $query = $this->Holidays->find()
+            ->contain(['Companies'])
+            ->where(['YEAR(Holidays.date)' => $year])
+            ->orderBy(['Holidays.date' => 'ASC']);
+
+        // Filtro por estado (activo por defecto si no se especifica)
+        if (isset($filters['is_active'])) {
+            $query->where(['Holidays.is_active' => (bool)$filters['is_active']]);
+        } else {
+            // Solo mostrar festivos activos por defecto
+            $query->where(['Holidays.is_active' => true]);
+        }
         
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
@@ -64,16 +77,12 @@ class HolidaysController extends AppController
             $query->where(['Holidays.company_id' => $filters['company_id']]);
         }
         
-        if (!empty($filters['year'])) {
-            $query->where(['YEAR(Holidays.date)' => $filters['year']]);
+        if (!empty($filters['date'])) {
+            $query->where(['DATE(Holidays.date)' => $filters['date']]);
         }
         
         if (!empty($filters['type'])) {
             $query->where(['Holidays.type' => $filters['type']]);
-        }
-        
-        if (isset($filters['is_active'])) {
-            $query->where(['Holidays.is_active' => (bool)$filters['is_active']]);
         }
 
         // Configurar paginación
@@ -84,8 +93,8 @@ class HolidaysController extends AppController
 
         $holidays = $this->paginate($query);
 
-        // Estadísticas
-        $stats = $this->_getHolidayStats();
+        // Estadísticas del año actual
+        $stats = $this->_getHolidayStats($year, $filters);
 
         // Obtener opciones para filtros
         $Companies = $this->getTable('JornaticCore.Companies');
@@ -96,8 +105,13 @@ class HolidaysController extends AppController
             ->select(['year' => 'YEAR(date)'])
             ->group(['YEAR(date)'])
             ->orderBy(['year' => 'DESC'])
-            ->extract('year')
             ->toArray();
+        
+        // Extraer solo los años
+        $years = array_column($years, 'year');
+        
+        // Asegurar que el año actual se pase en los filtros
+        $filters['year'] = $year;
 
         $this->set(compact('holidays', 'filters', 'stats', 'companies', 'years'));
     }
@@ -402,45 +416,74 @@ class HolidaysController extends AppController
      *
      * @return array
      */
-    private function _getHolidayStats(): array
+    private function _getHolidayStats($year = null, $filters = []): array
     {
-        $currentYear = date('Y');
+        $year = $year ?? date('Y');
         
-        $total = $this->Holidays->find()->count();
+        // Total de festivos del año
+        $totalQuery = $this->Holidays->find()
+            ->where(['YEAR(date)' => $year]);
+            
+        // Aplicar filtro de estado
+        if (isset($filters['is_active'])) {
+            $totalQuery->where(['is_active' => (bool)$filters['is_active']]);
+        } else {
+            $totalQuery->where(['is_active' => true]);
+        }
         
-        $thisYear = $this->Holidays->find()
-            ->where(['YEAR(date)' => $currentYear])
+        $total = $totalQuery->count();
+        
+        // Total de empresas con festivos en el año
+        $companiesWithHolidays = $this->Holidays->find()
+            ->select(['company_id'])
+            ->where([
+                'YEAR(date)' => $year,
+                'company_id IS NOT NULL'
+            ])
+            ->distinct(['company_id'])
             ->count();
             
-        $active = $this->Holidays->find()
-            ->where(['is_active' => true])
-            ->count();
-
-        // Festivos por tipo
-        $byType = $this->Holidays->find()
+        // Media de festivos por empresa
+        $avgPerCompany = $companiesWithHolidays > 0 ? round($total / $companiesWithHolidays, 1) : 0;
+        
+        // Festivos por tipo del año
+        $byTypeQuery = $this->Holidays->find()
             ->select([
                 'type',
                 'count' => 'COUNT(Holidays.id)'
             ])
-            ->where(['is_active' => true])
-            ->group(['type'])
-            ->toArray();
+            ->where(['YEAR(date)' => $year]);
+            
+        if (isset($filters['is_active'])) {
+            $byTypeQuery->where(['is_active' => (bool)$filters['is_active']]);
+        } else {
+            $byTypeQuery->where(['is_active' => true]);
+        }
+        
+        $byType = $byTypeQuery->group(['type'])->toArray();
 
-        // Próximos festivos (próximos 30 días)
-        $upcoming = $this->Holidays->find()
+        // Próximos festivos del año (desde hoy)
+        $upcomingQuery = $this->Holidays->find()
             ->where([
-                'date >=' => date('Y-m-d'),
-                'date <=' => (new \DateTime())->modify('+30 days')->format('Y-m-d'),
-                'is_active' => true
-            ])
-            ->count();
+                'YEAR(date)' => $year,
+                'date >=' => date('Y-m-d')
+            ]);
+            
+        if (isset($filters['is_active'])) {
+            $upcomingQuery->where(['is_active' => (bool)$filters['is_active']]);
+        } else {
+            $upcomingQuery->where(['is_active' => true]);
+        }
+        
+        $upcoming = $upcomingQuery->count();
 
         return [
             'total' => $total,
-            'this_year' => $thisYear,
-            'active' => $active,
+            'total_companies' => $companiesWithHolidays,
+            'avg_per_company' => $avgPerCompany,
             'by_type' => $byType,
             'upcoming' => $upcoming,
+            'year' => $year,
         ];
     }
 
@@ -497,7 +540,7 @@ class HolidaysController extends AppController
             ->matching('Users', function($q) use ($holiday) {
                 return $q->where(['Users.company_id' => $holiday->company_id]);
             })
-            ->where(['DATE(datetime)' => $holiday->date->format('Y-m-d')])
+            ->where(['DATE(timestamp)' => $holiday->date->format('Y-m-d')])
             ->toArray();
 
         return $attendances;
