@@ -79,9 +79,10 @@ class ContractsController extends AppController
             $query->where(['Contracts.is_active' => (bool)$filters['is_active']]);
         }
         
-        if (!empty($filters['type'])) {
-            $query->where(['Contracts.type' => $filters['type']]);
-        }
+        // Filtro por tipo deshabilitado (campo no existe)
+        // if (!empty($filters['type'])) {
+        //     $query->where(['Contracts.contract_type' => $filters['type']]);
+        // }
 
         // Configurar paginación
         $this->paginate = [
@@ -417,15 +418,8 @@ class ContractsController extends AppController
             ])
             ->count();
 
-        // Contratos por tipo
-        $byType = $this->Contracts->find()
-            ->select([
-                'type',
-                'count' => 'COUNT(Contracts.id)'
-            ])
-            ->where(['Contracts.is_active' => true])
-            ->group(['Contracts.type'])
-            ->toArray();
+        // Contratos por tipo - DESHABILITADO (campo no existe)
+        $byType = [];
 
         // Contratos que expiran pronto (próximos 30 días)
         $expiringSoon = $this->Contracts->find()
@@ -459,7 +453,7 @@ class ContractsController extends AppController
         $daysRemaining = null;
         
         if ($contract->start_date) {
-            $now = new \DateTime();
+            $now = \Cake\I18n\Date::now();
             $startDate = $contract->start_date;
             
             if ($contract->end_date) {
@@ -468,12 +462,12 @@ class ContractsController extends AppController
                 $duration = $diff->days;
                 
                 if ($endDate > $now) {
-                    $remaining = $now->diff($endDate);
+                    $remaining = $endDate->diff($now);
                     $daysRemaining = $remaining->days;
                 }
             } else {
                 // Contrato indefinido
-                $diff = $startDate->diff($now);
+                $diff = $now->diff($startDate);
                 $duration = $diff->days;
             }
         }
@@ -486,7 +480,7 @@ class ContractsController extends AppController
             $attendancesCount = $Attendances->find()
                 ->where([
                     'user_id' => $contract->user_id,
-                    'DATE(datetime) >=' => $contract->start_date->format('Y-m-d')
+                    'DATE(timestamp) >=' => $contract->start_date->format('Y-m-d')
                 ])
                 ->count();
         }

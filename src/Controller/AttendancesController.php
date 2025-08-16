@@ -71,12 +71,18 @@ class AttendancesController extends AppController
             });
         }
         
+        if (!empty($filters['company_id'])) {
+            $query->matching('Users', function($q) use ($filters) {
+                return $q->where(['Users.company_id' => $filters['company_id']]);
+            });
+        }
+        
         if (!empty($filters['user_id'])) {
             $query->where(['Attendances.user_id' => $filters['user_id']]);
         }
         
-        if (!empty($filters['action'])) {
-            $query->where(['Attendances.action' => $filters['action']]);
+        if (!empty($filters['type'])) {
+            $query->where(['Attendances.type' => $filters['type']]);
         }
         
         if (!empty($filters['date_from'])) {
@@ -101,8 +107,22 @@ class AttendancesController extends AppController
         // Obtener opciones para filtros
         $Companies = $this->getTable('JornaticCore.Companies');
         $companies = $Companies->find('list')->toArray();
+        
+        // Si hay una empresa seleccionada, obtener sus usuarios
+        $users = [];
+        if (!empty($filters['company_id'])) {
+            $Users = $this->getTable('JornaticCore.Users');
+            $users = $Users->find('list', [
+                'keyField' => 'id',
+                'valueField' => function ($user) {
+                    return $user->name . ' ' . $user->lastname;
+                }
+            ])
+            ->where(['company_id' => $filters['company_id']])
+            ->toArray();
+        }
 
-        $this->set(compact('attendances', 'filters', 'stats', 'companies'));
+        $this->set(compact('attendances', 'filters', 'stats', 'companies', 'users'));
     }
 
     /**
@@ -158,7 +178,7 @@ class AttendancesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $oldData = [
                 'datetime' => $attendance->timestamp->format('Y-m-d H:i:s'),
-                'action' => $attendance->action,
+                'type' => $attendance->type,
                 'location' => $attendance->location,
             ];
             
@@ -171,11 +191,11 @@ class AttendancesController extends AppController
                     'user_name' => $attendance->user->name . ' ' . $attendance->user->lastname,
                     'old_data' => $oldData,
                     'new_datetime' => $attendance->timestamp->format('Y-m-d H:i:s'),
-                    'new_action' => $attendance->action
+                    'new_type' => $attendance->type
                 ]);
                 
                 $this->Flash->success(__('_ASISTENCIA_ACTUALIZADA_CORRECTAMENTE'));
-                return $this->redirect(['action' => 'view', $id]);
+                return $this->redirect(['type' => 'view', $id]);
             }
             
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_ASISTENCIA'));
@@ -204,7 +224,7 @@ class AttendancesController extends AppController
                 'user_name' => $attendance->user->name . ' ' . $attendance->user->lastname,
                 'company_name' => $attendance->user->company->name ?? '',
                 'datetime' => $attendance->timestamp->format('Y-m-d H:i:s'),
-                'action' => $attendance->action,
+                'type' => $attendance->type,
                 'hard_delete' => true
             ]);
             
@@ -213,7 +233,7 @@ class AttendancesController extends AppController
             $this->Flash->error(__('_ERROR_AL_ELIMINAR_ASISTENCIA'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['type' => 'index']);
     }
 
     /**
@@ -352,7 +372,7 @@ class AttendancesController extends AppController
                 $attendance->user->company->name ?? '',
                 $attendance->user->department->name ?? '',
                 $attendance->timestamp->format('Y-m-d H:i:s'),
-                $this->_getActionLabel($attendance->action),
+                $this->_getActionLabel($attendance->type),
                 $attendance->location ?? '',
                 $attendance->device_info ?? '',
                 $attendance->ip_address ?? '',
@@ -386,6 +406,20 @@ class AttendancesController extends AppController
     {
         $today = date('Y-m-d');
         
+        // Total de asistencias
+        $totalAttendances = $this->Attendances->find()->count();
+        
+        // Total de empresas con asistencias
+        $totalCompanies = $this->Attendances->find()
+            ->matching('Users.Companies')
+            ->select(['Companies.id'])
+            ->distinct(['Companies.id'])
+            ->count();
+            
+        // Media de asistencias por empresa
+        $avgPerCompany = $totalCompanies > 0 ? round($totalAttendances / $totalCompanies, 1) : 0;
+        
+        // Asistencias de hoy
         $todayTotal = $this->Attendances->find()
             ->where(['DATE(timestamp)' => $today])
             ->count();
@@ -393,17 +427,18 @@ class AttendancesController extends AppController
         $todayCheckIns = $this->Attendances->find()
             ->where([
                 'DATE(timestamp)' => $today,
-                'action' => 'check_in'
+                'type' => 'in'
             ])
             ->count();
             
         $todayCheckOuts = $this->Attendances->find()
             ->where([
                 'DATE(timestamp)' => $today,
-                'action' => 'check_out'
+                'type' => 'out'
             ])
             ->count();
             
+        // Este mes
         $thisMonth = $this->Attendances->find()
             ->where([
                 'MONTH(timestamp)' => date('m'),
@@ -412,9 +447,12 @@ class AttendancesController extends AppController
             ->count();
 
         return [
+            'total' => $totalAttendances,
+            'total_companies' => $totalCompanies,
+            'avg_per_company' => $avgPerCompany,
             'today_total' => $todayTotal,
-            'today_check_ins' => $todayCheckIns,
-            'today_check_outs' => $todayCheckOuts,
+            'today_ins' => $todayCheckIns,
+            'today_outs' => $todayCheckOuts,
             'this_month_total' => $thisMonth,
         ];
     }
@@ -519,12 +557,12 @@ class AttendancesController extends AppController
 
         return [
             'total_attendances' => count($dayAttendances),
-            'check_ins' => count($checkIns),
-            'check_outs' => count($checkOuts),
+            'ins' => count($checkIns),
+            'outs' => count($checkOuts),
             'breaks' => count($breakStarts), // Usar break_start como referencia para contar descansos
             'total_hours' => $totalHoursFormatted,
-            'first_check_in' => count($checkIns) > 0 ? reset($checkIns)->timestamp->format('H:i') : null,
-            'last_check_out' => count($checkOuts) > 0 ? end($checkOuts)->timestamp->format('H:i') : null,
+            'first_in' => count($checkIns) > 0 ? reset($checkIns)->timestamp->format('H:i') : null,
+            'last_out' => count($checkOuts) > 0 ? end($checkOuts)->timestamp->format('H:i') : null,
         ];
     }
 
@@ -547,8 +585,8 @@ class AttendancesController extends AppController
         }
 
         $total = $query->count();
-        $checkIns = $query->where(['action' => 'check_in'])->count();
-        $checkOuts = $query->where(['action' => 'check_out'])->count();
+        $checkIns = $query->where(['type' => 'in'])->count();
+        $checkOuts = $query->where(['type' => 'out'])->count();
         
         // Usuarios únicos que ficharon
         $uniqueUsers = $this->Attendances->find()
@@ -559,8 +597,8 @@ class AttendancesController extends AppController
 
         return [
             'total' => $total,
-            'check_ins' => $checkIns,
-            'check_outs' => $checkOuts,
+            'ins' => $checkIns,
+            'outs' => $checkOuts,
             'unique_users' => $uniqueUsers,
         ];
     }
@@ -597,17 +635,17 @@ class AttendancesController extends AppController
                 $summary[$userId] = [
                     'user' => $attendance->user,
                     'total_attendances' => 0,
-                    'check_ins' => 0,
-                    'check_outs' => 0,
+                    'ins' => 0,
+                    'outs' => 0,
                     'unique_days' => [],
                 ];
             }
             
             $summary[$userId]['total_attendances']++;
-            if ($attendance->action === 'check_in') {
-                $summary[$userId]['check_ins']++;
-            } elseif ($attendance->action === 'check_out') {
-                $summary[$userId]['check_outs']++;
+            if ($attendance->type === 'in') {
+                $summary[$userId]['ins']++;
+            } elseif ($attendance->type === 'out') {
+                $summary[$userId]['outs']++;
             }
             
             $day = $attendance->timestamp->format('Y-m-d');
@@ -645,13 +683,13 @@ class AttendancesController extends AppController
         }
 
         $total = $query->count();
-        $checkIns = $query->where(['action' => 'check_in'])->count();
-        $checkOuts = $query->where(['action' => 'check_out'])->count();
+        $checkIns = $query->where(['type' => 'in'])->count();
+        $checkOuts = $query->where(['type' => 'out'])->count();
 
         return [
             'total' => $total,
-            'check_ins' => $checkIns,
-            'check_outs' => $checkOuts,
+            'ins' => $checkIns,
+            'outs' => $checkOuts,
             'period_from' => $dateFrom,
             'period_to' => $dateTo,
         ];
@@ -666,8 +704,8 @@ class AttendancesController extends AppController
     private function _getActionLabel($action): string
     {
         return match($action) {
-            'check_in' => __('_ENTRADA'),
-            'check_out' => __('_SALIDA'),
+            'in' => __('_ENTRADA'),
+            'out' => __('_SALIDA'),
             'break_start' => __('_INICIO_DESCANSO'),
             'break_end' => __('_FIN_DESCANSO'),
             default => ucfirst($action)

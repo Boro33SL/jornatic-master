@@ -47,11 +47,20 @@ msgstr "Anual"
 msgid "_APELLIDOS"
 msgstr "Apellidos"
 
+msgid "_ASISTENCIA"
+msgstr "Asistencia"
+
 msgid "_ASISTENCIA_ACTUALIZADA_CORRECTAMENTE"
 msgstr "Asistencia actualizada correctamente"
 
 msgid "_ASISTENCIA_ELIMINADA_CORRECTAMENTE"
 msgstr "Asistencia eliminada correctamente"
+
+msgid "_ASISTENCIAS"
+msgstr "Asistencias"
+
+msgid "_AUSENCIAS"
+msgstr "Ausencias"
 
 msgid "_BUSCAR"
 msgstr "Buscar"
@@ -1088,6 +1097,9 @@ msgstr "Ver Departamentos"
 msgid "_VER_DETALLES"
 msgstr "Ver Detalles"
 
+msgid "_VER_EMPLEADO"
+msgstr "Ver Empleado"
+
 msgid "_VER_EMPLEADOS"
 msgstr "Ver Empleados"
 
@@ -1138,3 +1150,60 @@ msgstr "No hay precios configurados"
 
 msgid "_GESTIONAR_PRECIOS"
 msgstr "Gestionar Precios"
+
+msgid "_CONTRATOS"
+msgstr "Contratos"
+
+msgid "_CONTRATO"
+msgstr "Contrato"
+
+msgid "_DETALLE_CONTRATO"
+msgstr "Detalle del Contrato"
+
+msgid "_ESTADO_CONTRATO"
+msgstr "Estado del Contrato"
+
+msgid "_CONTRATO_VENCIDO"
+msgstr "Contrato Vencido"
+
+msgid "_SALARIO_MENSUAL"
+msgstr "Salario Mensual"
+
+msgid "_INFORMACION_EMPLEADO"
+msgstr "Información del Empleado"
+
+msgid "_ESTADISTICAS_CONTRATO"
+msgstr "Estadísticas del Contrato"
+
+msgid "_ID_CONTRATO"
+msgstr "ID del Contrato"
+
+msgid "_FINALIZAR_CONTRATO"
+msgstr "Finalizar Contrato"
+
+msgid "_ACTIVAR_CONTRATO"
+msgstr "Activar Contrato"
+
+msgid "_CONFIRMAR_FINALIZAR_CONTRATO"
+msgstr "¿Está seguro de que desea finalizar este contrato?"
+
+msgid "_CONFIRMAR_ACTIVAR_CONTRATO"
+msgstr "¿Está seguro de que desea activar este contrato?"
+
+msgid "_VER_AUSENCIAS"
+msgstr "Ver Ausencias"
+
+msgid "_DIAS"
+msgstr "días"
+
+msgid "_CONTROL_ASISTENCIAS_EMPLEADOS"
+msgstr "Control de asistencias de empleados"
+
+msgid "_TOTAL_ASISTENCIAS"
+msgstr "Total de Asistencias"
+
+msgid "_MEDIA_POR_EMPRESA"
+msgstr "Media por Empresa"
+
+msgid "_CONFIRMAR_ELIMINAR_ASISTENCIA"
+msgstr "¿Está seguro de que desea eliminar esta asistencia?"
