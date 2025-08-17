@@ -4,9 +4,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Collection\Collection;
+use Cake\Database\Query;
 use Exception;
+use JornaticCore\Model\Entity\Company;
 use JornaticCore\Model\Table\CompaniesTable;
 use JornaticCore\Service\StripeService;
+use Mpdf\Tag\Q;
 
 /**
  * Companies Controller
@@ -67,26 +70,9 @@ class CompaniesController extends AppController
             ])
             ->orderBy(['Companies.created' => 'DESC']);
 
-        // Aplicar filtros si existen
+        // Aplicar filtros de forma encapsulada
         $filters = $this->request->getQueryParams();
-
-        if (!empty($filters['search'])) {
-            $search = '%' . $filters['search'] . '%';
-            $query->where([
-                'OR' => [
-                    'Companies.name LIKE' => $search,
-                    'Companies.legal_name LIKE' => $search,
-                    'Companies.nif LIKE' => $search,
-                    'Companies.email LIKE' => $search,
-                ],
-            ]);
-        }
-
-        if (!empty($filters['status'])) {
-            $query->matching('Subscriptions', function ($q) use ($filters) {
-                return $q->where(['Subscriptions.status' => $filters['status']]);
-            });
-        }
+        $query = $this->_applyFilters($query, $filters);
 
         // Configurar paginación
         $this->paginate = [
@@ -96,48 +82,137 @@ class CompaniesController extends AppController
 
         $companies = $this->paginate($query);
 
-        $this->Authorization->authorize($companies->items()->first());
-        // Estadísticas
+        // Autorizar usando una nueva entidad Company si no hay resultados
+        $firstCompany = $companies->items()->first();
+        if ($firstCompany) {
+            $this->Authorization->authorize($firstCompany);
+        } else {
+            $this->Authorization->authorize($this->Companies->newEmptyEntity());
+        }
+        
+        // Estadísticas optimizadas
         $stats = $this->_getCompanyStats();
 
         $this->set(compact('companies', 'filters', 'stats'));
     }
 
     /**
-     * Obtener estadísticas generales de empresas
+     * Aplicar filtros a la query de forma encapsulada
+     *
+     * @param \Cake\ORM\Query $query Query base
+     * @param array $filters Filtros del request
+     * @return \Cake\ORM\Query Query con filtros aplicados
+     */
+    private function _applyFilters(Query $query, array $filters): Query
+    {
+        if (!empty($filters['search'])) {
+            $query = $this->_applySearchFilter($query, $filters['search']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query = $this->_applySubscriptionStatusFilter($query, $filters['status']);
+        }
+
+        if (isset($filters['is_active'])) {
+            $query = $this->_applyCompanyStatusFilter($query, $filters['is_active']);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Aplicar filtro de búsqueda por texto
+     *
+     * @param \Cake\ORM\Query $query Query base
+     * @param string $searchTerm Término de búsqueda
+     * @return \Cake\ORM\Query Query con filtro de búsqueda
+     */
+    private function _applySearchFilter(Query $query, string $searchTerm): Query
+    {
+        $search = '%' . $searchTerm . '%';
+        return $query->where([
+            'OR' => [
+                'Companies.name LIKE' => $search,
+                'Companies.nif LIKE' => $search,
+                'Companies.email LIKE' => $search,
+                'Companies.phone LIKE' => $search,
+            ],
+        ]);
+    }
+
+    /**
+     * Aplicar filtro por estado de suscripción
+     *
+     * @param \Cake\ORM\Query $query Query base
+     * @param string $status Estado de la suscripción
+     * @return \Cake\ORM\Query Query con filtro de estado
+     */
+    private function _applySubscriptionStatusFilter(Query $query, string $status): Query
+    {
+        return $query->matching('Subscriptions', function ($q) use ($status) {
+            return $q->where(['Subscriptions.status' => $status]);
+        });
+    }
+
+    /**
+     * Aplicar filtro por estado de la empresa
+     *
+     * @param \Cake\ORM\Query $query Query base
+     * @param string $isActive Filtro de estado ('1' para activas, '0' para inactivas)
+     * @return \Cake\ORM\Query Query con filtro de estado de empresa
+     */
+    private function _applyCompanyStatusFilter(Query $query, string $isActive): Query
+    {
+        if ($isActive === '1') {
+            return $query->where(['Companies.status' => 'active']);
+        } elseif ($isActive === '0') {
+            return $query->where(['Companies.status' => 'inactive']);
+        }
+        
+        return $query;
+    }
+
+    /**
+     * Obtener estadísticas generales de empresas de forma optimizada
      *
      * @return array
      */
     private function _getCompanyStats(): array
     {
-        $total = $this->Companies->find()->count();
-
-        $active = $this->Companies->find()
-            ->where(['status !=' => 'inactive'])
-            ->count();
-
-        $createdThisMonth = $this->Companies->find()
-            ->where([
-                'MONTH(Companies.created)' => date('m'),
-                'YEAR(Companies.created)' => date('Y'),
+        // Query única con agregaciones para estadísticas de empresas
+        $companiesStats = $this->Companies->find()
+            ->select([
+                'total' => $this->Companies->find()->func()->count('*'),
+                'active' => $this->Companies->find()->func()->count(
+                    $this->Companies->find()->newExpr()->case()
+                        ->when(['status !=' => 'inactive'])
+                        ->then(1)
+                ),
+                'new_this_month' => $this->Companies->find()->func()->count(
+                    $this->Companies->find()->newExpr()->case()
+                        ->when([
+                            'MONTH(Companies.created)' => date('m'),
+                            'YEAR(Companies.created)' => date('Y')
+                        ])
+                        ->then(1)
+                ),
             ])
-            ->count();
+            ->first();
 
-        // Obtener total de usuarios de todas las empresas
+        // Solo una query adicional para total de usuarios
         $Users = $this->getTable('JornaticCore.Users');
         $totalUsers = $Users->find()->count();
 
         // Calcular media de usuarios por empresa (evitar división por cero)
-        $averageUsersPerCompany = $total > 0
-            ? round($totalUsers / $total, 1)
-            : 0;
+        $total = $companiesStats->total;
+        $averageUsersPerCompany = $total > 0 ? round($totalUsers / $total, 1) : 0;
 
         return [
             'total' => $total,
-            'active' => $active,
+            'active' => $companiesStats->active,
             'total_users' => $totalUsers,
             'average_users_per_company' => $averageUsersPerCompany,
-            'new_this_month' => $createdThisMonth,
+            'new_this_month' => $companiesStats->new_this_month,
         ];
     }
 
@@ -149,13 +224,12 @@ class CompaniesController extends AppController
      */
     public function view(?string $id = null)
     {
+        // Cargar empresa con todas las relaciones necesarias de una vez
         $company = $this->Companies->get($id, [
             'contain' => [
                 'Subscriptions' => ['Plans' => ['Prices']],
                 'Users' => function ($q) {
-                    return $q
-                        ->contain(['Contracts'])
-                        ->orderBy(['Users.created' => 'DESC']);
+                    return $q->contain(['Contracts'])->orderBy(['Users.created' => 'DESC']);
                 },
                 'Departments',
                 'Holidays',
@@ -163,116 +237,131 @@ class CompaniesController extends AppController
                 'AbsenceApprovalSettings',
             ],
         ]);
+
         $this->Authorization->authorize($company);
-        // Registrar visualización
         $this->Logging->logView('companies', (int)$id);
 
-        // Obtener estadísticas de la empresa
-        $Users = $this->getTable('JornaticCore.Users');
+        // Generar estadísticas usando Collection API + queries mínimas necesarias
+        $companyStats = $this->_generateCompanyStats($company, $id);
+        
+        // Obtener datos de Stripe si están disponibles
+        $stripeCustomerData = $this->_getStripeCustomerData($company);
+        
+        // Verificar estado de contratos usando Collection API
+        $contractsNotification = $this->_getContractsNotification($company);
+
+        $this->set(compact('company', 'companyStats', 'stripeCustomerData', 'contractsNotification'));
+    }
+
+    /**
+     * Generar estadísticas de la empresa de forma optimizada
+     *
+     * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
+     * @param string $companyId ID de la empresa
+     * @return array Estadísticas de la empresa
+     */
+    private function _generateCompanyStats($company, string $companyId): array
+    {
+        // Usar Collection API para estadísticas calculables con datos ya cargados
+        $usersCollection = new Collection($company->users ?? []);
+        $departmentsCollection = new Collection($company->departments ?? []);
+        
+        // Solo queries necesarias para datos no cargados en las relaciones
         $Attendances = $this->getTable('JornaticCore.Attendances');
         $Absences = $this->getTable('JornaticCore.Absences');
-        $Departments = $this->getTable('JornaticCore.Departments');
-
-        $totalUsers = $Users->find()
-            ->where(['company_id' => $id])
-            ->count();
-
-        $activeUsers = $Users->find()
-            ->where([
-                'company_id' => $id,
-                'is_active' => true,
-            ])
-            ->count();
 
         $todayAttendances = $Attendances->find()
-            ->matching('Users', function ($q) use ($id) {
-                return $q->where(['Users.company_id' => $id]);
+            ->matching('Users', function ($q) use ($companyId) {
+                return $q->where(['Users.company_id' => $companyId]);
             })
-            ->where([
-                'DATE(timestamp)' => date('Y-m-d'),
-            ])
+            ->where(['DATE(timestamp)' => date('Y-m-d')])
             ->count();
 
         $pendingAbsences = $Absences->find()
-            ->where([
-                'company_id' => $id,
-                'status' => 'pending',
-            ])
+            ->where(['company_id' => $companyId, 'status' => 'pending'])
             ->count();
 
-        $departmentsCount = $Departments->find()
-            ->where(['company_id' => $id])
-            ->count();
-
-        $companyStats = [
-            'total_users' => $totalUsers,
-            'active_users' => $activeUsers,
+        return [
+            'total_users' => $usersCollection->count(),
+            'active_users' => $usersCollection->filter(fn($user) => $user->is_active)->count(),
             'today_attendances' => $todayAttendances,
             'pending_absences' => $pendingAbsences,
-            'departments_count' => $departmentsCount,
+            'departments_count' => $departmentsCollection->count(),
             'attendances_today' => $todayAttendances, // Alias para el template
         ];
+    }
 
-        // Obtener datos del cliente Stripe si existe suscripción activa
-        $stripeCustomerData = null;
-        if (
-            !empty($company->active_subscription) &&
-            !empty($company->active_subscription->stripe_customer_id) &&
-            $this->stripeService->isConfigured()
-        ) {
-            try {
-                // Obtener datos del customer desde Stripe
-                $stripeCustomer = $this->stripeService->getCustomer($company->active_subscription->stripe_customer_id);
-
-                // Obtener facturas recientes del customer
-                $stripeClient = $this->stripeService->getStripeClient();
-                $recentInvoices = $stripeClient->invoices->all([
-                    'customer' => $company->active_subscription->stripe_customer_id,
-                    'limit' => 5,
-                ]);
-
-                // Obtener métodos de pago
-                $paymentMethods = $stripeClient->paymentMethods->all([
-                    'customer' => $company->active_subscription->stripe_customer_id,
-                    'type' => 'card',
-                ]);
-
-                $stripeCustomerData = [
-                    'customer' => $stripeCustomer,
-                    'recent_invoices' => $recentInvoices->data ?? [],
-                    'payment_methods' => $paymentMethods->data ?? [],
-                ];
-            } catch (Exception $e) {
-                // Log del error pero continuar sin datos de Stripe
-                $this->Logging->logAction('STRIPE_ERROR', false, 'company_customer_view', (int)$id, [
-                    'stripe_customer_id' => $company->active_subscription->stripe_customer_id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+    /**
+     * Obtener datos del cliente Stripe de forma encapsulada
+     *
+     * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
+     * @return array|null Datos del cliente Stripe o null si no están disponibles
+     */
+    private function _getStripeCustomerData(Company $company): ?array
+    {
+        // Verificar condiciones previas
+        if (empty($company->active_subscription) || 
+            empty($company->active_subscription->stripe_customer_id) || 
+            !$this->stripeService->isConfigured()) {
+            return null;
         }
 
-        // Verificar estado de contratos de los usuarios
-        $Contracts = $this->getTable('JornaticCore.Contracts');
-        $usersWithoutContracts = [];
-        $allUsersHaveContracts = true;
-        if (!empty($company->users)) {
-            // Extraer IDs de usuarios para query optimizada
-            $usersCollection = new Collection($company->users);
-            $usersWithoutContracts = $usersCollection->filter(function ($user) {
-                return $user->current_contract === null;
-            });
+        try {
+            $stripeCustomerId = $company->active_subscription->stripe_customer_id;
+            $stripeClient = $this->stripeService->getStripeClient();
 
-            $allUsersHaveContracts = $usersCollection->count() === $usersWithoutContracts->count();
+            // Obtener datos del customer y recursos relacionados en paralelo
+            $stripeCustomer = $this->stripeService->getCustomer($stripeCustomerId);
+            $recentInvoices = $stripeClient->invoices->all([
+                'customer' => $stripeCustomerId,
+                'limit' => 5,
+            ]);
+            $paymentMethods = $stripeClient->paymentMethods->all([
+                'customer' => $stripeCustomerId,
+                'type' => 'card',
+            ]);
+
+            return [
+                'customer' => $stripeCustomer,
+                'recent_invoices' => $recentInvoices->data ?? [],
+                'payment_methods' => $paymentMethods->data ?? [],
+            ];
+        } catch (Exception $e) {
+            // Log del error pero continuar sin datos de Stripe
+            $this->Logging->logAction('STRIPE_ERROR', false, 'company_customer_view', (int)$company->id, [
+                'stripe_customer_id' => $company->active_subscription->stripe_customer_id,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Generar notificación de estado de contratos usando Collection API
+     *
+     * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
+     * @return array Información sobre el estado de los contratos
+     */
+    private function _getContractsNotification(Company $company): array
+    {
+        if (empty($company->users)) {
+            return [
+                'all_have_contracts' => true,
+                'users_without_contracts' => [],
+                'total_users' => 0,
+                'users_with_contracts' => 0,
+            ];
         }
 
-        $contractsNotification = [
-            'all_have_contracts' => $allUsersHaveContracts,
+        $usersCollection = new Collection($company->users);
+        $usersWithoutContracts = $usersCollection->filter(fn($user) => $user->current_contract === null);
+        
+        return [
+            'all_have_contracts' => $usersWithoutContracts->count() === 0,
             'users_without_contracts' => $usersWithoutContracts,
-            'total_users' => count($company->users ?? []),
-            'users_with_contracts' => count($company->users ?? []) - count($usersWithoutContracts),
+            'total_users' => $usersCollection->count(),
+            'users_with_contracts' => $usersCollection->count() - $usersWithoutContracts->count(),
         ];
-
-        $this->set(compact('company', 'companyStats', 'stripeCustomerData', 'contractsNotification'));
     }
 
     /**
@@ -316,25 +405,7 @@ class CompaniesController extends AppController
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-
-        $company = $this->Companies->get($id);
-
-        // En lugar de eliminar, marcar como inactiva
-        $company->status = 'inactive';
-
-        if ($this->Companies->save($company)) {
-            // Registrar eliminación lógica
-            $this->Logging->logDelete('companies', (int)$id, [
-                'company_name' => $company->name,
-                'soft_delete' => true,
-            ]);
-
-            $this->Flash->success(__('_EMPRESA_DESACTIVADA_CORRECTAMENTE'));
-        } else {
-            $this->Flash->error(__('_ERROR_AL_DESACTIVAR_EMPRESA'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        return $this->_changeCompanyStatus($id, 'inactive', 'DESACTIVAR', 'index');
     }
 
     /**
@@ -346,23 +417,64 @@ class CompaniesController extends AppController
     public function activate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
+        return $this->_changeCompanyStatus($id, 'active', 'ACTIVAR', 'view');
+    }
 
+    /**
+     * Cambiar estado de una empresa de forma unificada
+     *
+     * @param string|null $id ID de la empresa
+     * @param string $status Nuevo estado
+     * @param string $action Acción para mensajes y logging
+     * @param string $redirectAction Acción de redirección
+     * @return \Cake\Http\Response
+     */
+    private function _changeCompanyStatus(?string $id, string $status, string $action, string $redirectAction): \Cake\Http\Response
+    {
         $company = $this->Companies->get($id);
-        $company->status = 'active';
+        $originalStatus = $company->status;
+        $company->status = $status;
 
         if ($this->Companies->save($company)) {
-            // Registrar activación
-            $this->Logging->logUpdate('companies', (int)$id, [
-                'action' => 'activate',
-                'company_name' => $company->name,
-            ]);
+            $this->_logStatusChange($company, $action, $originalStatus);
+            $this->Flash->success(__("_EMPRESA_{$action}_CORRECTAMENTE"));
 
-            $this->Flash->success(__('_EMPRESA_ACTIVADA_CORRECTAMENTE'));
-        } else {
-            $this->Flash->error(__('_ERROR_AL_ACTIVAR_EMPRESA'));
+            // Determinar redirección según acción
+            $redirectParams = ['action' => $redirectAction];
+            if ($redirectAction === 'view') {
+                $redirectParams[] = $id;
+            }
+
+            return $this->redirect($redirectParams);
         }
 
-        return $this->redirect(['action' => 'view', $id]);
+        $this->Flash->error(__("_ERROR_AL_{$action}_EMPRESA"));
+        return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Registrar cambio de estado en logs
+     *
+     * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
+     * @param string $action Acción realizada
+     * @param string $originalStatus Estado original
+     * @return void
+     */
+    private function _logStatusChange($company, string $action, string $originalStatus): void
+    {
+        $logData = [
+            'company_name' => $company->name,
+            'original_status' => $originalStatus,
+            'new_status' => $company->status,
+        ];
+
+        if ($action === 'DESACTIVAR') {
+            $logData['soft_delete'] = true;
+            $this->Logging->logDelete('companies', (int)$company->id, $logData);
+        } else {
+            $logData['action'] = strtolower($action);
+            $this->Logging->logUpdate('companies', (int)$company->id, $logData);
+        }
     }
 
     /**
@@ -380,60 +492,110 @@ class CompaniesController extends AppController
             'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
+        // Obtener empresas con relaciones necesarias
         $companies = $this->Companies->find()
             ->contain(['Subscriptions' => ['Plans']])
             ->orderBy(['Companies.created' => 'DESC'])
             ->toArray();
 
-        // Preparar datos CSV
-        $csvData = [];
-        $csvData[] = [
+        // Generar datos CSV usando Collection API
+        $csvData = $this->_generateCsvData($companies);
+
+        // Configurar respuesta y generar archivo
+        return $this->_generateCsvResponse($csvData);
+    }
+
+    /**
+     * Generar datos CSV usando Collection API
+     *
+     * @param array $companies Array de empresas
+     * @return array Datos formateados para CSV
+     */
+    private function _generateCsvData(array $companies): array
+    {
+        $companiesCollection = new Collection($companies);
+
+        // Headers del CSV
+        $csvData = [$this->_getCsvHeaders()];
+
+        // Formatear datos usando Collection API
+        $formattedRows = $companiesCollection->map(function ($company) {
+            return $this->_formatCompanyForCsv($company);
+        })->toArray();
+
+        return array_merge($csvData, $formattedRows);
+    }
+
+    /**
+     * Obtener headers del CSV
+     *
+     * @return array Headers del archivo CSV
+     */
+    private function _getCsvHeaders(): array
+    {
+        return [
             __('_NOMBRE'),
-            __('_NOMBRE_LEGAL'),
             __('_CIF'),
             __('_EMAIL'),
             __('_TELEFONO'),
+            __('_SITIO_WEB'),
             __('_PLAN'),
             __('_ESTADO_SUSCRIPCION'),
             __('_FECHA_REGISTRO'),
             __('_ACTIVA'),
         ];
+    }
 
-        foreach ($companies as $company) {
-            $subscription = $company->subscriptions[0] ?? null;
-            $csvData[] = [
-                $company->name,
-                $company->legal_name ?? '',
-                $company->cif ?? '',
-                $company->email,
-                $company->phone ?? '',
-                $subscription
-                    ? $subscription->plan->name
-                    : '',
-                $subscription
-                    ? $subscription->status
-                    : '',
-                $company->created->format('Y-m-d'),
-                $company->status === 'active'
-                    ? __('_SI')
-                    : __('_NO'),
-            ];
-        }
+    /**
+     * Formatear una empresa para CSV
+     *
+     * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
+     * @return array Fila formateada para CSV
+     */
+    private function _formatCompanyForCsv($company): array
+    {
+        $subscription = $company->subscriptions[0] ?? null;
 
-        // Generar CSV
+        return [
+            $company->name,
+            $company->nif ?? '',
+            $company->email,
+            $company->phone ?? '',
+            $company->website ?? '',
+            $subscription?->plan?->name ?? '',
+            $subscription?->status ?? '',
+            $company->created->format('Y-m-d'),
+            $company->status === 'active' ? __('_SI') : __('_NO'),
+        ];
+    }
+
+    /**
+     * Generar respuesta CSV con headers y contenido
+     *
+     * @param array $csvData Datos del CSV
+     * @return \Cake\Http\Response Respuesta con archivo CSV
+     */
+    private function _generateCsvResponse(array $csvData): \Cake\Http\Response
+    {
         $filename = 'companies_' . date('Y-m-d_H-i-s') . '.csv';
 
-        $this->response = $this->response->withType('text/csv');
-        $this->response =
-            $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        // Configurar headers de respuesta
+        $this->response = $this->response
+            ->withType('text/csv')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
-        // Crear contenido CSV
+        // Generar contenido CSV
         $output = fopen('php://output', 'w');
+
         // UTF-8 BOM para Excel
         fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
-        foreach ($csvData as $row) {
+
+        // Escribir cada fila usando Collection API
+        $csvCollection = new Collection($csvData);
+        $csvCollection->each(function ($row) use ($output) {
             fputcsv($output, $row, ';', '"');
-        }
+        });
+
         fclose($output);
 
         return $this->response;
