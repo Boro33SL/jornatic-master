@@ -1238,6 +1238,21 @@ msgstr "Reportes de Asistencias"
 msgid "_REPORTING_ADVANCED"
 msgstr "Informes Avanzados"
 
+msgid "_CONTRATOS_COMPLETOS"
+msgstr "Contratos Completos"
+
+msgid "_TODOS_LOS_USUARIOS_TIENEN_CONTRATOS_ACTIVOS"
+msgstr "Todos los {0} usuarios tienen contratos activos"
+
+msgid "_CONTRATOS_INCOMPLETOS"
+msgstr "Contratos Incompletos"
+
+msgid "_USUARIOS_SIN_CONTRATOS_ACTIVOS"
+msgstr "{0} de {1} usuarios no tienen contratos activos"
+
+msgid "_USUARIOS_AFECTADOS"
+msgstr "Usuarios afectados"
+
 msgid "_REQUIEREN_ATENCION"
 msgstr "Requieren Atención"
 

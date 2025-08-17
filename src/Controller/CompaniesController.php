@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Collection\Collection;
 use Exception;
 use JornaticCore\Model\Table\CompaniesTable;
 use JornaticCore\Service\StripeService;
@@ -152,7 +153,9 @@ class CompaniesController extends AppController
             'contain' => [
                 'Subscriptions' => ['Plans' => ['Prices']],
                 'Users' => function ($q) {
-                    return $q->limit(10)->orderBy(['Users.created' => 'DESC']);
+                    return $q
+                        ->contain(['Contracts'])
+                        ->orderBy(['Users.created' => 'DESC']);
                 },
                 'Departments',
                 'Holidays',
@@ -248,7 +251,28 @@ class CompaniesController extends AppController
             }
         }
 
-        $this->set(compact('company', 'companyStats', 'stripeCustomerData'));
+        // Verificar estado de contratos de los usuarios
+        $Contracts = $this->getTable('JornaticCore.Contracts');
+        $usersWithoutContracts = [];
+        $allUsersHaveContracts = true;
+        if (!empty($company->users)) {
+            // Extraer IDs de usuarios para query optimizada
+            $usersCollection = new Collection($company->users);
+            $usersWithoutContracts = $usersCollection->filter(function ($user) {
+                return $user->current_contract === null;
+            });
+
+            $allUsersHaveContracts = $usersCollection->count() === $usersWithoutContracts->count();
+        }
+
+        $contractsNotification = [
+            'all_have_contracts' => $allUsersHaveContracts,
+            'users_without_contracts' => $usersWithoutContracts,
+            'total_users' => count($company->users ?? []),
+            'users_with_contracts' => count($company->users ?? []) - count($usersWithoutContracts),
+        ];
+
+        $this->set(compact('company', 'companyStats', 'stripeCustomerData', 'contractsNotification'));
     }
 
     /**

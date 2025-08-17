@@ -76,6 +76,76 @@
         </div>
     </div>
 
+    <!-- Notificaciones de Contratos -->
+    <?php if (!empty($contractsNotification)): ?>
+        <div class="mb-6">
+            <?php if ($contractsNotification['all_have_contracts']): ?>
+                <!-- Todos los usuarios tienen contratos -->
+                <div class="alert alert-success">
+                    <div class="flex items-center">
+                        <?= $this->Icon->render('check-circle', 'solid', ['class' => 'w-6 h-6 text-success mr-3']) ?>
+                        <div class="flex-1">
+                            <h3 class="font-bold"><?= __('_CONTRATOS_COMPLETOS') ?></h3>
+                            <div class="text-sm">
+                                <?= __('_TODOS_LOS_USUARIOS_TIENEN_CONTRATOS_ACTIVOS', [
+                                    $contractsNotification['total_users']
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="badge badge-success badge-lg">
+                                <?= $contractsNotification['users_with_contracts'] ?>/<?= $contractsNotification['total_users'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php else: ?>
+                <!-- Hay usuarios sin contratos -->
+                <div class="alert alert-warning">
+                    <div class="flex items-start">
+                        <?= $this->Icon->render('exclamation-triangle', 'solid', ['class' => 'w-6 h-6 text-warning mr-3 mt-1']) ?>
+                        <div class="flex-1">
+                            <h3 class="font-bold"><?= __('_CONTRATOS_INCOMPLETOS') ?></h3>
+                            <div class="text-sm mb-3">
+                                <?= __('_USUARIOS_SIN_CONTRATOS_ACTIVOS', [
+                                    count($contractsNotification['users_without_contracts']),
+                                    $contractsNotification['total_users']
+                                ]) ?>
+                            </div>
+                            
+                            <!-- Lista de usuarios sin contrato -->
+                            <?php if (!empty($contractsNotification['users_without_contracts'])): ?>
+                                <div class="mt-3">
+                                    <h4 class="font-semibold text-sm mb-2"><?= __('_USUARIOS_AFECTADOS') ?>:</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <?php foreach ($contractsNotification['users_without_contracts'] as $user): ?>
+                                            <div class="flex items-center gap-2 p-2 bg-base-100 rounded border">
+                                                <div class="avatar placeholder">
+                                                    <div class="bg-warning text-warning-content rounded-full w-8">
+                                                        <span class="text-xs"><?= strtoupper(substr($user->name, 0, 1) . substr($user->lastname, 0, 1)) ?></span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium truncate"><?= h($user->name . ' ' . $user->lastname) ?></p>
+                                                    <p class="text-xs text-base-content/60 truncate"><?= h($user->email) ?></p>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="badge badge-warning badge-lg">
+                                <?= $contractsNotification['users_with_contracts'] ?>/<?= $contractsNotification['total_users'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Información Principal -->
         <div class="lg:col-span-2">
