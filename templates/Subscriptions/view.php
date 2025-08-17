@@ -281,6 +281,118 @@
                 </div>
             </div>
 
+            <!-- Información de Stripe -->
+            <?php if ($subscription->stripe_subscription_id && !empty($stripeData)): ?>
+                <div class="card bg-base-100 shadow-lg mb-6">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                            <?= __('_INFORMACION_STRIPE') ?>
+                            <div class="badge badge-sm badge-success"><?= __('_TIEMPO_REAL') ?></div>
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <!-- Estado en Stripe -->
+                            <div>
+                                <label class="text-sm font-medium text-base-content/60"><?= __('_ESTADO_STRIPE') ?></label>
+                                <?php
+                                $stripeStatus = $stripeData['subscription']->status ?? 'unknown';
+                                $statusTranslation = match ($stripeStatus) {
+                                    'active' => __('_ACTIVA_STRIPE'),
+                                    'trialing' => __('_TRIAL_STRIPE'),
+                                    'canceled' => __('_CANCELADA_STRIPE'),
+                                    'incomplete' => __('_INCOMPLETA_STRIPE'),
+                                    'past_due' => __('_PENDIENTE'),
+                                    default => ucfirst($stripeStatus)
+                                };
+                                $statusClass = match ($stripeStatus) {
+                                    'active' => 'badge-success',
+                                    'trialing' => 'badge-info',
+                                    'canceled' => 'badge-error',
+                                    'incomplete' => 'badge-warning',
+                                    'past_due' => 'badge-warning',
+                                    default => 'badge-ghost'
+                                };
+                                ?>
+                                <div class="badge <?= $statusClass ?> badge-sm"><?= $statusTranslation ?></div>
+                            </div>
+
+                            <!-- Próximo cobro -->
+                            <?php if (!empty($stripeData['subscription']->current_period_end)): ?>
+                                <div>
+                                    <label class="text-sm font-medium text-base-content/60"><?= __('_PROXIMO_COBRO') ?></label>
+                                    <p class="font-semibold text-sm"><?= date('d/m/Y', $stripeData['subscription']->current_period_end) ?></p>
+                                </div>
+                            <?php endif; ?>
+                            <!-- Cancelación programada -->
+                            <?php if (!empty($stripeData['subscription']->cancel_at_period_end)): ?>
+                                <div>
+                                    <label class="text-sm font-medium text-base-content/60"><?= __('_CANCELACION_PROGRAMADA') ?></label>
+                                    <p class="text-sm"><?= $stripeData['subscription']->cancel_at_period_end ? __('_SI') : __('_NO') ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Información del Customer -->
+                            <?php if (!empty($stripeData['customer'])): ?>
+                                <div>
+                                    <label class="text-sm font-medium text-base-content/60"><?= __('_SALDO_CUSTOMER') ?></label>
+                                    <p class="text-sm"><?= number_format($stripeData['customer']->balance / 100, 2) ?> <?= strtoupper($stripeData['customer']->currency ?? 'EUR') ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Facturas recientes -->
+                            <?php if (!empty($stripeData['recent_invoices'])): ?>
+                                <div>
+                                    <label class="text-sm font-medium text-base-content/60"><?= __('_FACTURAS_RECIENTES') ?></label>
+                                    <div class="space-y-2 mt-2">
+                                        <?php foreach (array_slice($stripeData['recent_invoices'], 0, 3) as $invoice): ?>
+                                            <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium">
+                                                        <?= number_format($invoice->amount_paid / 100, 2) ?> <?= strtoupper($invoice->currency) ?>
+                                                    </p>
+                                                    <p class="text-xs text-base-content/60">
+                                                        <?= date('d/m/Y', $invoice->created) ?>
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="badge badge-xs <?= $invoice->status === 'paid' ? 'badge-success' : 'badge-warning' ?>">
+                                                        <?= $invoice->status === 'paid' ? __('_PAGADA') : __('_PENDIENTE') ?>
+                                                    </div>
+                                                    <?php if (!empty($invoice->hosted_invoice_url)): ?>
+                                                        <a href="<?= h($invoice->hosted_invoice_url) ?>" 
+                                                           target="_blank" 
+                                                           class="btn btn-xs btn-outline">
+                                                            <?= $this->Icon->render('arrow-top-right-on-square', 'solid', ['class' => 'w-3 h-3']) ?>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php elseif ($subscription->stripe_subscription_id): ?>
+                <!-- Mostrar mensaje cuando hay ID de Stripe pero no se pudieron obtener los datos -->
+                <div class="card bg-base-100 shadow-lg mb-6">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                            <?= __('_INFORMACION_STRIPE') ?>
+                            <div class="badge badge-sm badge-warning"><?= __('_ERROR_STRIPE') ?></div>
+                        </h3>
+                        
+                        <div class="text-center py-4">
+                            <p class="text-base-content/60"><?= __('_STRIPE_NO_DISPONIBLE') ?></p>
+                            <p class="text-xs text-base-content/40 mt-2">ID: <?= h($subscription->stripe_subscription_id) ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!-- Información del Sistema -->
             <div class="card bg-base-100 shadow-lg">
                 <div class="card-body">

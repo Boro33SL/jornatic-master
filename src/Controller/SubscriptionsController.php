@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Exception;
 use JornaticCore\Model\Entity\Subscription;
 use JornaticCore\Model\Table\SubscriptionsTable;
+use JornaticCore\Service\StripeService;
 
 /**
  * Subscriptions Controller
@@ -23,6 +25,13 @@ class SubscriptionsController extends AppController
     protected SubscriptionsTable $Subscriptions;
 
     /**
+     * Stripe service instance
+     *
+     * @var \JornaticCore\Service\StripeService
+     */
+    protected StripeService $stripeService;
+
+    /**
      * Función de inicialización
      *
      * @return void
@@ -33,6 +42,9 @@ class SubscriptionsController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Subscriptions = $this->getTable('JornaticCore.Subscriptions');
+
+        // Inicializar servicio de Stripe
+        $this->stripeService = new StripeService();
 
         // Cargar componente de logging
         $this->loadComponent('Logging');
@@ -124,10 +136,45 @@ class SubscriptionsController extends AppController
             ],
         ]);
 
+        // Obtener datos de Stripe si existe stripe_subscription_id
+        $stripeData = null;
+        if (!empty($subscription->stripe_subscription_id) && $this->stripeService->isConfigured()) {
+            try {
+                // Obtener datos de suscripción desde Stripe
+                $stripeSubscription = $this->stripeService->getSubscription($subscription->stripe_subscription_id);
+
+                // Obtener datos del customer si existe
+                $stripeCustomer = null;
+                if ($stripeSubscription->customer) {
+                    $stripeCustomer = $this->stripeService->getCustomer($stripeSubscription->customer);
+                }
+
+                // Obtener facturas recientes
+                $stripeClient = $this->stripeService->getStripeClient();
+                $recentInvoices = $stripeClient->invoices->all([
+                    'subscription' => $subscription->stripe_subscription_id,
+                    'limit' => 3,
+                ]);
+
+                // Estructurar datos para el template
+                $stripeData = [
+                    'subscription' => $stripeSubscription,
+                    'customer' => $stripeCustomer,
+                    'recent_invoices' => $recentInvoices->data ?? [],
+                ];
+            } catch (Exception $e) {
+                // Log del error pero continuar sin datos de Stripe
+                $this->Logging->logAction('STRIPE_ERROR', false, 'subscription_view', (int)$id, [
+                    'stripe_subscription_id' => $subscription->stripe_subscription_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         // Registrar visualización
         $this->Logging->logView('subscriptions', (int)$id);
 
-        $this->set(compact('subscription'));
+        $this->set(compact('subscription', 'stripeData'));
     }
 
     /**

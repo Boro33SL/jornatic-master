@@ -632,7 +632,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com-Boro33SL:Boro33SL/jornatic-core.git",
-                "reference": "b9ec53c1204e4a666e3ce529a3eb225c2b95608a"
+                "reference": "0d9978ec9528f4d4b6ddf91c291292bbe0f1e52a"
             },
             "require": {
                 "cakephp/authentication": "~3.0",
@@ -673,7 +673,7 @@
                 }
             ],
             "description": "Core domain plugin for Jornatic platform - Shared models, services and business logic (dev branch)",
-            "time": "2025-08-17T11:15:50+00:00"
+            "time": "2025-08-17T14:36:36+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

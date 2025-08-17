@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Exception;
 use JornaticCore\Model\Table\CompaniesTable;
+use JornaticCore\Service\StripeService;
 
 /**
  * Companies Controller
@@ -21,6 +23,13 @@ class CompaniesController extends AppController
     protected CompaniesTable $Companies;
 
     /**
+     * Stripe service instance
+     *
+     * @var \JornaticCore\Service\StripeService
+     */
+    protected StripeService $stripeService;
+
+    /**
      * Función de inicialización
      *
      * @return void
@@ -31,6 +40,9 @@ class CompaniesController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Companies = $this->getTable('JornaticCore.Companies');
+
+        // Inicializar servicio de Stripe
+        $this->stripeService = new StripeService();
 
         // Cargar componente de logging
         $this->loadComponent('Logging');
@@ -198,7 +210,45 @@ class CompaniesController extends AppController
             'attendances_today' => $todayAttendances, // Alias para el template
         ];
 
-        $this->set(compact('company', 'companyStats'));
+        // Obtener datos del cliente Stripe si existe suscripción activa
+        $stripeCustomerData = null;
+        if (
+            !empty($company->active_subscription) &&
+            !empty($company->active_subscription->stripe_customer_id) &&
+            $this->stripeService->isConfigured()
+        ) {
+            try {
+                // Obtener datos del customer desde Stripe
+                $stripeCustomer = $this->stripeService->getCustomer($company->active_subscription->stripe_customer_id);
+
+                // Obtener facturas recientes del customer
+                $stripeClient = $this->stripeService->getStripeClient();
+                $recentInvoices = $stripeClient->invoices->all([
+                    'customer' => $company->active_subscription->stripe_customer_id,
+                    'limit' => 5,
+                ]);
+
+                // Obtener métodos de pago
+                $paymentMethods = $stripeClient->paymentMethods->all([
+                    'customer' => $company->active_subscription->stripe_customer_id,
+                    'type' => 'card',
+                ]);
+
+                $stripeCustomerData = [
+                    'customer' => $stripeCustomer,
+                    'recent_invoices' => $recentInvoices->data ?? [],
+                    'payment_methods' => $paymentMethods->data ?? [],
+                ];
+            } catch (Exception $e) {
+                // Log del error pero continuar sin datos de Stripe
+                $this->Logging->logAction('STRIPE_ERROR', false, 'company_customer_view', (int)$id, [
+                    'stripe_customer_id' => $company->active_subscription->stripe_customer_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $this->set(compact('company', 'companyStats', 'stripeCustomerData'));
     }
 
     /**

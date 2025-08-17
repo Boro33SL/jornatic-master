@@ -1600,3 +1600,126 @@ msgstr "Volver al Listado"
 
 msgid "_VS_ANO_ANTERIOR"
 msgstr "vs. Año Anterior"
+
+msgid "_INFORMACION_STRIPE"
+msgstr "Información de Stripe"
+
+msgid "_ESTADO_STRIPE"
+msgstr "Estado en Stripe"
+
+msgid "_PROXIMO_COBRO"
+msgstr "Próximo Cobro"
+
+msgid "_METODO_PAGO"
+msgstr "Método de Pago"
+
+msgid "_FACTURAS_RECIENTES"
+msgstr "Facturas Recientes"
+
+msgid "_DATOS_TIEMPO_REAL"
+msgstr "Datos en Tiempo Real"
+
+msgid "_TIEMPO_REAL"
+msgstr "Tiempo Real"
+
+msgid "_SALDO_CUSTOMER"
+msgstr "Saldo del Cliente"
+
+msgid "_MONEDA"
+msgstr "Moneda"
+
+msgid "_CANCELACION_PROGRAMADA"
+msgstr "Cancelación Programada"
+
+msgid "_SI"
+msgstr "Sí"
+
+msgid "_NO"
+msgstr "No"
+
+msgid "_MONTO"
+msgstr "Monto"
+
+msgid "_FACTURA"
+msgstr "Factura"
+
+msgid "_PAGADA"
+msgstr "Pagada"
+
+msgid "_PENDIENTE"
+msgstr "Pendiente"
+
+msgid "_PERIODO_FACTURACION"
+msgstr "Período de Facturación"
+
+msgid "_VER_FACTURA"
+msgstr "Ver Factura"
+
+msgid "_DESCARGAR_PDF"
+msgstr "Descargar PDF"
+
+msgid "_STRIPE_NO_DISPONIBLE"
+msgstr "Información de Stripe no disponible"
+
+msgid "_ERROR_STRIPE"
+msgstr "Error al obtener datos de Stripe"
+
+msgid "_TARJETA"
+msgstr "Tarjeta"
+
+msgid "_VISA"
+msgstr "Visa"
+
+msgid "_MASTERCARD"
+msgstr "Mastercard"
+
+msgid "_AMEX"
+msgstr "American Express"
+
+msgid "_ACTIVA_STRIPE"
+msgstr "Activa"
+
+msgid "_TRIAL_STRIPE"
+msgstr "Período de Prueba"
+
+msgid "_CANCELADA_STRIPE"
+msgstr "Cancelada"
+
+msgid "_FINALIZADA_STRIPE"
+msgstr "Finalizada"
+
+msgid "_INCOMPLETA_STRIPE"
+msgstr "Incompleta"
+
+msgid "_TERMINACION_TRIAL"
+msgstr "Terminación del Trial"
+
+msgid "_CANCELADA_EN"
+msgstr "Cancelada el"
+
+msgid "_INFORMACION_FINANCIERA"
+msgstr "Información Financiera"
+
+msgid "_SALDO_ACTUAL"
+msgstr "Saldo Actual"
+
+msgid "_EMAIL_FACTURACION"
+msgstr "Email de Facturación"
+
+msgid "_ULTIMA_FACTURA"
+msgstr "Última Factura"
+
+msgid "_VER_TODAS_FACTURAS"
+msgstr "Ver Todas las Facturas"
+
+msgid "_METODO_PAGO_PRINCIPAL"
+msgstr "Método de Pago Principal"
+
+msgid "_EXPIRA_EN"
+msgstr "Expira en"
+
+msgid "_MARCA_TARJETA"
+msgstr "Marca de Tarjeta"
+
+msgid "_ULTIMOS_DIGITOS"
+msgstr "Últimos 4 dígitos"

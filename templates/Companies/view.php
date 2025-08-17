@@ -22,7 +22,7 @@
 
         <div class="flex gap-2">
             <?= $this->Html->link(
-                $this->Icon->render('pencil-square', 'solid', ['class' => 'w-5 h-5 mr-2']) . __('_EDITAR'),
+                $this->Icon->render('pencil-square', 'solid', ['class' => 'w-5 h-5 mr-2 text-white']) . __('_EDITAR'),
                 ['action' => 'edit', $company->id],
                 [
                     'class' => 'btn btn-primary btn-sm',
@@ -151,6 +151,118 @@
                 </div>
             </div>
 
+            <!-- Información Financiera de Stripe -->
+            <?php if (!empty($stripeCustomerData)): ?>
+                <div class="card bg-base-100 shadow-lg mb-6">
+                    <div class="card-body">
+                        <h2 class="card-title text-xl">
+                            <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                            <?= __('_INFORMACION_FINANCIERA') ?>
+                            <div class="badge badge-sm badge-success"><?= __('_TIEMPO_REAL') ?></div>
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Información del Customer -->
+                            <?php if (!empty($stripeCustomerData['customer'])): ?>
+                                <?php $customer = $stripeCustomerData['customer']; ?>
+                                
+                                <div>
+                                    <div class="mb-4">
+                                        <label class="text-sm font-medium text-base-content/60"><?= __('_EMAIL_FACTURACION') ?></label>
+                                        <p class="text-lg"><?= h($customer->email ?? __('_NO_ESPECIFICADO')) ?></p>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="text-sm font-medium text-base-content/60"><?= __('_SALDO_CUSTOMER') ?></label>
+                                        <p class="text-lg font-semibold <?= $customer->balance > 0 ? 'text-success' : ($customer->balance < 0 ? 'text-error' : '') ?>">
+                                            <?= number_format($customer->balance / 100, 2) ?> <?= strtoupper($customer->currency ?? 'EUR') ?>
+                                        </p>
+                                    </div>
+
+                                    <?php if (!empty($customer->default_source)): ?>
+                                        <div class="mb-4">
+                                            <label class="text-sm font-medium text-base-content/60"><?= __('_METODO_PAGO_DEFECTO') ?></label>
+                                            <p class="text-lg"><?= h($customer->default_source) ?></p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div>
+                                <!-- Métodos de Pago -->
+                                <?php if (!empty($stripeCustomerData['payment_methods'])): ?>
+                                    <div class="mb-4">
+                                        <label class="text-sm font-medium text-base-content/60"><?= __('_METODOS_PAGO') ?></label>
+                                        <div class="space-y-2 mt-2">
+                                            <?php foreach (array_slice($stripeCustomerData['payment_methods'], 0, 2) as $paymentMethod): ?>
+                                                <div class="flex items-center gap-2 p-2 bg-base-200 rounded">
+                                                    <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-4 h-4 text-primary']) ?>
+                                                    <span class="text-sm">
+                                                        **** **** **** <?= h($paymentMethod->card->last4 ?? '') ?>
+                                                    </span>
+                                                    <span class="text-xs text-base-content/60">
+                                                        <?= h(strtoupper($paymentMethod->card->brand ?? '')) ?>
+                                                    </span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Facturas Recientes -->
+                                <?php if (!empty($stripeCustomerData['recent_invoices'])): ?>
+                                    <div class="mb-4">
+                                        <label class="text-sm font-medium text-base-content/60"><?= __('_FACTURAS_RECIENTES') ?></label>
+                                        <div class="space-y-2 mt-2">
+                                            <?php foreach (array_slice($stripeCustomerData['recent_invoices'], 0, 2) as $invoice): ?>
+                                                <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                                                    <div class="flex-1">
+                                                        <p class="text-sm font-medium">
+                                                            <?= number_format($invoice->amount_paid / 100, 2) ?> <?= strtoupper($invoice->currency) ?>
+                                                        </p>
+                                                        <p class="text-xs text-base-content/60">
+                                                            <?= date('d/m/Y', $invoice->created) ?>
+                                                        </p>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="badge badge-xs <?= $invoice->status === 'paid' ? 'badge-success' : 'badge-warning' ?>">
+                                                            <?= $invoice->status === 'paid' ? __('_PAGADA') : __('_PENDIENTE') ?>
+                                                        </div>
+                                                        <?php if (!empty($invoice->hosted_invoice_url)): ?>
+                                                            <a href="<?= h($invoice->hosted_invoice_url) ?>" 
+                                                               target="_blank" 
+                                                               class="btn btn-xs btn-outline">
+                                                                <?= $this->Icon->render('arrow-top-right-on-square', 'solid', ['class' => 'w-3 h-3']) ?>
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php elseif (!empty($company->active_subscription) && !empty($company->active_subscription->stripe_customer_id)): ?>
+                <!-- Mostrar mensaje cuando hay ID de customer pero no se pudieron obtener los datos -->
+                <div class="card bg-base-100 shadow-lg mb-6">
+                    <div class="card-body">
+                        <h2 class="card-title text-xl">
+                            <?= $this->Icon->render('credit-card', 'solid', ['class' => 'w-5 h-5 mr-2']) ?>
+                            <?= __('_INFORMACION_FINANCIERA') ?>
+                            <div class="badge badge-sm badge-warning"><?= __('_ERROR_STRIPE') ?></div>
+                        </h2>
+                        
+                        <div class="text-center py-4">
+                            <p class="text-base-content/60"><?= __('_STRIPE_NO_DISPONIBLE') ?></p>
+                            <p class="text-xs text-base-content/40 mt-2">Customer ID: <?= h($company->active_subscription->stripe_customer_id) ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!-- Empleados Recientes -->
             <?php if (!empty($company->users)): ?>
                 <div class="card bg-base-100 shadow-lg">
@@ -205,9 +317,53 @@
 
         <!-- Panel Lateral -->
         <div class="lg:col-span-1">
+            <!-- Acciones Rápidas -->
+            <div class="card bg-base-100 shadow-lg mb-6">
+                <div class="card-body">
+                    <h3 class="card-title"><?= __('_ACCIONES_RAPIDAS') ?></h3>
+                    <div class="space-y-2">
+                        <?= $this->Html->link(
+                            $this->Icon->render('users', 'solid', ['class' => 'w-4 h-4 text-white']) . __('_VER_EMPLEADOS'),
+                            ['controller' => 'Users', 'action' => 'index', '?' => ['company_id' => $company->id]],
+                            [
+                                'class' => 'btn btn-primary btn-sm w-full justify-start',
+                                'escape' => false
+                            ]
+                        ) ?>
+
+                        <?= $this->Html->link(
+                            $this->Icon->render('building-office', 'solid', ['class' => 'w-4 h-4 text-white']) . __('_VER_DEPARTAMENTOS'),
+                            ['controller' => 'Departments', 'action' => 'index', '?' => ['company_id' => $company->id]],
+                            [
+                                'class' => 'btn btn-secondary btn-sm w-full justify-start',
+                                'escape' => false
+                            ]
+                        ) ?>
+
+                        <?= $this->Html->link(
+                            $this->Icon->render('clock', 'solid', ['class' => 'w-4 h-4 text-white']) . __('_VER_ASISTENCIAS'),
+                            ['controller' => 'Attendances', 'action' => 'index', '?' => ['company_id' => $company->id]],
+                            [
+                                'class' => 'btn btn-accent btn-sm w-full justify-start',
+                                'escape' => false
+                            ]
+                        ) ?>
+
+                        <?= $this->Html->link(
+                            $this->Icon->render('globe-asia-australia', 'solid', ['class' => 'w-4 h-4 text-white']) . __('_VER_FESTIVOS'),
+                            ['controller' => 'Holidays', 'action' => 'index', '?' => ['company_id' => $company->id]],
+                            [
+                                'class' => 'btn btn-info btn-sm w-full justify-start',
+                                'escape' => false
+                            ]
+                        ) ?>
+                    </div>
+                </div>
+            </div>
+
             <!-- Suscripción -->
-            <?php if (!empty($company->subscriptions)): ?>
-                <?php $subscription = $company->subscriptions[0]; ?>
+            <?php if (!empty($company->active_subscription)): ?>
+                <?php $subscription = $company->active_subscription; ?>
                 <div class="card bg-base-100 shadow-lg mb-6">
                     <div class="card-body">
                         <h3 class="card-title"><?= __('_SUSCRIPCION_ACTUAL') ?></h3>
@@ -234,62 +390,18 @@
                                     <p class="font-semibold"><?= $subscription->ends->format('d/m/Y') ?></p>
                                 </div>
                             <?php endif; ?>
+
+                            <div class="mt-4 text-center">
+                                <?= $this->Html->link(
+                                    $this->Icon->render('eye', 'solid', ['class' => 'w-4 h-4 mr-2 text-white']) . __('_VER_DETALLES'),
+                                    ['controller' => 'Subscriptions', 'action' => 'view', $subscription->id],
+                                    ['class' => 'btn btn-primary btn-sm', 'escape' => false]
+                                ) ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             <?php endif; ?>
-
-            <!-- Acciones Rápidas -->
-            <div class="card bg-base-100 shadow-lg mb-6">
-                <div class="card-body">
-                    <h3 class="card-title"><?= __('_ACCIONES_RAPIDAS') ?></h3>
-                    <div class="space-y-2">
-                        <?= $this->Html->link(
-                            '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>' . __('_VER_EMPLEADOS'),
-                            ['controller' => 'Users', 'action' => 'index', '?' => ['company_id' => $company->id]],
-                            [
-                                'class' => 'btn btn-primary btn-sm w-full justify-start',
-                                'escape' => false
-                            ]
-                        ) ?>
-
-                        <?= $this->Html->link(
-                            '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>' . __('_VER_DEPARTAMENTOS'),
-                            ['controller' => 'Departments', 'action' => 'index', '?' => ['company_id' => $company->id]],
-                            [
-                                'class' => 'btn btn-secondary btn-sm w-full justify-start',
-                                'escape' => false
-                            ]
-                        ) ?>
-
-                        <?= $this->Html->link(
-                            '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>' . __('_VER_ASISTENCIAS'),
-                            ['controller' => 'Attendances', 'action' => 'index', '?' => ['company_id' => $company->id]],
-                            [
-                                'class' => 'btn btn-accent btn-sm w-full justify-start',
-                                'escape' => false
-                            ]
-                        ) ?>
-
-                        <?= $this->Html->link(
-                            '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 8a4 4 0 11-8 0v-1h8v1z"></path>
-                            </svg>' . __('_VER_FESTIVOS'),
-                            ['controller' => 'Holidays', 'action' => 'index', '?' => ['company_id' => $company->id]],
-                            [
-                                'class' => 'btn btn-info btn-sm w-full justify-start',
-                                'escape' => false
-                            ]
-                        ) ?>
-                    </div>
-                </div>
-            </div>
 
             <!-- Información del Sistema -->
             <div class="card bg-base-100 shadow-lg">
