@@ -6,7 +6,9 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * MasterRole Entity
+ * Entidad MasterRole
+ *
+ * Representa un rol de usuario master con permisos específicos
  *
  * @property int $id
  * @property string $name
@@ -16,11 +18,11 @@ use Cake\ORM\Entity;
 class MasterRole extends Entity
 {
     /**
-     * Fields that can be mass assigned using newEntity() or patchEntity().
+     * Campos que pueden ser asignados masivamente usando newEntity() o patchEntity().
      *
-     * Note that when '*' is set to true, this allows all unspecified fields to
-     * be mass assigned. For security purposes, it is advised to set '*' to false
-     * (or remove it), and explicitly make individual fields accessible as needed.
+     * Nota: cuando '*' está en true, permite que todos los campos no especificados
+     * sean asignados masivamente. Por seguridad, se recomienda establecer '*' a false
+     * (o eliminarlo), y hacer específicamente accesibles los campos individuales según sea necesario.
      *
      * @var array<string, bool>
      */

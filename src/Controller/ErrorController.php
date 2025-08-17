@@ -19,14 +19,14 @@ namespace App\Controller;
 use Cake\Event\EventInterface;
 
 /**
- * Error Handling Controller
+ * Controlador de Manejo de Errores
  *
- * Controller used by ExceptionRenderer to render error responses.
+ * Controlador usado por ExceptionRenderer para renderizar respuestas de error.
  */
 class ErrorController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Método de inicialización
      *
      * @return void
      */
@@ -36,9 +36,9 @@ class ErrorController extends AppController
     }
 
     /**
-     * beforeFilter callback.
+     * Callback beforeFilter
      *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Evento
      * @return void
      */
     public function beforeFilter(EventInterface $event): void
@@ -46,9 +46,9 @@ class ErrorController extends AppController
     }
 
     /**
-     * beforeRender callback.
+     * Callback beforeRender
      *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Evento
      * @return void
      */
     public function beforeRender(EventInterface $event): void
@@ -59,9 +59,9 @@ class ErrorController extends AppController
     }
 
     /**
-     * afterFilter callback.
+     * Callback afterFilter
      *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Evento
      * @return void
      */
     public function afterFilter(EventInterface $event): void

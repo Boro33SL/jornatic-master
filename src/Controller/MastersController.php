@@ -6,17 +6,17 @@ namespace App\Controller;
 use Cake\Event\EventInterface;
 
 /**
- * Masters Controller
+ * Controlador Masters
  *
- * Handles authentication for master users
+ * Maneja la autenticación para usuarios master
  *
  * @property \App\Model\Table\MastersTable $Masters
- * * @property \App\Controller\Component\LoggingComponent $Logging
+ * @property \App\Controller\Component\LoggingComponent $Logging
  */
 class MastersController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Método de inicialización
      *
      * @return void
      */

@@ -23,25 +23,25 @@ use Cake\Http\Response;
 use Cake\View\Exception\MissingTemplateException;
 
 /**
- * Static content controller
+ * Controlador de contenido estático
  *
- * This controller will render views from templates/Pages/
+ * Este controlador renderiza vistas desde templates/Pages/
  *
  * @link https://book.cakephp.org/5/en/controllers/pages-controller.html
  */
 class PagesController extends AppController
 {
     /**
-     * Displays a view
+     * Muestra una vista
      *
-     * @param string ...$path Path segments.
+     * @param string ...$path Segmentos de ruta
      * @return \Cake\Http\Response|null
-     * @throws \Cake\Http\Exception\ForbiddenException When a directory traversal attempt.
-     * @throws \Cake\View\Exception\MissingTemplateException When the view file could not
-     *   be found and in debug mode.
-     * @throws \Cake\Http\Exception\NotFoundException When the view file could not
-     *   be found and not in debug mode.
-     * @throws \Cake\View\Exception\MissingTemplateException In debug mode.
+     * @throws \Cake\Http\Exception\ForbiddenException Cuando hay un intento de traversal de directorio
+     * @throws \Cake\View\Exception\MissingTemplateException Cuando el archivo de vista no se puede
+     *   encontrar y está en modo debug
+     * @throws \Cake\Http\Exception\NotFoundException Cuando el archivo de vista no se puede
+     *   encontrar y no está en modo debug
+     * @throws \Cake\View\Exception\MissingTemplateException En modo debug
      */
     public function display(string ...$path): ?Response
     {

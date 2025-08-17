@@ -20,21 +20,21 @@ use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 
 /**
- * Application Controller
+ * Controlador de Aplicación
  *
- * Add your application-wide methods in the class below, your controllers
- * will inherit them.
+ * Añade métodos que serán heredados por todos los controladores
+ * de la aplicación.
  *
  * @link https://book.cakephp.org/5/en/controllers.html#the-app-controller
  */
 class AppController extends Controller
 {
     /**
-     * Initialization hook method.
+     * Método de inicialización
      *
-     * Use this method to add common initialization code like loading components.
+     * Usa este método para añadir código de inicialización común como cargar componentes.
      *
-     * e.g. `$this->loadComponent('FormProtection');`
+     * ej. `$this->loadComponent('FormProtection');`
      *
      * @return void
      */
@@ -53,16 +53,30 @@ class AppController extends Controller
         //$this->loadComponent('FormProtection');
     }
 
+    /**
+     * Método ejecutado antes de cada acción del controlador
+     *
+     * @param \Cake\Event\EventInterface $event El evento beforeFilter
+     * @return \Cake\Http\Response|null|void
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
 
-        // Skip authorization for DebugKit routes
+        // Omitir autorización para rutas de DebugKit
         if ($this->getRequest()->getParam('plugin') === 'DebugKit') {
             $this->Authorization->skipAuthorization();
         }
     }
 
+    /**
+     * Obtiene una instancia de tabla del modelo
+     *
+     * Método de utilidad para obtener una tabla del modelo de forma más sencilla
+     *
+     * @param string $name Nombre de la tabla (ej: 'Users', 'JornaticCore.Companies')
+     * @return mixed Instancia de la tabla del modelo
+     */
     protected function getTable(string $name): mixed
     {
         return $this->fetchTable($name);

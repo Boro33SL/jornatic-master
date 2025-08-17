@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\ORM\Entity;
 
 /**
- * Master Entity
+ * Entidad Master
+ *
+ * Representa un usuario master con privilegios administrativos del sistema
  *
  * @property int $id
  * @property string $name
@@ -29,11 +32,11 @@ use Cake\ORM\Entity;
 class Master extends Entity
 {
     /**
-     * Fields that can be mass assigned using newEntity() or patchEntity().
+     * Campos que pueden ser asignados masivamente usando newEntity() o patchEntity().
      *
-     * Note that when '*' is set to true, this allows all unspecified fields to
-     * be mass assigned. For security purposes, it is advised to set '*' to false
-     * (or remove it), and explicitly make individual fields accessible as needed.
+     * Nota: cuando '*' está en true, permite que todos los campos no especificados
+     * sean asignados masivamente. Por seguridad, se recomienda establecer '*' a false
+     * (o eliminarlo), y hacer específicamente accesibles los campos individuales según sea necesario.
      *
      * @var array<string, bool>
      */
@@ -56,7 +59,7 @@ class Master extends Entity
     ];
 
     /**
-     * Fields that are excluded from JSON versions of the entity.
+     * Campos que son excluidos de las versiones JSON de la entidad.
      *
      * @var list<string>
      */
@@ -66,10 +69,12 @@ class Master extends Entity
     ];
 
     /**
-     * Password hashing
+     * Hash de contraseña
      *
-     * @param string $password Password to hash
-     * @return string|null
+     * Procesa y hashea automáticamente las contraseñas cuando se asignan
+     *
+     * @param string $password Contraseña a hashear
+     * @return string|null Contraseña hasheada o null si está vacía
      */
     protected function _setPassword(string $password): ?string
     {
