@@ -91,7 +91,9 @@ class PlansController extends AppController
     {
         $plan = $this->Plans->get($id, [
             'contain' => [
-                'Features',
+                'Features' => function ($q) {
+                    return $q->orderBy(['Features.order' => 'ASC']);
+                },
                 'Prices',
                 'Subscriptions' => ['Companies'],
             ],
@@ -149,13 +151,38 @@ class PlansController extends AppController
     public function edit($id = null)
     {
         $plan = $this->Plans->get($id, [
-            'contain' => ['Features', 'Prices'],
+            'contain' => [
+                'Features' => function ($q) {
+                    return $q->orderBy(['Features.order' => 'ASC']);
+                },
+                'Prices'
+            ],
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $plan = $this->Plans->patchEntity($plan, $this->request->getData());
+            $data = $this->request->getData();
             
-            if ($this->Plans->save($plan)) {
+            // Procesar features si existen en los datos
+            if (isset($data['features'])) {
+                $featuresData = [];
+                foreach ($data['features'] as $featureId => $featureData) {
+                    if (!empty($featureData['selected'])) {
+                        $featuresData[] = [
+                            'id' => $featureId,
+                            '_joinData' => [
+                                'value' => $featureData['value'] ?? null
+                            ]
+                        ];
+                    }
+                }
+                $data['features'] = $featuresData;
+            }
+            
+            $plan = $this->Plans->patchEntity($plan, $data, [
+                'associated' => ['Features._joinData']
+            ]);
+            
+            if ($this->Plans->save($plan, ['associated' => ['Features']])) {
                 // Registrar actualización
                 $this->Logging->logUpdate('plans', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
@@ -169,11 +196,13 @@ class PlansController extends AppController
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_PLAN'));
         }
 
-        // Obtener features disponibles
+        // Obtener todas las features disponibles ordenadas
         $Features = $this->getTable('JornaticCore.Features');
-        $features = $Features->find('list')->toArray();
+        $allFeatures = $Features->find()
+            ->orderBy(['Features.order' => 'ASC'])
+            ->toArray();
 
-        $this->set(compact('plan', 'features'));
+        $this->set(compact('plan', 'allFeatures'));
     }
 
     /**

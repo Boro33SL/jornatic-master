@@ -28,7 +28,6 @@ class MastersController extends AppController
         $this->loadComponent('Logging');
 
         // Allow unauthenticated access to login only
-        $this->Authorization->skipAuthorization(['login']);
     }
 
     /**
@@ -53,7 +52,7 @@ class MastersController extends AppController
     public function login()
     {
         $this->request->allowMethod(['get', 'post']);
-
+        $this->Authorization->skipAuthorization();
         $result = $this->Authentication->getResult();
 
         // If user is already logged in, redirect to dashboard
@@ -110,9 +109,9 @@ class MastersController extends AppController
      */
     public function add()
     {
-        $this->Authorization->skipAuthorization();
-
         $master = $this->Masters->newEmptyEntity();
+
+        $this->Authorization->authorize($master);
 
         if ($this->request->is('post')) {
             $master = $this->Masters->patchEntity($master, $this->request->getData());
@@ -141,10 +140,10 @@ class MastersController extends AppController
      *
      * @return void
      */
-    public function dashboard()
+    public function dashboard(): void
     {
-        $this->Authorization->skipAuthorization();
-
+        // Autorizar el acceso al dashboard para cualquier master autenticado
+        $this->Authorization->authorize($this->Authentication->getIdentity()->getOriginalData(), 'dashboard');
         // Registrar acceso al dashboard
         $this->Logging->logView('dashboard');
 

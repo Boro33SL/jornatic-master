@@ -105,10 +105,30 @@
             <h2 class="card-title"><?= __('_CARACTERISTICAS_INCLUIDAS') ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <?php foreach ($plan->features as $feature): ?>
-                <div class="flex items-center gap-2">
-                    <?= $this->Icon->render('check', 'solid', ['class' => 'w-5 h-5 text-success']) ?>
-                    <span><?= h($feature->name) ?></span>
-                </div>
+                    <?php if ($feature->isBoolean()): ?>
+                        <?php $isIncluded = $plan->getFeatureBool($feature->code); ?>
+                        <div class="flex items-center gap-2">
+                            <?php if ($isIncluded): ?>
+                                <?= $this->Icon->render('check', 'solid', ['class' => 'w-5 h-5 text-success']) ?>
+                                <span><?= __( $feature->translation_string) ?></span>
+                            <?php else: ?>
+                                <?= $this->Icon->render('x-mark', 'solid', ['class' => 'w-5 h-5 text-error']) ?>
+                                <span class="text-base-content/60"><?= __( $feature->translation_string) ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php elseif ($feature->isInteger()): ?>
+                        <?php $value = $plan->getFeatureInt($feature->code); ?>
+                        <div class="flex items-center gap-2">
+                            <?= $this->Icon->render('hashtag', 'solid', ['class' => 'w-5 h-5 text-primary']) ?>
+                            <span><?= __($feature->translation_string) ?>: <strong><?= number_format($value) ?></strong></span>
+                        </div>
+                    <?php else: ?>
+                        <?php $value = $plan->getFeatureValue($feature->code); ?>
+                        <div class="flex items-center gap-2">
+                            <?= $this->Icon->render('document-text', 'solid', ['class' => 'w-5 h-5 text-info']) ?>
+                            <span><?= __($feature->translation_string) ?>: <strong><?= h($value) ?></strong></span>
+                        </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         </div>

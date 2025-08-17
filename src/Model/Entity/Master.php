@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\ORM\Entity;
 
 /**
@@ -13,7 +12,7 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string $email
  * @property string $password
- * @property string $role
+ * @property int $master_role_id
  * @property bool $is_active
  * @property string|null $allowed_ips
  * @property string|null $two_factor_secret
@@ -24,6 +23,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
  *
+ * @property \App\Model\Entity\MasterRole $role
  * @property \App\Model\Entity\MasterAccessLog[] $master_access_logs
  */
 class Master extends Entity
@@ -41,7 +41,7 @@ class Master extends Entity
         'name' => true,
         'email' => true,
         'password' => true,
-        'role' => true,
+        'master_role_id' => true,
         'is_active' => true,
         'allowed_ips' => true,
         'two_factor_secret' => true,
@@ -51,6 +51,7 @@ class Master extends Entity
         'locked_until' => true,
         'created' => true,
         'modified' => true,
+        'role' => true,
         'master_access_logs' => true,
     ];
 

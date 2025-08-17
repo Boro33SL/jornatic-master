@@ -25,6 +25,7 @@ class MastersTableTest extends TestCase
      */
     protected array $fixtures = [
         'app.Masters',
+        'app.MasterRoles',
         'app.MasterAccessLogs',
     ];
 

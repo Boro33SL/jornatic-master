@@ -49,7 +49,7 @@
                                 ?>
                                 <span class="badge <?= $typeClass ?>"><?= h($feature->data_type) ?></span>
                             </td>
-                            <td><?= number_format($feature->position ?? 0) ?></td>
+                            <td><?= number_format($feature->order ?? 0) ?></td>
                             <td><span class="badge badge-primary"><?= count($feature->plans ?? []) ?></span></td>
                             <td>
                                 <div class="flex justify-center gap-1">

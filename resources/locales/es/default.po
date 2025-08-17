@@ -1507,3 +1507,78 @@ msgstr "Volver a Logs"
 
 msgid "_VOLVER_AL_LISTADO"
 msgstr "Volver al Listado"
+
+msgid "_EDITAR_PLAN"
+msgstr "Editar Plan"
+
+msgid "_VER_PLAN"
+msgstr "Ver Plan"
+
+msgid "_LIMITE_DEPARTAMENTOS"
+msgstr "Límite de Departamentos"
+
+msgid "_ES_PLAN_TRIAL"
+msgstr "Es Plan de Prueba"
+
+msgid "_DIAS_TRIAL"
+msgstr "Días de Prueba"
+
+msgid "_CONFIGURAR_PRECIOS_EN_SECCION_DEDICADA"
+msgstr "Configurar precios en la sección dedicada"
+
+msgid "_CARACTERISTICAS_DEL_PLAN"
+msgstr "Características del Plan"
+
+msgid "_SELECCIONA_Y_CONFIGURA_CARACTERISTICAS"
+msgstr "Selecciona y configura las características"
+
+msgid "_ACTIVAR_CARACTERISTICA"
+msgstr "Activar Característica"
+
+msgid "_VALOR_NUMERICO"
+msgstr "Valor Numérico"
+
+msgid "_VALOR_TEXTO"
+msgstr "Valor de Texto"
+
+msgid "_USERS_LIMIT"
+msgstr "Límite de Usuarios"
+
+msgid "_DEPARTMENTS_LIMIT"
+msgstr "Límite de Departamentos"
+
+msgid "_STORAGE_LIMIT"
+msgstr "Límite de Almacenamiento"
+
+msgid "_ATTENDANCE_TRACKING"
+msgstr "Control de Asistencia"
+
+msgid "_VACATION_MANAGEMENT"
+msgstr "Gestión de Vacaciones"
+
+msgid "_CONTRACTS_MANAGEMENT"
+msgstr "Gestión de Contratos"
+
+msgid "_ANALYTICS"
+msgstr "Analíticas"
+
+msgid "_SKILLS_MANAGEMENT"
+msgstr "Gestión de Competencias"
+
+msgid "_STUDIES_MANAGEMENT"
+msgstr "Gestión de Estudios"
+
+msgid "_SUPPORT_LEVEL"
+msgstr "Nivel de Soporte"
+
+msgid "_REPORTING_ADVANCED"
+msgstr "Informes Avanzados"
+
+msgid "_CUSTOM_BRANDING"
+msgstr "Marca Personalizada"
+
+msgid "_CUSTOM_DOMAIN"
+msgstr "Dominio Personalizado"
+
+msgid "_API_ACCESS"
+msgstr "Acceso a API"

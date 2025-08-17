@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e28144350c780b77fddc286718342bdd",
+    "content-hash": "1f5fa31009d62416d943c8e5594e1154",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -632,7 +632,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com-Boro33SL:Boro33SL/jornatic-core.git",
-                "reference": "5a5507a53fb8a4c6d38c6f6e100bd6d7644414ef"
+                "reference": "b9ec53c1204e4a666e3ce529a3eb225c2b95608a"
             },
             "require": {
                 "cakephp/authentication": "~3.0",
@@ -673,7 +673,7 @@
                 }
             ],
             "description": "Core domain plugin for Jornatic platform - Shared models, services and business logic (dev branch)",
-            "time": "2025-08-16T12:15:30+00:00"
+            "time": "2025-08-17T11:15:50+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

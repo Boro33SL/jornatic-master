@@ -36,8 +36,6 @@ class CompaniesController extends AppController
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
-        // Skip authorization para todas las acciones (por ahora)
-        $this->Authorization->skipAuthorization();
     }
 
     /**
@@ -87,6 +85,7 @@ class CompaniesController extends AppController
 
         $companies = $this->paginate($query);
 
+        $this->Authorization->authorize($companies->items()->first());
         // Estadísticas
         $stats = $this->_getCompanyStats();
 
@@ -118,7 +117,9 @@ class CompaniesController extends AppController
         $totalUsers = $Users->find()->count();
 
         // Calcular media de usuarios por empresa (evitar división por cero)
-        $averageUsersPerCompany = $total > 0 ? round($totalUsers / $total, 1) : 0;
+        $averageUsersPerCompany = $total > 0
+            ? round($totalUsers / $total, 1)
+            : 0;
 
         return [
             'total' => $total,
@@ -149,7 +150,7 @@ class CompaniesController extends AppController
                 'AbsenceApprovalSettings',
             ],
         ]);
-
+        $this->Authorization->authorize($company);
         // Registrar visualización
         $this->Logging->logView('companies', (int)$id);
 
@@ -213,7 +214,7 @@ class CompaniesController extends AppController
         $company = $this->Companies->get($id, [
             'contain' => ['Subscriptions'],
         ]);
-
+        $this->Authorization->authorize($company);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $company = $this->Companies->patchEntity($company, $this->request->getData());
 

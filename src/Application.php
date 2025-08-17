@@ -70,7 +70,7 @@ class Application extends BaseApplication implements
         if (PHP_SAPI !== 'cli') {
             FactoryLocator::add(
                 'Table',
-                new TableLocator()->allowFallbackClass(false),
+                (new TableLocator())->allowFallbackClass(false),
             );
         }
     }
@@ -108,9 +108,7 @@ class Application extends BaseApplication implements
             ->add(new AuthenticationMiddleware($this))
 
             // Authorization middleware - después de Authentication
-            ->add(new AuthorizationMiddleware($this, [
-                'requireAuthorizationCheck' => false
-            ]))
+            ->add(new AuthorizationMiddleware($this))
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
@@ -140,7 +138,7 @@ class Application extends BaseApplication implements
      */
     public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
     {
-        // Usar ORM resolver para entidades
+        // Usar ORM resolver para entidades y tablas
         $resolver = new OrmResolver();
 
         return new AuthorizationService($resolver);

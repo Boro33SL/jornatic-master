@@ -57,8 +57,7 @@ class AppController extends Controller
         parent::beforeFilter($event);
         
         // Skip authorization for DebugKit routes
-        $request = $this->getRequest();
-        if (str_starts_with($request->getPath(), '/debug-kit')) {
+        if ($this->getRequest()->getParam('plugin') === 'DebugKit') {
             $this->Authorization->skipAuthorization();
         }
     }

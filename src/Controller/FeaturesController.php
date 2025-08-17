@@ -46,7 +46,7 @@ class FeaturesController extends AppController
         // Query base con relaciones
         $query = $this->Features->find()
             ->contain(['Plans'])
-            ->orderBy(['Features.position' => 'ASC', 'Features.created' => 'DESC']);
+            ->orderBy(['Features.order' => 'ASC', 'Features.created' => 'DESC']);
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
@@ -80,8 +80,10 @@ class FeaturesController extends AppController
         $dataTypes = $this->Features->find()
             ->select(['data_type'])
             ->group(['data_type'])
-            ->extract('data_type')
             ->toArray();
+        
+        // Extraer solo los valores de data_type
+        $dataTypes = array_column($dataTypes, 'data_type');
 
         $this->set(compact('features', 'filters', 'stats', 'dataTypes'));
     }
