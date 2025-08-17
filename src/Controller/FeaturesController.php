@@ -372,6 +372,59 @@ class FeaturesController extends AppController
     }
 
     /**
+     * Reorder method - Actualizar orden de características via AJAX
+     *
+     * @return \Cake\Http\Response
+     */
+    public function reorder()
+    {
+        $this->request->allowMethod(['post']);
+        
+        if (!$this->request->is('ajax')) {
+            throw new \Cake\Http\Exception\BadRequestException('Solo se permiten peticiones AJAX');
+        }
+
+        $data = $this->request->getData();
+        $featuresOrder = $data['features'] ?? [];
+
+        if (empty($featuresOrder)) {
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => 'No se recibieron datos de orden']));
+        }
+
+        $connection = $this->Features->getConnection();
+        $connection->begin();
+
+        try {
+            foreach ($featuresOrder as $index => $featureId) {
+                $newOrder = $index + 1; // Empezar desde 1
+                
+                $this->Features->updateAll(
+                    ['`order`' => $newOrder],
+                    ['id' => $featureId]
+                );
+            }
+
+            // Registrar la acción
+            $this->Logging->logUpdate('features_reorder', 0, [
+                'features_count' => count($featuresOrder),
+                'new_order' => $featuresOrder
+            ]);
+
+            $connection->commit();
+            
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode(['success' => true, 'message' => 'Orden actualizado correctamente']));
+                
+        } catch (\Exception $e) {
+            $connection->rollback();
+            
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => 'Error al actualizar el orden: ' . $e->getMessage()]));
+        }
+    }
+
+    /**
      * Obtener estadísticas específicas de una característica
      *
      * @param \JornaticCore\Model\Entity\Feature $feature

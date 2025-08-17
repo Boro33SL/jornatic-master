@@ -20,6 +20,9 @@ msgstr "Activa"
 msgid "_ACTIVAR"
 msgstr "Activar"
 
+msgid "_ACTIVAR_CARACTERISTICA"
+msgstr "Activar Característica"
+
 msgid "_ACTIVAR_CONTRATO"
 msgstr "Activar Contrato"
 
@@ -28,6 +31,9 @@ msgstr "Activas"
 
 msgid "_ACTIVE"
 msgstr "Activa"
+
+msgid "_ACTIVIDAD_TIEMPO_REAL"
+msgstr "Actividad en Tiempo Real"
 
 msgid "_ACTIVO"
 msgstr "Activo"
@@ -50,14 +56,23 @@ msgstr "Administrar planes de suscripción"
 msgid "_ADMINISTRAR_SUSCRIPCIONES_EMPRESAS"
 msgstr "Administrar suscripciones de las empresas"
 
+msgid "_ADVANCED_GPS_GEOFENCING"
+msgstr "Geolocalización avanzada y geocercas"
+
 msgid "_AJUSTAR_FILTROS"
 msgstr "Ajustar Filtros"
+
+msgid "_ALERTAS_Y_ATENCION"
+msgstr "Alertas y Atención"
 
 msgid "_ANADIR_ADMINISTRADOR"
 msgstr "Añadir administrador"
 
 msgid "_ANALISIS_ASISTENCIAS_PERIODO"
 msgstr "Análisis de asistencias por período"
+
+msgid "_ANALYTICS"
+msgstr "Analíticas"
 
 msgid "_ANO"
 msgstr "Año"
@@ -67,6 +82,12 @@ msgstr "Anual"
 
 msgid "_APELLIDOS"
 msgstr "Apellidos"
+
+msgid "_API_ACCESS"
+msgstr "Acceso a API"
+
+msgid "_ARRASTRA_PARA_REORDENAR_CARACTERISTICAS"
+msgstr "Arrastra las características para reordenarlas"
 
 msgid "_ASISTENCIA"
 msgstr "Asistencia"
@@ -82,6 +103,9 @@ msgstr "Asistencias"
 
 msgid "_ASISTENCIAS_REGISTRADAS"
 msgstr "Asistencias Registradas"
+
+msgid "_ATTENDANCE_TRACKING"
+msgstr "Control de Asistencia"
 
 msgid "_AUSENCIAS"
 msgstr "Ausencias"
@@ -116,6 +140,9 @@ msgstr "Calle y número"
 msgid "_CAMBIOS_PUEDEN_AFECTAR_USUARIOS"
 msgstr "Los cambios pueden afectar a los usuarios"
 
+msgid "_CANCELACIONES_MES"
+msgstr "Cancelaciones del Mes"
+
 msgid "_CANCELADA"
 msgstr "Cancelada"
 
@@ -137,6 +164,9 @@ msgstr "Característica eliminada correctamente"
 msgid "_CARACTERISTICAS"
 msgstr "Características"
 
+msgid "_CARACTERISTICAS_DEL_PLAN"
+msgstr "Características del Plan"
+
 msgid "_CARACTERISTICAS_INCLUIDAS"
 msgstr "Características Incluidas"
 
@@ -155,6 +185,9 @@ msgstr "Ciudad"
 msgid "_CLIENTES_PAGANDO"
 msgstr "Clientes Pagando"
 
+msgid "_CLV_PROMEDIO"
+msgstr "CLV Promedio"
+
 msgid "_CODIGO"
 msgstr "Código"
 
@@ -170,6 +203,9 @@ msgstr "Con Contratos"
 msgid "_CON_FESTIVOS"
 msgstr "con Festivos"
 
+msgid "_CON_FICHAJES_HOY"
+msgstr "con Fichajes Hoy"
+
 msgid "_CON_SUSCRIPCION"
 msgstr "Con Suscripción"
 
@@ -178,6 +214,9 @@ msgstr "Con Suscripciones"
 
 msgid "_CONFIGURAR_OFERTAS"
 msgstr "Configurar ofertas"
+
+msgid "_CONFIGURAR_PRECIOS_EN_SECCION_DEDICADA"
+msgstr "Configurar precios en la sección dedicada"
 
 msgid "_CONFIRMAR_ACTIVAR_CONTRATO"
 msgstr "¿Está seguro de que desea activar este contrato?"
@@ -205,6 +244,9 @@ msgstr "Construcción"
 
 msgid "_CONSULTORIA"
 msgstr "Consultoría"
+
+msgid "_CONTRACTS_MANAGEMENT"
+msgstr "Gestión de Contratos"
 
 msgid "_CONTRATO"
 msgstr "Contrato"
@@ -239,6 +281,18 @@ msgstr "Control de fichajes"
 msgid "_CREACION_MASIVA"
 msgstr "Creación Masiva"
 
+msgid "_CRECIMIENTO_ARR"
+msgstr "Crecimiento ARR"
+
+msgid "_CRECIMIENTO_MOM"
+msgstr "Crecimiento MoM"
+
+msgid "_CUSTOM_BRANDING"
+msgstr "Marca Personalizada"
+
+msgid "_CUSTOM_DOMAIN"
+msgstr "Dominio Personalizado"
+
 msgid "_DASHBOARD"
 msgstr "Dashboard"
 
@@ -265,6 +319,9 @@ msgstr "Departamento desactivado correctamente"
 
 msgid "_DEPARTAMENTOS"
 msgstr "Departamentos"
+
+msgid "_DEPARTMENTS_LIMIT"
+msgstr "Límite de Departamentos"
 
 msgid "_DESACTIVAR"
 msgstr "Desactivar"
@@ -308,6 +365,9 @@ msgstr "días"
 msgid "_DIAS_HASTA_FESTIVO"
 msgstr "Días hasta Festivo"
 
+msgid "_DIAS_TRIAL"
+msgstr "Días de Prueba"
+
 msgid "_DIAS_UNICOS"
 msgstr "Días Únicos"
 
@@ -326,6 +386,9 @@ msgstr "disponibles"
 msgid "_DISPOSITIVO"
 msgstr "Dispositivo"
 
+msgid "_DISTRIBUCION_GEOGRAFICA"
+msgstr "Distribución Geográfica"
+
 msgid "_DISTRIBUCION_POR_PLANES"
 msgstr "Distribución por Planes"
 
@@ -340,6 +403,9 @@ msgstr "Editar"
 
 msgid "_EDITAR_EMPRESA"
 msgstr "Editar Empresa"
+
+msgid "_EDITAR_PLAN"
+msgstr "Editar Plan"
 
 msgid "_EDUCACION"
 msgstr "Educación"
@@ -377,6 +443,9 @@ msgstr "Empleados Recientes"
 msgid "_EMPLEADOS_REGISTRARON_ASISTENCIAS_EN_FESTIVO"
 msgstr "Empleados que registraron asistencias en este festivo"
 
+msgid "_EMPLEADOS_UNICOS_HOY"
+msgstr "Empleados Únicos Hoy"
+
 msgid "_EMPRESA"
 msgstr "Empresa"
 
@@ -406,6 +475,9 @@ msgstr "Empresas"
 
 msgid "_EMPRESAS_ACTIVAS"
 msgstr "Empresas Activas"
+
+msgid "_EMPRESAS_ACTIVAS_HOY"
+msgstr "Empresas Activas Hoy"
 
 msgid "_EN_PRUEBA"
 msgstr "En Prueba"
@@ -448,6 +520,9 @@ msgstr "Error al actualizar empresa"
 
 msgid "_ERROR_AL_ACTUALIZAR_FESTIVO"
 msgstr "Error al actualizar festivo"
+
+msgid "_ERROR_AL_ACTUALIZAR_ORDEN"
+msgstr "Error al actualizar el orden"
 
 msgid "_ERROR_AL_ACTUALIZAR_PLAN"
 msgstr "Error al actualizar plan"
@@ -511,6 +586,9 @@ msgstr "Error al reactivar suscripción"
 
 msgid "_ERROR_DATOS_OBLIGATORIOS"
 msgstr "Error: datos obligatorios"
+
+msgid "_ES_PLAN_TRIAL"
+msgstr "Es Plan de Prueba"
 
 msgid "_ESTADISTICAS"
 msgstr "Estadísticas"
@@ -629,6 +707,9 @@ msgstr "Fichajes Este Mes"
 msgid "_FICHAJES_HOY"
 msgstr "Fichajes Hoy"
 
+msgid "_FICHAJES_POR_HORA"
+msgstr "Fichajes por Hora"
+
 msgid "_FILTRAR"
 msgstr "Filtrar"
 
@@ -701,8 +782,14 @@ msgstr "Gestionar Precios"
 msgid "_GPS"
 msgstr "GPS"
 
+msgid "_GUARDANDO_ORDEN"
+msgstr "Guardando orden"
+
 msgid "_GUARDAR_CAMBIOS"
 msgstr "Guardar Cambios"
+
+msgid "_HAN_FICHADO_HOY"
+msgstr "han Fichado Hoy"
 
 msgid "_HORA"
 msgstr "Hora"
@@ -797,90 +884,6 @@ msgstr "Información del Usuario"
 msgid "_INFORMES_Y_ESTADISTICAS"
 msgstr "Informes y estadísticas"
 
-msgid "_SALUD_DEL_NEGOCIO"
-msgstr "Salud del Negocio"
-
-msgid "_TASA_CONVERSION"
-msgstr "Tasa de Conversión"
-
-msgid "_TRIAL_A_PAGADAS"
-msgstr "Trial a Pagadas"
-
-msgid "_TASA_CHURN"
-msgstr "Tasa de Churn"
-
-msgid "_CANCELACIONES_MES"
-msgstr "Cancelaciones del Mes"
-
-msgid "_CRECIMIENTO_ARR"
-msgstr "Crecimiento ARR"
-
-msgid "_VS_ANO_ANTERIOR"
-msgstr "vs. Año Anterior"
-
-msgid "_CLV_PROMEDIO"
-msgstr "CLV Promedio"
-
-msgid "_VALOR_VIDA_CLIENTE"
-msgstr "Valor de Vida del Cliente"
-
-msgid "_ACTIVIDAD_TIEMPO_REAL"
-msgstr "Actividad en Tiempo Real"
-
-msgid "_EMPRESAS_ACTIVAS_HOY"
-msgstr "Empresas Activas Hoy"
-
-msgid "_CON_FICHAJES_HOY"
-msgstr "con Fichajes Hoy"
-
-msgid "_EMPLEADOS_UNICOS_HOY"
-msgstr "Empleados Únicos Hoy"
-
-msgid "_HAN_FICHADO_HOY"
-msgstr "han Fichado Hoy"
-
-msgid "_FICHAJES_POR_HORA"
-msgstr "Fichajes por Hora"
-
-msgid "_PROMEDIO_HOY"
-msgstr "Promedio Hoy"
-
-msgid "_MAS_30_DIAS_SIN_ACTIVIDAD"
-msgstr "más de 30 días sin actividad"
-
-msgid "_CRECIMIENTO_MOM"
-msgstr "Crecimiento MoM"
-
-msgid "_DISTRIBUCION_GEOGRAFICA"
-msgstr "Distribución Geográfica"
-
-msgid "_ALERTAS_Y_ATENCION"
-msgstr "Alertas y Atención"
-
-msgid "_TRIALS_EXPIRANDO"
-msgstr "Trials Expirando"
-
-msgid "_PROXIMOS_7_DIAS"
-msgstr "Próximos 7 Días"
-
-msgid "_PAGOS_FALLIDOS"
-msgstr "Pagos Fallidos"
-
-msgid "_REQUIEREN_ATENCION"
-msgstr "Requieren Atención"
-
-msgid "_SIN_ACTIVIDAD"
-msgstr "Sin Actividad"
-
-msgid "_MAS_30_DIAS"
-msgstr "más de 30 días"
-
-msgid "_SYSTEM_HEALTH"
-msgstr "System Health"
-
-msgid "_UPTIME_7_DIAS"
-msgstr "Uptime 7 días"
-
 msgid "_INGRESOS_MENSUALES"
 msgstr "Ingresos Mensuales"
 
@@ -905,6 +908,9 @@ msgstr "Jornada"
 msgid "_LATITUD"
 msgstr "Latitud"
 
+msgid "_LIMITE_DEPARTAMENTOS"
+msgstr "Límite de Departamentos"
+
 msgid "_LIMITE_USUARIOS"
 msgstr "Límite de Usuarios"
 
@@ -928,6 +934,12 @@ msgstr "Longitud"
 
 msgid "_MANUFACTURA"
 msgstr "Manufactura"
+
+msgid "_MAS_30_DIAS"
+msgstr "más de 30 días"
+
+msgid "_MAS_30_DIAS_SIN_ACTIVIDAD"
+msgstr "más de 30 días sin actividad"
 
 msgid "_MEDIA_FESTIVOS_EMPRESA"
 msgstr "Media Festivos por Empresa"
@@ -1058,6 +1070,9 @@ msgstr "Operaciones incorrectas"
 msgid "_ORDEN"
 msgstr "Orden"
 
+msgid "_ORDEN_ACTUALIZADO_CORRECTAMENTE"
+msgstr "Orden actualizado correctamente"
+
 msgid "_ORGANIZACION_EMPRESARIAL"
 msgstr "Organización empresarial"
 
@@ -1078,6 +1093,9 @@ msgstr "Otros Festivos del Mismo Año"
 
 msgid "_PAGINA_{page}_DE_{pages}_MOSTRANDO_{current}_DE_{count}_TOTAL"
 msgstr "Página {page} de {pages}, mostrando {current} de {count} total"
+
+msgid "_PAGOS_FALLIDOS"
+msgstr "Pagos Fallidos"
 
 msgid "_PAIS"
 msgstr "País"
@@ -1154,6 +1172,9 @@ msgstr "Precios actualizados correctamente"
 msgid "_PRECISION"
 msgstr "Precisión"
 
+msgid "_PREFERENCIAL_SUPPORT"
+msgstr "Soporte preferente"
+
 msgid "_PROMEDIO_ASISTENCIAS_EMPLEADO"
 msgstr "Promedio Asistencias por Empleado"
 
@@ -1163,11 +1184,17 @@ msgstr "Promedio por Día"
 msgid "_PROMEDIO_DIAS_TRABAJADOS"
 msgstr "Promedio Días Trabajados"
 
+msgid "_PROMEDIO_HOY"
+msgstr "Promedio Hoy"
+
 msgid "_PROVINCIA"
 msgstr "Provincia"
 
 msgid "_PROVINCIA_COMUNIDAD"
 msgstr "Provincia o Comunidad"
+
+msgid "_PROXIMOS_7_DIAS"
+msgstr "Próximos 7 Días"
 
 msgid "_PROXIMOS_FESTIVOS"
 msgstr "Próximos Festivos"
@@ -1208,6 +1235,12 @@ msgstr "Reportes"
 msgid "_REPORTES_ASISTENCIAS"
 msgstr "Reportes de Asistencias"
 
+msgid "_REPORTING_ADVANCED"
+msgstr "Informes Avanzados"
+
+msgid "_REQUIEREN_ATENCION"
+msgstr "Requieren Atención"
+
 msgid "_RESULTADO"
 msgstr "Resultado"
 
@@ -1238,6 +1271,12 @@ msgstr "Salidas del Período"
 msgid "_SALUD"
 msgstr "Salud"
 
+msgid "_SALUD_DEL_NEGOCIO"
+msgstr "Salud del Negocio"
+
+msgid "_SELECCIONA_Y_CONFIGURA_CARACTERISTICAS"
+msgstr "Selecciona y configura las características"
+
 msgid "_SELECCIONAR_INDUSTRIA"
 msgstr "Seleccionar industria"
 
@@ -1249,6 +1288,9 @@ msgstr "Sesión cerrada correctamente"
 
 msgid "_SI"
 msgstr "Sí"
+
+msgid "_SIN_ACTIVIDAD"
+msgstr "Sin Actividad"
 
 msgid "_SIN_ASISTENCIAS_REGISTRADAS"
 msgstr "Sin Asistencias Registradas"
@@ -1277,11 +1319,23 @@ msgstr "Sin Vencimiento"
 msgid "_SITIO_WEB"
 msgstr "Sitio Web"
 
+msgid "_SKILLS_MANAGEMENT"
+msgstr "Gestión de Competencias"
+
 msgid "_SOLO_ACTIVOS"
 msgstr "Solo Activos"
 
+msgid "_STORAGE_LIMIT"
+msgstr "Límite de Almacenamiento"
+
 msgid "_STRIPE_ID"
 msgstr "Stripe ID"
+
+msgid "_STUDIES_MANAGEMENT"
+msgstr "Gestión de Estudios"
+
+msgid "_SUPPORT_LEVEL"
+msgstr "Nivel de Soporte"
 
 msgid "_SUSCRIPCION"
 msgstr "Suscripción"
@@ -1306,6 +1360,15 @@ msgstr "Suscripciones"
 
 msgid "_SUSCRIPCIONES_ACTIVAS"
 msgstr "Suscripciones Activas"
+
+msgid "_SYSTEM_HEALTH"
+msgstr "System Health"
+
+msgid "_TASA_CHURN"
+msgstr "Tasa de Churn"
+
+msgid "_TASA_CONVERSION"
+msgstr "Tasa de Conversión"
 
 msgid "_TECNOLOGIA"
 msgstr "Tecnología"
@@ -1394,6 +1457,12 @@ msgstr "Transporte"
 msgid "_TRIAL"
 msgstr "Trial"
 
+msgid "_TRIAL_A_PAGADAS"
+msgstr "Trial a Pagadas"
+
+msgid "_TRIALS_EXPIRANDO"
+msgstr "Trials Expirando"
+
 msgid "_UBICACION"
 msgstr "Ubicación"
 
@@ -1403,8 +1472,14 @@ msgstr "Última Modificación"
 msgid "_ULTIMAS_ASISTENCIAS"
 msgstr "Últimas Asistencias"
 
+msgid "_UPTIME_7_DIAS"
+msgstr "Uptime 7 días"
+
 msgid "_USER_AGENT"
 msgstr "Navegador"
+
+msgid "_USERS_LIMIT"
+msgstr "Límite de Usuarios"
 
 msgid "_USUARIO"
 msgstr "Usuario"
@@ -1444,6 +1519,18 @@ msgstr "Usuarios Total"
 
 msgid "_UUID"
 msgstr "UUID"
+
+msgid "_VACATION_MANAGEMENT"
+msgstr "Gestión de Vacaciones"
+
+msgid "_VALOR_NUMERICO"
+msgstr "Valor Numérico"
+
+msgid "_VALOR_TEXTO"
+msgstr "Valor de Texto"
+
+msgid "_VALOR_VIDA_CLIENTE"
+msgstr "Valor de Vida del Cliente"
 
 msgid "_VENCE_EN_{0}_DIAS"
 msgstr "Vence en {0} días"
@@ -1487,6 +1574,9 @@ msgstr "Ver Empresa"
 msgid "_VER_FESTIVOS"
 msgstr "Ver Festivos"
 
+msgid "_VER_PLAN"
+msgstr "Ver Plan"
+
 msgid "_VER_TODAS"
 msgstr "Ver Todas"
 
@@ -1508,77 +1598,5 @@ msgstr "Volver a Logs"
 msgid "_VOLVER_AL_LISTADO"
 msgstr "Volver al Listado"
 
-msgid "_EDITAR_PLAN"
-msgstr "Editar Plan"
-
-msgid "_VER_PLAN"
-msgstr "Ver Plan"
-
-msgid "_LIMITE_DEPARTAMENTOS"
-msgstr "Límite de Departamentos"
-
-msgid "_ES_PLAN_TRIAL"
-msgstr "Es Plan de Prueba"
-
-msgid "_DIAS_TRIAL"
-msgstr "Días de Prueba"
-
-msgid "_CONFIGURAR_PRECIOS_EN_SECCION_DEDICADA"
-msgstr "Configurar precios en la sección dedicada"
-
-msgid "_CARACTERISTICAS_DEL_PLAN"
-msgstr "Características del Plan"
-
-msgid "_SELECCIONA_Y_CONFIGURA_CARACTERISTICAS"
-msgstr "Selecciona y configura las características"
-
-msgid "_ACTIVAR_CARACTERISTICA"
-msgstr "Activar Característica"
-
-msgid "_VALOR_NUMERICO"
-msgstr "Valor Numérico"
-
-msgid "_VALOR_TEXTO"
-msgstr "Valor de Texto"
-
-msgid "_USERS_LIMIT"
-msgstr "Límite de Usuarios"
-
-msgid "_DEPARTMENTS_LIMIT"
-msgstr "Límite de Departamentos"
-
-msgid "_STORAGE_LIMIT"
-msgstr "Límite de Almacenamiento"
-
-msgid "_ATTENDANCE_TRACKING"
-msgstr "Control de Asistencia"
-
-msgid "_VACATION_MANAGEMENT"
-msgstr "Gestión de Vacaciones"
-
-msgid "_CONTRACTS_MANAGEMENT"
-msgstr "Gestión de Contratos"
-
-msgid "_ANALYTICS"
-msgstr "Analíticas"
-
-msgid "_SKILLS_MANAGEMENT"
-msgstr "Gestión de Competencias"
-
-msgid "_STUDIES_MANAGEMENT"
-msgstr "Gestión de Estudios"
-
-msgid "_SUPPORT_LEVEL"
-msgstr "Nivel de Soporte"
-
-msgid "_REPORTING_ADVANCED"
-msgstr "Informes Avanzados"
-
-msgid "_CUSTOM_BRANDING"
-msgstr "Marca Personalizada"
-
-msgid "_CUSTOM_DOMAIN"
-msgstr "Dominio Personalizado"
-
-msgid "_API_ACCESS"
-msgstr "Acceso a API"
+msgid "_VS_ANO_ANTERIOR"
+msgstr "vs. Año Anterior"
