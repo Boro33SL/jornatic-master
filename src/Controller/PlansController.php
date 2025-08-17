@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use JornaticCore\Model\Entity\Plan;
 use JornaticCore\Model\Table\PlansTable;
 
 /**
@@ -16,6 +16,7 @@ use JornaticCore\Model\Table\PlansTable;
 class PlansController extends AppController
 {
     protected PlansTable $Plans;
+
     /**
      * Initialization hook method.
      *
@@ -27,7 +28,7 @@ class PlansController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Plans = $this->getTable('JornaticCore.Plans');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -52,17 +53,17 @@ class PlansController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
             $query->where([
                 'OR' => [
                     'Plans.name LIKE' => $search,
                     'Plans.description LIKE' => $search,
-                ]
+                ],
             ]);
         }
-        
+
         if (isset($filters['is_trial'])) {
             $query->where(['Plans.is_trial' => (bool)$filters['is_trial']]);
         }
@@ -87,7 +88,7 @@ class PlansController extends AppController
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $plan = $this->Plans->get($id, [
             'contain' => [
@@ -119,19 +120,20 @@ class PlansController extends AppController
 
         if ($this->request->is('post')) {
             $plan = $this->Plans->patchEntity($plan, $this->request->getData());
-            
+
             if ($this->Plans->save($plan)) {
                 // Registrar creación
                 $this->Logging->logCreate('plans', $plan->id, [
                     'plan_name' => $plan->name,
                     'max_users' => $plan->max_users,
-                    'is_trial' => $plan->is_trial
+                    'is_trial' => $plan->is_trial,
                 ]);
-                
+
                 $this->Flash->success(__('_PLAN_CREADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $plan->id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_CREAR_PLAN'));
         }
 
@@ -148,20 +150,20 @@ class PlansController extends AppController
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $plan = $this->Plans->get($id, [
             'contain' => [
                 'Features' => function ($q) {
                     return $q->orderBy(['Features.order' => 'ASC']);
                 },
-                'Prices'
+                'Prices',
             ],
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            
+
             // Procesar features si existen en los datos
             if (isset($data['features'])) {
                 $featuresData = [];
@@ -170,29 +172,30 @@ class PlansController extends AppController
                         $featuresData[] = [
                             'id' => $featureId,
                             '_joinData' => [
-                                'value' => $featureData['value'] ?? null
-                            ]
+                                'value' => $featureData['value'] ?? null,
+                            ],
                         ];
                     }
                 }
                 $data['features'] = $featuresData;
             }
-            
+
             $plan = $this->Plans->patchEntity($plan, $data, [
-                'associated' => ['Features._joinData']
+                'associated' => ['Features._joinData'],
             ]);
-            
+
             if ($this->Plans->save($plan, ['associated' => ['Features']])) {
                 // Registrar actualización
                 $this->Logging->logUpdate('plans', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
-                    'plan_name' => $plan->name
+                    'plan_name' => $plan->name,
                 ]);
-                
+
                 $this->Flash->success(__('_PLAN_ACTUALIZADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_PLAN'));
         }
 
@@ -211,34 +214,35 @@ class PlansController extends AppController
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        
+
         $plan = $this->Plans->get($id);
-        
+
         // Verificar si el plan tiene suscripciones activas
         $Subscriptions = $this->getTable('JornaticCore.Subscriptions');
         $activeSubscriptions = $Subscriptions->find()
             ->where([
                 'plan_id' => $id,
-                'status IN' => ['active', 'trial']
+                'status IN' => ['active', 'trial'],
             ])
             ->count();
 
         if ($activeSubscriptions > 0) {
             $this->Flash->error(__('_NO_SE_PUEDE_ELIMINAR_PLAN_CON_SUSCRIPCIONES_ACTIVAS'));
+
             return $this->redirect(['action' => 'view', $id]);
         }
-        
+
         if ($this->Plans->delete($plan)) {
             // Registrar eliminación
             $this->Logging->logDelete('plans', (int)$id, [
                 'plan_name' => $plan->name,
                 'hard_delete' => true,
-                'active_subscriptions' => $activeSubscriptions
+                'active_subscriptions' => $activeSubscriptions,
             ]);
-            
+
             $this->Flash->success(__('_PLAN_ELIMINADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_ELIMINAR_PLAN'));
@@ -247,14 +251,13 @@ class PlansController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-
     /**
      * Prices method - Gestionar precios de un plan
      *
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
      */
-    public function prices($id = null)
+    public function prices(?string $id = null)
     {
         $plan = $this->Plans->get($id, [
             'contain' => ['Prices'],
@@ -265,10 +268,10 @@ class PlansController extends AppController
 
         if ($this->request->is(['post', 'put', 'patch'])) {
             $pricesData = $this->request->getData('prices', []);
-            
+
             $Prices = $this->getTable('JornaticCore.Prices');
             $success = true;
-            
+
             foreach ($pricesData as $priceData) {
                 if (!empty($priceData['id'])) {
                     // Actualizar precio existente
@@ -279,20 +282,21 @@ class PlansController extends AppController
                     $priceData['plan_id'] = $id;
                     $price = $Prices->newEntity($priceData);
                 }
-                
+
                 if (!$Prices->save($price)) {
                     $success = false;
                     break;
                 }
             }
-            
+
             if ($success) {
                 $this->Logging->logUpdate('plans', (int)$id, [
                     'action' => 'update_prices',
-                    'plan_name' => $plan->name
+                    'plan_name' => $plan->name,
                 ]);
-                
+
                 $this->Flash->success(__('_PRECIOS_ACTUALIZADOS_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             } else {
                 $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_PRECIOS'));
@@ -314,7 +318,7 @@ class PlansController extends AppController
         // Registrar exportación
         $this->Logging->logExport('plans', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $plans = $this->Plans->find()
@@ -339,7 +343,7 @@ class PlansController extends AppController
         foreach ($plans as $plan) {
             $monthlyPrice = '';
             $annualPrice = '';
-            
+
             foreach ($plan->prices as $price) {
                 if ($price->period === 'monthly') {
                     $monthlyPrice = $price->amount;
@@ -347,7 +351,7 @@ class PlansController extends AppController
                     $annualPrice = $price->amount;
                 }
             }
-            
+
             $csvData[] = [
                 $plan->name,
                 $plan->description ?? '',
@@ -363,14 +367,14 @@ class PlansController extends AppController
 
         // Generar CSV
         $filename = 'plans_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -387,7 +391,7 @@ class PlansController extends AppController
     private function _getPlanStats(): array
     {
         $total = $this->Plans->find()->count();
-        
+
         $withSubscriptions = $this->Plans->find()
             ->matching('Subscriptions')
             ->count();
@@ -410,39 +414,39 @@ class PlansController extends AppController
      * @param \JornaticCore\Model\Entity\Plan $plan
      * @return array
      */
-    private function _getSpecificPlanStats($plan): array
+    private function _getSpecificPlanStats(Plan $plan): array
     {
         $Subscriptions = $this->getTable('JornaticCore.Subscriptions');
-        
+
         $totalSubscriptions = count($plan->subscriptions ?? []);
-        
+
         $activeSubscriptions = $Subscriptions->find()
             ->where([
                 'plan_id' => $plan->id,
-                'status IN' => ['active', 'trial']
+                'status IN' => ['active', 'trial'],
             ])
             ->count();
-            
+
         $monthlySubscriptions = $Subscriptions->find()
             ->where([
                 'plan_id' => $plan->id,
                 'period' => 'monthly',
-                'status IN' => ['active', 'trial']
+                'status IN' => ['active', 'trial'],
             ])
             ->count();
-            
+
         $annualSubscriptions = $Subscriptions->find()
             ->where([
                 'plan_id' => $plan->id,
-                'period' => 'annual', 
-                'status IN' => ['active', 'trial']
+                'period' => 'annual',
+                'status IN' => ['active', 'trial'],
             ])
             ->count();
 
         // Calcular revenue mensual
         $monthlyRevenue = 0;
         $annualRevenue = 0;
-        
+
         foreach ($plan->prices as $price) {
             if ($price->period === 'monthly') {
                 $monthlyRevenue = $monthlySubscriptions * (float)$price->amount;

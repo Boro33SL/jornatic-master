@@ -63,6 +63,7 @@ class MasterPolicy
         if ($user->getIdentifier() === $master->id) {
             return true;
         }
+
         return false;
     }
 

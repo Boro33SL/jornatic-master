@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
 use JornaticCore\Model\Table\CompaniesTable;
 
 /**
@@ -35,7 +34,6 @@ class CompaniesController extends AppController
 
         // Cargar componente de logging
         $this->loadComponent('Logging');
-
     }
 
     /**
@@ -67,7 +65,7 @@ class CompaniesController extends AppController
                     'Companies.legal_name LIKE' => $search,
                     'Companies.nif LIKE' => $search,
                     'Companies.email LIKE' => $search,
-                ]
+                ],
             ]);
         }
 
@@ -108,7 +106,7 @@ class CompaniesController extends AppController
         $createdThisMonth = $this->Companies->find()
             ->where([
                 'MONTH(Companies.created)' => date('m'),
-                'YEAR(Companies.created)' => date('Y')
+                'YEAR(Companies.created)' => date('Y'),
             ])
             ->count();
 
@@ -136,7 +134,7 @@ class CompaniesController extends AppController
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $company = $this->Companies->get($id, [
             'contain' => [
@@ -167,7 +165,7 @@ class CompaniesController extends AppController
         $activeUsers = $Users->find()
             ->where([
                 'company_id' => $id,
-                'is_active' => true
+                'is_active' => true,
             ])
             ->count();
 
@@ -176,14 +174,14 @@ class CompaniesController extends AppController
                 return $q->where(['Users.company_id' => $id]);
             })
             ->where([
-                'DATE(timestamp)' => date('Y-m-d')
+                'DATE(timestamp)' => date('Y-m-d'),
             ])
             ->count();
 
         $pendingAbsences = $Absences->find()
             ->where([
                 'company_id' => $id,
-                'status' => 'pending'
+                'status' => 'pending',
             ])
             ->count();
 
@@ -209,7 +207,7 @@ class CompaniesController extends AppController
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $company = $this->Companies->get($id, [
             'contain' => ['Subscriptions'],
@@ -221,10 +219,11 @@ class CompaniesController extends AppController
             if ($this->Companies->save($company)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('companies', (int)$id, [
-                    'updated_fields' => array_keys($this->request->getData())
+                    'updated_fields' => array_keys($this->request->getData()),
                 ]);
 
                 $this->Flash->success(__('_EMPRESA_ACTUALIZADA_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
 
@@ -240,7 +239,7 @@ class CompaniesController extends AppController
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -253,7 +252,7 @@ class CompaniesController extends AppController
             // Registrar eliminación lógica
             $this->Logging->logDelete('companies', (int)$id, [
                 'company_name' => $company->name,
-                'soft_delete' => true
+                'soft_delete' => true,
             ]);
 
             $this->Flash->success(__('_EMPRESA_DESACTIVADA_CORRECTAMENTE'));
@@ -270,7 +269,7 @@ class CompaniesController extends AppController
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null
      */
-    public function activate($id = null)
+    public function activate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
 
@@ -281,7 +280,7 @@ class CompaniesController extends AppController
             // Registrar activación
             $this->Logging->logUpdate('companies', (int)$id, [
                 'action' => 'activate',
-                'company_name' => $company->name
+                'company_name' => $company->name,
             ]);
 
             $this->Flash->success(__('_EMPRESA_ACTIVADA_CORRECTAMENTE'));
@@ -304,7 +303,7 @@ class CompaniesController extends AppController
         // Registrar exportación
         $this->Logging->logExport('companies', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $companies = $this->Companies->find()

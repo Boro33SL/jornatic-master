@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use Cake\I18n\Date;
+use DateTime;
+use JornaticCore\Model\Entity\Contract;
 
 /**
  * Contracts Controller
@@ -25,7 +27,7 @@ class ContractsController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Contracts = $this->getTable('JornaticCore.Contracts');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -50,35 +52,35 @@ class ContractsController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
-            $query->matching('Users', function($q) use ($search) {
+            $query->matching('Users', function ($q) use ($search) {
                 return $q->where([
                     'OR' => [
                         'Users.name LIKE' => $search,
                         'Users.lastname LIKE' => $search,
                         'Users.email LIKE' => $search,
                         'Users.dni_nie LIKE' => $search,
-                    ]
+                    ],
                 ]);
             });
         }
-        
+
         if (!empty($filters['company_id'])) {
-            $query->matching('Users', function($q) use ($filters) {
+            $query->matching('Users', function ($q) use ($filters) {
                 return $q->where(['Users.company_id' => $filters['company_id']]);
             });
         }
-        
+
         if (!empty($filters['professional_category_id'])) {
             $query->where(['Contracts.professional_category_id' => $filters['professional_category_id']]);
         }
-        
+
         if (isset($filters['is_active'])) {
             $query->where(['Contracts.is_active' => (bool)$filters['is_active']]);
         }
-        
+
         // Filtro por tipo deshabilitado (campo no existe)
         // if (!empty($filters['type'])) {
         //     $query->where(['Contracts.contract_type' => $filters['type']]);
@@ -98,7 +100,7 @@ class ContractsController extends AppController
         // Obtener opciones para filtros
         $Companies = $this->getTable('JornaticCore.Companies');
         $companies = $Companies->find('list')->toArray();
-        
+
         $ProfessionalCategories = $this->getTable('JornaticCore.ProfessionalCategories');
         $professionalCategories = $ProfessionalCategories->find('list')->toArray();
 
@@ -111,7 +113,7 @@ class ContractsController extends AppController
      * @param string|null $id Contract id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $contract = $this->Contracts->get($id, [
             'contain' => [
@@ -140,20 +142,21 @@ class ContractsController extends AppController
 
         if ($this->request->is('post')) {
             $contract = $this->Contracts->patchEntity($contract, $this->request->getData());
-            
+
             if ($this->Contracts->save($contract)) {
                 // Registrar creación
                 $this->Logging->logCreate('contracts', $contract->id, [
                     'user_id' => $contract->user_id,
                     'professional_category_id' => $contract->professional_category_id,
                     'start_date' => $contract->start_date ? $contract->start_date->format('Y-m-d') : null,
-                    'is_active' => $contract->is_active
+                    'is_active' => $contract->is_active,
                 ]);
-                
+
                 $this->Flash->success(__('_CONTRATO_CREADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $contract->id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_CREAR_CONTRATO'));
         }
 
@@ -161,11 +164,11 @@ class ContractsController extends AppController
         $Users = $this->getTable('JornaticCore.Users');
         $users = $Users->find()
             ->contain(['Companies'])
-            ->combine('id', function($user) {
+            ->combine('id', function ($user) {
                 return $user->name . ' ' . $user->lastname . ' (' . ($user->company->name ?? '') . ')';
             })
             ->toArray();
-        
+
         $ProfessionalCategories = $this->getTable('JornaticCore.ProfessionalCategories');
         $professionalCategories = $ProfessionalCategories->find('list')->toArray();
 
@@ -178,7 +181,7 @@ class ContractsController extends AppController
      * @param string|null $id Contract id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $contract = $this->Contracts->get($id, [
             'contain' => ['Users' => ['Companies'], 'ContractTypes', 'Studies'],
@@ -186,19 +189,20 @@ class ContractsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $contract = $this->Contracts->patchEntity($contract, $this->request->getData());
-            
+
             if ($this->Contracts->save($contract)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('contracts', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
                     'user_name' => $contract->user->name . ' ' . $contract->user->lastname,
-                    'professional_category' => $contract->professional_category->name ?? ''
+                    'professional_category' => $contract->professional_category->name ?? '',
                 ]);
-                
+
                 $this->Flash->success(__('_CONTRATO_ACTUALIZADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_CONTRATO'));
         }
 
@@ -206,11 +210,11 @@ class ContractsController extends AppController
         $Users = $this->getTable('JornaticCore.Users');
         $users = $Users->find()
             ->contain(['Companies'])
-            ->combine('id', function($user) {
+            ->combine('id', function ($user) {
                 return $user->name . ' ' . $user->lastname . ' (' . ($user->company->name ?? '') . ')';
             })
             ->toArray();
-        
+
         $ProfessionalCategories = $this->getTable('JornaticCore.ProfessionalCategories');
         $professionalCategories = $ProfessionalCategories->find('list')->toArray();
 
@@ -223,27 +227,27 @@ class ContractsController extends AppController
      * @param string|null $id Contract id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        
+
         $contract = $this->Contracts->get($id, [
-            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories']
+            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories'],
         ]);
-        
+
         // Marcar como inactivo en lugar de eliminar
         $contract->is_active = false;
-        $contract->end_date = new \DateTime();
-        
+        $contract->end_date = new DateTime();
+
         if ($this->Contracts->save($contract)) {
             // Registrar eliminación lógica
             $this->Logging->logDelete('contracts', (int)$id, [
                 'user_name' => $contract->user->name . ' ' . $contract->user->lastname,
                 'company_name' => $contract->user->company->name ?? '',
                 'professional_category' => $contract->professional_category->name ?? '',
-                'soft_delete' => true
+                'soft_delete' => true,
             ]);
-            
+
             $this->Flash->success(__('_CONTRATO_FINALIZADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_FINALIZAR_CONTRATO'));
@@ -258,25 +262,25 @@ class ContractsController extends AppController
      * @param string|null $id Contract id.
      * @return \Cake\Http\Response|null
      */
-    public function activate($id = null)
+    public function activate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
-        
+
         $contract = $this->Contracts->get($id, [
-            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories']
+            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories'],
         ]);
-        
+
         $contract->is_active = true;
         $contract->end_date = null;
-        
+
         if ($this->Contracts->save($contract)) {
             // Registrar activación
             $this->Logging->logUpdate('contracts', (int)$id, [
                 'action' => 'activate',
                 'user_name' => $contract->user->name . ' ' . $contract->user->lastname,
-                'company_name' => $contract->user->company->name ?? ''
+                'company_name' => $contract->user->company->name ?? '',
             ]);
-            
+
             $this->Flash->success(__('_CONTRATO_ACTIVADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_ACTIVAR_CONTRATO'));
@@ -291,33 +295,34 @@ class ContractsController extends AppController
      * @param string|null $id Contract id.
      * @return \Cake\Http\Response|null|void
      */
-    public function terminate($id = null)
+    public function terminate(?string $id = null)
     {
         $contract = $this->Contracts->get($id, [
-            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories']
+            'contain' => ['Users' => ['Companies'], 'ProfessionalCategories'],
         ]);
 
         if ($this->request->is(['post', 'put', 'patch'])) {
             $endDate = $this->request->getData('end_date');
             $reason = $this->request->getData('termination_reason', '');
-            
+
             $contract->is_active = false;
-            $contract->end_date = new \DateTime($endDate);
+            $contract->end_date = new DateTime($endDate);
             $contract->termination_reason = $reason;
-            
+
             if ($this->Contracts->save($contract)) {
                 // Registrar finalización
                 $this->Logging->logUpdate('contracts', (int)$id, [
                     'action' => 'terminate',
                     'user_name' => $contract->user->name . ' ' . $contract->user->lastname,
                     'end_date' => $endDate,
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
-                
+
                 $this->Flash->success(__('_CONTRATO_FINALIZADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_FINALIZAR_CONTRATO'));
         }
 
@@ -336,7 +341,7 @@ class ContractsController extends AppController
         // Registrar exportación
         $this->Logging->logExport('contracts', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $contracts = $this->Contracts->find()
@@ -378,14 +383,14 @@ class ContractsController extends AppController
 
         // Generar CSV
         $filename = 'contracts_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -402,19 +407,19 @@ class ContractsController extends AppController
     private function _getContractStats(): array
     {
         $total = $this->Contracts->find()->count();
-        
+
         $active = $this->Contracts->find()
             ->where(['is_active' => true])
             ->count();
-            
+
         $terminated = $this->Contracts->find()
             ->where(['is_active' => false])
             ->count();
-            
+
         $thisMonth = $this->Contracts->find()
             ->where([
                 'MONTH(Contracts.created_at)' => date('m'),
-                'YEAR(Contracts.created_at)' => date('Y')
+                'YEAR(Contracts.created_at)' => date('Y'),
             ])
             ->count();
 
@@ -426,7 +431,7 @@ class ContractsController extends AppController
             ->where([
                 'is_active' => true,
                 'end_date IS NOT NULL',
-                'end_date <=' => (new \DateTime())->modify('+30 days')->format('Y-m-d')
+                'end_date <=' => (new DateTime())->modify('+30 days')->format('Y-m-d'),
             ])
             ->count();
 
@@ -446,21 +451,21 @@ class ContractsController extends AppController
      * @param \JornaticCore\Model\Entity\Contract $contract
      * @return array
      */
-    private function _getSpecificContractStats($contract): array
+    private function _getSpecificContractStats(Contract $contract): array
     {
         // Calcular duración del contrato
         $duration = null;
         $daysRemaining = null;
-        
+
         if ($contract->start_date) {
-            $now = \Cake\I18n\Date::now();
+            $now = Date::now();
             $startDate = $contract->start_date;
-            
+
             if ($contract->end_date) {
                 $endDate = $contract->end_date;
                 $diff = $startDate->diff($endDate);
                 $duration = $diff->days;
-                
+
                 if ($endDate > $now) {
                     $remaining = $endDate->diff($now);
                     $daysRemaining = $remaining->days;
@@ -475,12 +480,12 @@ class ContractsController extends AppController
         // Obtener asistencias del usuario desde el inicio del contrato
         $Attendances = $this->getTable('JornaticCore.Attendances');
         $attendancesCount = 0;
-        
+
         if ($contract->start_date) {
             $attendancesCount = $Attendances->find()
                 ->where([
                     'user_id' => $contract->user_id,
-                    'DATE(timestamp) >=' => $contract->start_date->format('Y-m-d')
+                    'DATE(timestamp) >=' => $contract->start_date->format('Y-m-d'),
                 ])
                 ->count();
         }
@@ -488,12 +493,12 @@ class ContractsController extends AppController
         // Obtener ausencias del usuario desde el inicio del contrato
         $Absences = $this->getTable('JornaticCore.Absences');
         $absencesCount = 0;
-        
+
         if ($contract->start_date) {
             $absencesCount = $Absences->find()
                 ->where([
                     'user_id' => $contract->user_id,
-                    'DATE(start_date) >=' => $contract->start_date->format('Y-m-d')
+                    'DATE(start_date) >=' => $contract->start_date->format('Y-m-d'),
                 ])
                 ->count();
         }

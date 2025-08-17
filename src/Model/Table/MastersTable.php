@@ -12,9 +12,8 @@ use Cake\Validation\Validator;
 /**
  * Masters Model
  *
- * @property \App\Model\Table\MasterRolesTable&\Cake\ORM\Association\BelongsTo $MasterRoles
+ * @property \App\Model\Table\MasterRolesTable&\Cake\ORM\Association\BelongsTo $Role
  * @property \App\Model\Table\MasterAccessLogsTable&\Cake\ORM\Association\HasMany $MasterAccessLogs
- *
  * @method \App\Model\Entity\Master newEmptyEntity()
  * @method \App\Model\Entity\Master newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\Master> newEntities(array $data, array $options = [])
@@ -28,7 +27,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Master>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Master> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Master>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Master>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Master>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Master> deleteManyOrFail(iterable $entities, array $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class MastersTable extends Table

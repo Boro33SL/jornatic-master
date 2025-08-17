@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use DateTime;
+use JornaticCore\Model\Entity\Holiday;
 
 /**
  * Holidays Controller
@@ -25,7 +26,7 @@ class HolidaysController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Holidays = $this->getTable('JornaticCore.Holidays');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -45,11 +46,11 @@ class HolidaysController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         // Filtrar por año actual por defecto
         $currentYear = date('Y');
         $year = $filters['year'] ?? $currentYear;
-        
+
         // Query base con relaciones y filtro de año
         $query = $this->Holidays->find()
             ->contain(['Companies'])
@@ -63,24 +64,24 @@ class HolidaysController extends AppController
             // Solo mostrar festivos activos por defecto
             $query->where(['Holidays.is_active' => true]);
         }
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
             $query->where([
                 'OR' => [
                     'Holidays.name LIKE' => $search,
-                ]
+                ],
             ]);
         }
-        
+
         if (!empty($filters['company_id'])) {
             $query->where(['Holidays.company_id' => $filters['company_id']]);
         }
-        
+
         if (!empty($filters['date'])) {
             $query->where(['DATE(Holidays.date)' => $filters['date']]);
         }
-        
+
         if (!empty($filters['type'])) {
             $query->where(['Holidays.type' => $filters['type']]);
         }
@@ -106,10 +107,10 @@ class HolidaysController extends AppController
             ->group(['YEAR(date)'])
             ->orderBy(['year' => 'DESC'])
             ->toArray();
-        
+
         // Extraer solo los años
         $years = array_column($years, 'year');
-        
+
         // Asegurar que el año actual se pase en los filtros
         $filters['year'] = $year;
 
@@ -122,7 +123,7 @@ class HolidaysController extends AppController
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $holiday = $this->Holidays->get($id, [
             'contain' => ['Companies'],
@@ -136,7 +137,7 @@ class HolidaysController extends AppController
             ->where([
                 'company_id' => $holiday->company_id,
                 'YEAR(date)' => $holiday->date->format('Y'),
-                'id !=' => $id
+                'id !=' => $id,
             ])
             ->orderBy(['date' => 'ASC'])
             ->limit(10)
@@ -159,7 +160,7 @@ class HolidaysController extends AppController
 
         if ($this->request->is('post')) {
             $holiday = $this->Holidays->patchEntity($holiday, $this->request->getData());
-            
+
             if ($this->Holidays->save($holiday)) {
                 // Registrar creación
                 $this->Logging->logCreate('holidays', $holiday->id, [
@@ -167,13 +168,14 @@ class HolidaysController extends AppController
                     'company_id' => $holiday->company_id,
                     'date' => $holiday->date->format('Y-m-d'),
                     'type' => $holiday->type,
-                    'is_active' => $holiday->is_active
+                    'is_active' => $holiday->is_active,
                 ]);
-                
+
                 $this->Flash->success(__('_FESTIVO_CREADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $holiday->id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_CREAR_FESTIVO'));
         }
 
@@ -190,7 +192,7 @@ class HolidaysController extends AppController
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $holiday = $this->Holidays->get($id, [
             'contain' => ['Companies'],
@@ -198,19 +200,20 @@ class HolidaysController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $holiday = $this->Holidays->patchEntity($holiday, $this->request->getData());
-            
+
             if ($this->Holidays->save($holiday)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('holidays', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
                     'holiday_name' => $holiday->name,
-                    'company_name' => $holiday->company->name ?? ''
+                    'company_name' => $holiday->company->name ?? '',
                 ]);
-                
+
                 $this->Flash->success(__('_FESTIVO_ACTUALIZADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_FESTIVO'));
         }
 
@@ -227,21 +230,21 @@ class HolidaysController extends AppController
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        
+
         $holiday = $this->Holidays->get($id, ['contain' => ['Companies']]);
-        
+
         if ($this->Holidays->delete($holiday)) {
             // Registrar eliminación
             $this->Logging->logDelete('holidays', (int)$id, [
                 'holiday_name' => $holiday->name,
                 'company_name' => $holiday->company->name ?? '',
                 'date' => $holiday->date->format('Y-m-d'),
-                'hard_delete' => true
+                'hard_delete' => true,
             ]);
-            
+
             $this->Flash->success(__('_FESTIVO_ELIMINADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_ELIMINAR_FESTIVO'));
@@ -305,28 +308,28 @@ class HolidaysController extends AppController
             $companyId = $this->request->getData('company_id');
             $year = $this->request->getData('year');
             $holidayType = $this->request->getData('type', 'national');
-            
+
             if ($companyId && $year) {
                 $created = $this->_createNationalHolidays($companyId, $year, $holidayType);
-                
+
                 if ($created > 0) {
                     // Registrar creación masiva
-                    $this->Logging->logCreate('holidays', null, [
+                    $this->Logging->logCreate('holidays', 0, [
                         'action' => 'bulk_create',
                         'company_id' => $companyId,
                         'year' => $year,
                         'type' => $holidayType,
-                        'created_count' => $created
+                        'created_count' => $created,
                     ]);
-                    
+
                     $this->Flash->success(__('_FESTIVOS_CREADOS_CORRECTAMENTE', $created));
                 } else {
                     $this->Flash->warning(__('_NO_SE_CREARON_FESTIVOS_NUEVOS'));
                 }
-                
+
                 return $this->redirect(['action' => 'index']);
             }
-            
+
             $this->Flash->error(__('_ERROR_DATOS_OBLIGATORIOS'));
         }
 
@@ -349,11 +352,11 @@ class HolidaysController extends AppController
         // Registrar exportación
         $this->Logging->logExport('holidays', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $filters = $this->request->getQueryParams();
-        
+
         $query = $this->Holidays->find()
             ->contain(['Companies'])
             ->orderBy(['Holidays.date' => 'ASC']);
@@ -362,7 +365,7 @@ class HolidaysController extends AppController
         if (!empty($filters['company_id'])) {
             $query->where(['company_id' => $filters['company_id']]);
         }
-        
+
         if (!empty($filters['year'])) {
             $query->where(['YEAR(date)' => $filters['year']]);
         }
@@ -395,14 +398,14 @@ class HolidaysController extends AppController
 
         // Generar CSV
         $filename = 'holidays_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -419,62 +422,62 @@ class HolidaysController extends AppController
     private function _getHolidayStats($year = null, $filters = []): array
     {
         $year = $year ?? date('Y');
-        
+
         // Total de festivos del año
         $totalQuery = $this->Holidays->find()
             ->where(['YEAR(date)' => $year]);
-            
+
         // Aplicar filtro de estado
         if (isset($filters['is_active'])) {
             $totalQuery->where(['is_active' => (bool)$filters['is_active']]);
         } else {
             $totalQuery->where(['is_active' => true]);
         }
-        
+
         $total = $totalQuery->count();
-        
+
         // Total de empresas con festivos en el año
         $companiesWithHolidays = $this->Holidays->find()
             ->select(['company_id'])
             ->where([
                 'YEAR(date)' => $year,
-                'company_id IS NOT NULL'
+                'company_id IS NOT NULL',
             ])
             ->distinct(['company_id'])
             ->count();
-            
+
         // Media de festivos por empresa
         $avgPerCompany = $companiesWithHolidays > 0 ? round($total / $companiesWithHolidays, 1) : 0;
-        
+
         // Festivos por tipo del año
         $byTypeQuery = $this->Holidays->find()
             ->select([
                 'type',
-                'count' => 'COUNT(Holidays.id)'
+                'count' => 'COUNT(Holidays.id)',
             ])
             ->where(['YEAR(date)' => $year]);
-            
+
         if (isset($filters['is_active'])) {
             $byTypeQuery->where(['is_active' => (bool)$filters['is_active']]);
         } else {
             $byTypeQuery->where(['is_active' => true]);
         }
-        
+
         $byType = $byTypeQuery->group(['type'])->toArray();
 
         // Próximos festivos del año (desde hoy)
         $upcomingQuery = $this->Holidays->find()
             ->where([
                 'YEAR(date)' => $year,
-                'date >=' => date('Y-m-d')
+                'date >=' => date('Y-m-d'),
             ]);
-            
+
         if (isset($filters['is_active'])) {
             $upcomingQuery->where(['is_active' => (bool)$filters['is_active']]);
         } else {
             $upcomingQuery->where(['is_active' => true]);
         }
-        
+
         $upcoming = $upcomingQuery->count();
 
         return [
@@ -494,7 +497,7 @@ class HolidaysController extends AppController
      * @param int|null $companyId
      * @return array
      */
-    private function _getYearStats($year, $companyId = null): array
+    private function _getYearStats(int $year, ?int $companyId = null): array
     {
         $query = $this->Holidays->find()
             ->where(['YEAR(date)' => $year]);
@@ -510,7 +513,7 @@ class HolidaysController extends AppController
         $byType = $this->Holidays->find()
             ->select([
                 'type',
-                'count' => 'COUNT(Holidays.id)'
+                'count' => 'COUNT(Holidays.id)',
             ])
             ->where(['YEAR(date)' => $year])
             ->group(['type'])
@@ -527,17 +530,17 @@ class HolidaysController extends AppController
     /**
      * Verificar usuarios que podrían tener conflictos con el festivo
      *
-     * @param \JornaticCore\Model\Entity\CompanyHoliday $holiday
+     * @param \JornaticCore\Model\Entity\Holiday $holiday
      * @return array
      */
-    private function _getConflictingUsers($holiday): array
+    private function _getConflictingUsers(Holiday $holiday): array
     {
         // Buscar asistencias en la fecha del festivo
         $Attendances = $this->getTable('JornaticCore.Attendances');
-        
+
         $attendances = $Attendances->find()
             ->contain(['Users'])
-            ->matching('Users', function($q) use ($holiday) {
+            ->matching('Users', function ($q) use ($holiday) {
                 return $q->where(['Users.company_id' => $holiday->company_id]);
             })
             ->where(['DATE(timestamp)' => $holiday->date->format('Y-m-d')])
@@ -554,7 +557,7 @@ class HolidaysController extends AppController
      * @param string $type
      * @return int Número de festivos creados
      */
-    private function _createNationalHolidays($companyId, $year, $type): int
+    private function _createNationalHolidays(int $companyId, int $year, string $type): int
     {
         // Festivos nacionales españoles básicos
         $nationalHolidays = [
@@ -570,15 +573,15 @@ class HolidaysController extends AppController
         ];
 
         $created = 0;
-        
+
         foreach ($nationalHolidays as $dateStr => $name) {
-            $date = new \DateTime("$year-$dateStr");
-            
+            $date = new DateTime("$year-$dateStr");
+
             // Verificar si ya existe
             $exists = $this->Holidays->find()
                 ->where([
                     'company_id' => $companyId,
-                    'date' => $date->format('Y-m-d')
+                    'date' => $date->format('Y-m-d'),
                 ])
                 ->count() > 0;
 
@@ -590,7 +593,7 @@ class HolidaysController extends AppController
                     'type' => $type,
                     'is_active' => true,
                 ]);
-                
+
                 if ($this->Holidays->save($holiday)) {
                     $created++;
                 }
@@ -606,9 +609,9 @@ class HolidaysController extends AppController
      * @param string $type
      * @return string
      */
-    private function _getTypeLabel($type): string
+    private function _getTypeLabel(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'national' => __('_NACIONAL'),
             'regional' => __('_REGIONAL'),
             'company' => __('_EMPRESA'),

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use JornaticCore\Model\Entity\Subscription;
 use JornaticCore\Model\Table\SubscriptionsTable;
 
 /**
@@ -33,7 +33,7 @@ class SubscriptionsController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Subscriptions = $this->getTable('JornaticCore.Subscriptions');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -58,31 +58,31 @@ class SubscriptionsController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
-            $query->matching('Companies', function($q) use ($search) {
+            $query->matching('Companies', function ($q) use ($search) {
                 return $q->where([
                     'OR' => [
                         'Companies.name LIKE' => $search,
                         'Companies.email LIKE' => $search,
-                    ]
+                    ],
                 ]);
             });
         }
-        
+
         if (!empty($filters['status'])) {
             $query->where(['Subscriptions.status' => $filters['status']]);
         }
-        
+
         if (!empty($filters['period'])) {
             $query->where(['Subscriptions.period' => $filters['period']]);
         }
-        
+
         if (!empty($filters['plan_id'])) {
             $query->where(['Subscriptions.plan_id' => $filters['plan_id']]);
         }
-        
+
         if (!empty($filters['company_id'])) {
             $query->where(['Subscriptions.company_id' => $filters['company_id']]);
         }
@@ -101,7 +101,7 @@ class SubscriptionsController extends AppController
         // Obtener planes para filtros
         $Plans = $this->getTable('JornaticCore.Plans');
         $plans = $Plans->find('list')->toArray();
-        
+
         // Obtener empresas para filtros
         $Companies = $this->getTable('JornaticCore.Companies');
         $companies = $Companies->find('list')->toArray();
@@ -115,12 +115,12 @@ class SubscriptionsController extends AppController
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $subscription = $this->Subscriptions->get($id, [
             'contain' => [
                 'Companies' => ['Users'],
-                'Plans' => ['Features', 'Prices']
+                'Plans' => ['Features', 'Prices'],
             ],
         ]);
 
@@ -136,7 +136,7 @@ class SubscriptionsController extends AppController
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $subscription = $this->Subscriptions->get($id, [
             'contain' => ['Companies', 'Plans'],
@@ -144,21 +144,22 @@ class SubscriptionsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $oldStatus = $subscription->status;
-            
+
             $subscription = $this->Subscriptions->patchEntity($subscription, $this->request->getData());
-            
+
             if ($this->Subscriptions->save($subscription)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('subscriptions', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
                     'old_status' => $oldStatus,
-                    'new_status' => $subscription->status
+                    'new_status' => $subscription->status,
                 ]);
-                
+
                 $this->Flash->success(__('_SUSCRIPCION_ACTUALIZADA_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_SUSCRIPCION'));
         }
 
@@ -175,25 +176,25 @@ class SubscriptionsController extends AppController
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null
      */
-    public function cancel($id = null)
+    public function cancel(?string $id = null)
     {
         $this->request->allowMethod(['post']);
-        
+
         $subscription = $this->Subscriptions->get($id);
         $oldStatus = $subscription->status;
-        
+
         // Marcar como cancelada
         $subscription->status = 'cancelled';
         $subscription->cancel_at_period_end = true;
-        
+
         if ($this->Subscriptions->save($subscription)) {
             // Registrar cancelación
             $this->Logging->logUpdate('subscriptions', (int)$id, [
                 'action' => 'cancel',
                 'old_status' => $oldStatus,
-                'company_name' => $subscription->company->name ?? ''
+                'company_name' => $subscription->company->name ?? '',
             ]);
-            
+
             $this->Flash->success(__('_SUSCRIPCION_CANCELADA_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_CANCELAR_SUSCRIPCION'));
@@ -208,25 +209,25 @@ class SubscriptionsController extends AppController
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null
      */
-    public function reactivate($id = null)
+    public function reactivate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
-        
+
         $subscription = $this->Subscriptions->get($id);
         $oldStatus = $subscription->status;
-        
+
         // Reactivar suscripción
         $subscription->status = 'active';
         $subscription->cancel_at_period_end = false;
-        
+
         if ($this->Subscriptions->save($subscription)) {
             // Registrar reactivación
             $this->Logging->logUpdate('subscriptions', (int)$id, [
                 'action' => 'reactivate',
                 'old_status' => $oldStatus,
-                'company_name' => $subscription->company->name ?? ''
+                'company_name' => $subscription->company->name ?? '',
             ]);
-            
+
             $this->Flash->success(__('_SUSCRIPCION_REACTIVADA_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_REACTIVAR_SUSCRIPCION'));
@@ -247,7 +248,7 @@ class SubscriptionsController extends AppController
         // Registrar exportación
         $this->Logging->logExport('subscriptions', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $subscriptions = $this->Subscriptions->find()
@@ -285,14 +286,14 @@ class SubscriptionsController extends AppController
 
         // Generar CSV
         $filename = 'subscriptions_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -309,31 +310,31 @@ class SubscriptionsController extends AppController
     private function _getSubscriptionStats(): array
     {
         $total = $this->Subscriptions->find()->count();
-        
+
         $active = $this->Subscriptions->find()
             ->where(['status' => 'active'])
             ->count();
-            
+
         $trial = $this->Subscriptions->find()
             ->where(['status' => 'trial'])
             ->count();
-            
+
         $cancelled = $this->Subscriptions->find()
             ->where(['status' => 'cancelled'])
             ->count();
-            
+
         $monthly = $this->Subscriptions->find()
             ->where(['period' => 'monthly'])
             ->count();
-            
+
         $annual = $this->Subscriptions->find()
             ->where(['period' => 'annual'])
             ->count();
-            
+
         $thisMonth = $this->Subscriptions->find()
             ->where([
                 'MONTH(Subscriptions.created)' => date('m'),
-                'YEAR(Subscriptions.created)' => date('Y')
+                'YEAR(Subscriptions.created)' => date('Y'),
             ])
             ->count();
 
@@ -378,19 +379,19 @@ class SubscriptionsController extends AppController
      * @param \JornaticCore\Model\Entity\Subscription $subscription
      * @return array
      */
-    private function _getSubscriptionMetrics($subscription): array
+    private function _getSubscriptionMetrics(Subscription $subscription): array
     {
         // Calcular revenue total generado
         $Prices = $this->getTable('JornaticCore.Prices');
         $price = $Prices->find()
             ->where([
                 'plan_id' => $subscription->plan_id,
-                'period' => $subscription->period
+                'period' => $subscription->period,
             ])
             ->first();
 
         $monthlyRevenue = $price ? (float)$price->amount : 0;
-        
+
         // Calcular meses activos
         $monthsActive = 0;
         if ($subscription->starts && $subscription->ends) {
@@ -405,7 +406,7 @@ class SubscriptionsController extends AppController
         $activeUsers = $Users->find()
             ->where([
                 'company_id' => $subscription->company_id,
-                'is_active' => true
+                'is_active' => true,
             ])
             ->count();
 
@@ -414,8 +415,8 @@ class SubscriptionsController extends AppController
             'total_revenue' => $totalRevenue,
             'months_active' => $monthsActive,
             'active_users' => $activeUsers,
-            'usage_percentage' => $subscription->users_allowed > 0 ? 
-                round(($activeUsers / $subscription->users_allowed) * 100, 1) : 0,
+            'usage_percentage' => $subscription->users_allowed > 0 ?
+                round($activeUsers / $subscription->users_allowed * 100, 1) : 0,
         ];
     }
 }

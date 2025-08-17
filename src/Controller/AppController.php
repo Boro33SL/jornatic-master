@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\EventInterface;
 
 /**
  * Application Controller
@@ -52,10 +53,10 @@ class AppController extends Controller
         //$this->loadComponent('FormProtection');
     }
 
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-        
+
         // Skip authorization for DebugKit routes
         if ($this->getRequest()->getParam('plugin') === 'DebugKit') {
             $this->Authorization->skipAuthorization();

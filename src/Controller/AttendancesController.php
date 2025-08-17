@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use JornaticCore\Model\Entity\Attendance;
 
 /**
  * Attendances Controller
@@ -25,7 +25,7 @@ class AttendancesController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Attendances = $this->getTable('JornaticCore.Attendances');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -50,45 +50,45 @@ class AttendancesController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
-            $query->matching('Users', function($q) use ($search) {
+            $query->matching('Users', function ($q) use ($search) {
                 return $q->where([
                     'OR' => [
                         'Users.name LIKE' => $search,
                         'Users.lastname LIKE' => $search,
                         'Users.email LIKE' => $search,
                         'Users.dni_nie LIKE' => $search,
-                    ]
+                    ],
                 ]);
             });
         }
-        
+
         if (!empty($filters['company_id'])) {
-            $query->matching('Users', function($q) use ($filters) {
+            $query->matching('Users', function ($q) use ($filters) {
                 return $q->where(['Users.company_id' => $filters['company_id']]);
             });
         }
-        
+
         if (!empty($filters['company_id'])) {
-            $query->matching('Users', function($q) use ($filters) {
+            $query->matching('Users', function ($q) use ($filters) {
                 return $q->where(['Users.company_id' => $filters['company_id']]);
             });
         }
-        
+
         if (!empty($filters['user_id'])) {
             $query->where(['Attendances.user_id' => $filters['user_id']]);
         }
-        
+
         if (!empty($filters['type'])) {
             $query->where(['Attendances.type' => $filters['type']]);
         }
-        
+
         if (!empty($filters['date_from'])) {
             $query->where(['DATE(Attendances.timestamp) >=' => $filters['date_from']]);
         }
-        
+
         if (!empty($filters['date_to'])) {
             $query->where(['DATE(Attendances.timestamp) <=' => $filters['date_to']]);
         }
@@ -107,7 +107,7 @@ class AttendancesController extends AppController
         // Obtener opciones para filtros
         $Companies = $this->getTable('JornaticCore.Companies');
         $companies = $Companies->find('list')->toArray();
-        
+
         // Si hay una empresa seleccionada, obtener sus usuarios
         $users = [];
         if (!empty($filters['company_id'])) {
@@ -116,7 +116,7 @@ class AttendancesController extends AppController
                 'keyField' => 'id',
                 'valueField' => function ($user) {
                     return $user->name . ' ' . $user->lastname;
-                }
+                },
             ])
             ->where(['company_id' => $filters['company_id']])
             ->toArray();
@@ -131,7 +131,7 @@ class AttendancesController extends AppController
      * @param string|null $id Attendance id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $attendance = $this->Attendances->get($id, [
             'contain' => [
@@ -148,7 +148,7 @@ class AttendancesController extends AppController
             ->where([
                 'Attendances.user_id' => $attendance->user_id,
                 'DATE(Attendances.timestamp)' => $attendance->timestamp->format('Y-m-d'),
-                'Attendances.id !=' => $id
+                'Attendances.id !=' => $id,
             ])
             ->orderBy(['Attendances.timestamp' => 'ASC'])
             ->toArray();
@@ -169,7 +169,7 @@ class AttendancesController extends AppController
      * @param string|null $id Attendance id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $attendance = $this->Attendances->get($id, [
             'contain' => ['Users' => ['Companies']],
@@ -181,9 +181,9 @@ class AttendancesController extends AppController
                 'type' => $attendance->type,
                 'location' => $attendance->location,
             ];
-            
+
             $attendance = $this->Attendances->patchEntity($attendance, $this->request->getData());
-            
+
             if ($this->Attendances->save($attendance)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('attendances', (int)$id, [
@@ -191,13 +191,14 @@ class AttendancesController extends AppController
                     'user_name' => $attendance->user->name . ' ' . $attendance->user->lastname,
                     'old_data' => $oldData,
                     'new_datetime' => $attendance->timestamp->format('Y-m-d H:i:s'),
-                    'new_type' => $attendance->type
+                    'new_type' => $attendance->type,
                 ]);
-                
+
                 $this->Flash->success(__('_ASISTENCIA_ACTUALIZADA_CORRECTAMENTE'));
+
                 return $this->redirect(['type' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_ASISTENCIA'));
         }
 
@@ -210,14 +211,14 @@ class AttendancesController extends AppController
      * @param string|null $id Attendance id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        
+
         $attendance = $this->Attendances->get($id, [
-            'contain' => ['Users' => ['Companies']]
+            'contain' => ['Users' => ['Companies']],
         ]);
-        
+
         if ($this->Attendances->delete($attendance)) {
             // Registrar eliminación
             $this->Logging->logDelete('attendances', (int)$id, [
@@ -225,9 +226,9 @@ class AttendancesController extends AppController
                 'company_name' => $attendance->user->company->name ?? '',
                 'datetime' => $attendance->timestamp->format('Y-m-d H:i:s'),
                 'type' => $attendance->type,
-                'hard_delete' => true
+                'hard_delete' => true,
             ]);
-            
+
             $this->Flash->success(__('_ASISTENCIA_ELIMINADA_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_ELIMINAR_ASISTENCIA'));
@@ -255,7 +256,7 @@ class AttendancesController extends AppController
             ->orderBy(['Attendances.timestamp' => 'ASC']);
 
         if ($companyId) {
-            $query->matching('Users', function($q) use ($companyId) {
+            $query->matching('Users', function ($q) use ($companyId) {
                 return $q->where(['Users.company_id' => $companyId]);
             });
         }
@@ -269,7 +270,7 @@ class AttendancesController extends AppController
             if (!isset($attendancesByUser[$userId])) {
                 $attendancesByUser[$userId] = [
                     'user' => $attendance->user,
-                    'attendances' => []
+                    'attendances' => [],
                 ];
             }
             $attendancesByUser[$userId]['attendances'][] = $attendance;
@@ -325,11 +326,11 @@ class AttendancesController extends AppController
         // Registrar exportación
         $this->Logging->logExport('attendances', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $filters = $this->request->getQueryParams();
-        
+
         $query = $this->Attendances->find()
             ->contain(['Users' => ['Companies', 'Departments']])
             ->orderBy(['Attendances.timestamp' => 'DESC']);
@@ -338,13 +339,13 @@ class AttendancesController extends AppController
         if (!empty($filters['date_from'])) {
             $query->where(['DATE(Attendances.timestamp) >=' => $filters['date_from']]);
         }
-        
+
         if (!empty($filters['date_to'])) {
             $query->where(['DATE(Attendances.timestamp) <=' => $filters['date_to']]);
         }
-        
+
         if (!empty($filters['company_id'])) {
-            $query->matching('Users', function($q) use ($filters) {
+            $query->matching('Users', function ($q) use ($filters) {
                 return $q->where(['Users.company_id' => $filters['company_id']]);
             });
         }
@@ -381,14 +382,14 @@ class AttendancesController extends AppController
 
         // Generar CSV
         $filename = 'attendances_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -405,44 +406,44 @@ class AttendancesController extends AppController
     private function _getAttendanceStats(): array
     {
         $today = date('Y-m-d');
-        
+
         // Total de asistencias
         $totalAttendances = $this->Attendances->find()->count();
-        
+
         // Total de empresas con asistencias
         $totalCompanies = $this->Attendances->find()
             ->matching('Users.Companies')
             ->select(['Companies.id'])
             ->distinct(['Companies.id'])
             ->count();
-            
+
         // Media de asistencias por empresa
         $avgPerCompany = $totalCompanies > 0 ? round($totalAttendances / $totalCompanies, 1) : 0;
-        
+
         // Asistencias de hoy
         $todayTotal = $this->Attendances->find()
             ->where(['DATE(timestamp)' => $today])
             ->count();
-            
+
         $todayCheckIns = $this->Attendances->find()
             ->where([
                 'DATE(timestamp)' => $today,
-                'type' => 'in'
+                'type' => 'in',
             ])
             ->count();
-            
+
         $todayCheckOuts = $this->Attendances->find()
             ->where([
                 'DATE(timestamp)' => $today,
-                'type' => 'out'
+                'type' => 'out',
             ])
             ->count();
-            
+
         // Este mes
         $thisMonth = $this->Attendances->find()
             ->where([
                 'MONTH(timestamp)' => date('m'),
-                'YEAR(timestamp)' => date('Y')
+                'YEAR(timestamp)' => date('Y'),
             ])
             ->count();
 
@@ -463,7 +464,7 @@ class AttendancesController extends AppController
      * @param \JornaticCore\Model\Entity\Attendance $attendance
      * @return array
      */
-    private function _getDayAttendanceStats($attendance): array
+    private function _getDayAttendanceStats(Attendance $attendance): array
     {
         $date = $attendance->timestamp->format('Y-m-d');
         $userId = $attendance->user_id;
@@ -471,7 +472,7 @@ class AttendancesController extends AppController
         $dayAttendances = $this->Attendances->find()
             ->where([
                 'Attendances.user_id' => $userId,
-                'DATE(Attendances.timestamp)' => $date
+                'DATE(Attendances.timestamp)' => $date,
             ])
             ->orderBy(['Attendances.timestamp' => 'ASC'])
             ->toArray();
@@ -483,36 +484,36 @@ class AttendancesController extends AppController
             $this->log("Attendance type: {$att->type}, time: {$att->timestamp->format('H:i:s')}", 'debug');
         }
 
-        $checkIns = array_filter($dayAttendances, function($att) {
+        $checkIns = array_filter($dayAttendances, function ($att) {
             return $att->type === 'in';
         });
-        
-        $checkOuts = array_filter($dayAttendances, function($att) {
+
+        $checkOuts = array_filter($dayAttendances, function ($att) {
             return $att->type === 'out';
         });
-        
-        $breakStarts = array_filter($dayAttendances, function($att) {
+
+        $breakStarts = array_filter($dayAttendances, function ($att) {
             return $att->type === 'break_start';
         });
-        
-        $breakEnds = array_filter($dayAttendances, function($att) {
+
+        $breakEnds = array_filter($dayAttendances, function ($att) {
             return $att->type === 'break_end';
         });
 
         // Calcular horas trabajadas descontando descansos
         $hoursWorked = 0;
         $totalHoursFormatted = null;
-        
+
         if (count($checkIns) > 0 && count($checkOuts) > 0) {
             // Ordenar todas las asistencias por tiempo
-            usort($dayAttendances, function($a, $b) {
+            usort($dayAttendances, function ($a, $b) {
                 return $a->timestamp <=> $b->timestamp;
             });
-            
+
             $workingMinutes = 0;
             $isWorking = false;
             $lastTimestamp = null;
-            
+
             foreach ($dayAttendances as $attendance) {
                 switch ($attendance->type) {
                     case 'in':
@@ -523,7 +524,7 @@ class AttendancesController extends AppController
                             $lastTimestamp = $attendance->timestamp;
                         }
                         break;
-                        
+
                     case 'break_start':
                     case 'out':
                         // Fin de período de trabajo
@@ -536,11 +537,11 @@ class AttendancesController extends AppController
                         break;
                 }
             }
-            
+
             // Convertir minutos trabajados a formato "X horas Y minutos"
             $hours = intval($workingMinutes / 60);
             $minutes = $workingMinutes % 60;
-            
+
             $totalHoursFormatted = null;
             if ($workingMinutes > 0) {
                 if ($hours > 0 && $minutes > 0) {
@@ -551,7 +552,7 @@ class AttendancesController extends AppController
                     $totalHoursFormatted = $minutes . ' minutos';
                 }
             }
-            
+
             $this->log("Working minutes calculated: $workingMinutes (= $hours hours, $minutes minutes)", 'debug');
         }
 
@@ -573,13 +574,13 @@ class AttendancesController extends AppController
      * @param int|null $companyId
      * @return array
      */
-    private function _getDailyStats($date, $companyId = null): array
+    private function _getDailyStats(string $date, ?int $companyId = null): array
     {
         $query = $this->Attendances->find()
             ->where(['DATE(timestamp)' => $date]);
 
         if ($companyId) {
-            $query->matching('Users', function($q) use ($companyId) {
+            $query->matching('Users', function ($q) use ($companyId) {
                 return $q->where(['Users.company_id' => $companyId]);
             });
         }
@@ -587,7 +588,7 @@ class AttendancesController extends AppController
         $total = $query->count();
         $checkIns = $query->where(['type' => 'in'])->count();
         $checkOuts = $query->where(['type' => 'out'])->count();
-        
+
         // Usuarios únicos que ficharon
         $uniqueUsers = $this->Attendances->find()
             ->select(['user_id'])
@@ -611,23 +612,23 @@ class AttendancesController extends AppController
      * @param int|null $companyId
      * @return array
      */
-    private function _getUserAttendanceSummary($dateFrom, $dateTo, $companyId = null): array
+    private function _getUserAttendanceSummary(string $dateFrom, string $dateTo, ?int $companyId = null): array
     {
         $query = $this->Attendances->find()
             ->contain(['Users' => ['Companies']])
             ->where([
                 'DATE(Attendances.timestamp) >=' => $dateFrom,
-                'DATE(Attendances.timestamp) <=' => $dateTo
+                'DATE(Attendances.timestamp) <=' => $dateTo,
             ]);
 
         if ($companyId) {
-            $query->matching('Users', function($q) use ($companyId) {
+            $query->matching('Users', function ($q) use ($companyId) {
                 return $q->where(['Users.company_id' => $companyId]);
             });
         }
 
         $attendances = $query->toArray();
-        
+
         $summary = [];
         foreach ($attendances as $attendance) {
             $userId = $attendance->user_id;
@@ -640,18 +641,18 @@ class AttendancesController extends AppController
                     'unique_days' => [],
                 ];
             }
-            
+
             $summary[$userId]['total_attendances']++;
             if ($attendance->type === 'in') {
                 $summary[$userId]['ins']++;
             } elseif ($attendance->type === 'out') {
                 $summary[$userId]['outs']++;
             }
-            
+
             $day = $attendance->timestamp->format('Y-m-d');
             $summary[$userId]['unique_days'][$day] = true;
         }
-        
+
         // Convertir unique_days a count
         foreach ($summary as &$userSummary) {
             $userSummary['unique_days'] = count($userSummary['unique_days']);
@@ -668,16 +669,16 @@ class AttendancesController extends AppController
      * @param int|null $companyId
      * @return array
      */
-    private function _getPeriodStats($dateFrom, $dateTo, $companyId = null): array
+    private function _getPeriodStats(string $dateFrom, string $dateTo, ?int $companyId = null): array
     {
         $query = $this->Attendances->find()
             ->where([
                 'DATE(timestamp) >=' => $dateFrom,
-                'DATE(timestamp) <=' => $dateTo
+                'DATE(timestamp) <=' => $dateTo,
             ]);
 
         if ($companyId) {
-            $query->matching('Users', function($q) use ($companyId) {
+            $query->matching('Users', function ($q) use ($companyId) {
                 return $q->where(['Users.company_id' => $companyId]);
             });
         }
@@ -701,9 +702,9 @@ class AttendancesController extends AppController
      * @param string $action
      * @return string
      */
-    private function _getActionLabel($action): string
+    private function _getActionLabel(string $action): string
     {
-        return match($action) {
+        return match ($action) {
             'in' => __('_ENTRADA'),
             'out' => __('_SALIDA'),
             'break_start' => __('_INICIO_DESCANSO'),

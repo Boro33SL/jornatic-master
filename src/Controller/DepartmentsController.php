@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Event\EventInterface;
+use JornaticCore\Model\Entity\Department;
 
 /**
  * Departments Controller
@@ -25,7 +25,7 @@ class DepartmentsController extends AppController
 
         // Cargar el modelo desde el plugin
         $this->Departments = $this->getTable('JornaticCore.Departments');
-        
+
         // Cargar componente de logging
         $this->loadComponent('Logging');
 
@@ -50,21 +50,21 @@ class DepartmentsController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (!empty($filters['search'])) {
             $search = '%' . $filters['search'] . '%';
             $query->where([
                 'OR' => [
                     'Departments.name LIKE' => $search,
                     'Departments.description LIKE' => $search,
-                ]
+                ],
             ]);
         }
-        
+
         if (!empty($filters['company_id'])) {
             $query->where(['Departments.company_id' => $filters['company_id']]);
         }
-        
+
         if (isset($filters['is_active'])) {
             $query->where(['Departments.active' => (bool)$filters['is_active']]);
         }
@@ -93,15 +93,15 @@ class DepartmentsController extends AppController
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $department = $this->Departments->get($id, [
             'contain' => [
                 'Companies',
-                'Users' => function($q) {
+                'Users' => function ($q) {
                     return $q->contain(['Roles'])->orderBy(['Users.name' => 'ASC']);
                 },
-                'CompanySchedules' => function($q) {
+                'CompanySchedules' => function ($q) {
                     return $q->orderBy(['CompanySchedules.created' => 'DESC']);
                 },
             ],
@@ -127,19 +127,20 @@ class DepartmentsController extends AppController
 
         if ($this->request->is('post')) {
             $department = $this->Departments->patchEntity($department, $this->request->getData());
-            
+
             if ($this->Departments->save($department)) {
                 // Registrar creación
                 $this->Logging->logCreate('departments', $department->id, [
                     'department_name' => $department->name,
                     'company_id' => $department->company_id,
-                    'is_active' => $department->active
+                    'is_active' => $department->active,
                 ]);
-                
+
                 $this->Flash->success(__('_DEPARTAMENTO_CREADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $department->id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_CREAR_DEPARTAMENTO'));
         }
 
@@ -156,7 +157,7 @@ class DepartmentsController extends AppController
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null|void
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $department = $this->Departments->get($id, [
             'contain' => ['Companies'],
@@ -164,19 +165,20 @@ class DepartmentsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $department = $this->Departments->patchEntity($department, $this->request->getData());
-            
+
             if ($this->Departments->save($department)) {
                 // Registrar actualización
                 $this->Logging->logUpdate('departments', (int)$id, [
                     'updated_fields' => array_keys($this->request->getData()),
                     'department_name' => $department->name,
-                    'company_name' => $department->company->name ?? ''
+                    'company_name' => $department->company->name ?? '',
                 ]);
-                
+
                 $this->Flash->success(__('_DEPARTAMENTO_ACTUALIZADO_CORRECTAMENTE'));
+
                 return $this->redirect(['action' => 'view', $id]);
             }
-            
+
             $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_DEPARTAMENTO'));
         }
 
@@ -193,34 +195,35 @@ class DepartmentsController extends AppController
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        
+
         $department = $this->Departments->get($id, ['contain' => ['Companies', 'Users']]);
-        
+
         // Verificar si el departamento tiene usuarios activos
-        $activeUsers = count(array_filter($department->users ?? [], function($user) {
+        $activeUsers = count(array_filter($department->users ?? [], function ($user) {
             return $user->is_active;
         }));
 
         if ($activeUsers > 0) {
             $this->Flash->error(__('_NO_SE_PUEDE_ELIMINAR_DEPARTAMENTO_CON_USUARIOS_ACTIVOS'));
+
             return $this->redirect(['action' => 'view', $id]);
         }
-        
+
         // Marcar como inactivo en lugar de eliminar
         $department->active = false;
-        
+
         if ($this->Departments->save($department)) {
             // Registrar eliminación lógica
             $this->Logging->logDelete('departments', (int)$id, [
                 'department_name' => $department->name,
                 'company_name' => $department->company->name ?? '',
                 'users_count' => count($department->users ?? []),
-                'soft_delete' => true
+                'soft_delete' => true,
             ]);
-            
+
             $this->Flash->success(__('_DEPARTAMENTO_DESACTIVADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_DESACTIVAR_DEPARTAMENTO'));
@@ -235,21 +238,21 @@ class DepartmentsController extends AppController
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null
      */
-    public function activate($id = null)
+    public function activate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
-        
+
         $department = $this->Departments->get($id, ['contain' => ['Companies']]);
         $department->active = true;
-        
+
         if ($this->Departments->save($department)) {
             // Registrar activación
             $this->Logging->logUpdate('departments', (int)$id, [
                 'action' => 'activate',
                 'department_name' => $department->name,
-                'company_name' => $department->company->name ?? ''
+                'company_name' => $department->company->name ?? '',
             ]);
-            
+
             $this->Flash->success(__('_DEPARTAMENTO_ACTIVADO_CORRECTAMENTE'));
         } else {
             $this->Flash->error(__('_ERROR_AL_ACTIVAR_DEPARTAMENTO'));
@@ -264,7 +267,7 @@ class DepartmentsController extends AppController
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null|void
      */
-    public function users($id = null)
+    public function users(?string $id = null)
     {
         $department = $this->Departments->get($id, ['contain' => ['Companies']]);
 
@@ -272,7 +275,7 @@ class DepartmentsController extends AppController
         $this->Logging->logView('department_users', (int)$id);
 
         $Users = $this->getTable('JornaticCore.Users');
-        
+
         $query = $Users->find()
             ->contain(['Roles', 'Contracts'])
             ->where(['department_id' => $id])
@@ -280,11 +283,11 @@ class DepartmentsController extends AppController
 
         // Aplicar filtros si existen
         $filters = $this->request->getQueryParams();
-        
+
         if (isset($filters['is_active'])) {
             $query->where(['Users.is_active' => (bool)$filters['is_active']]);
         }
-        
+
         if (!empty($filters['role_id'])) {
             $query->where(['Users.role_id' => $filters['role_id']]);
         }
@@ -311,7 +314,7 @@ class DepartmentsController extends AppController
         // Registrar exportación
         $this->Logging->logExport('departments', [
             'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $departments = $this->Departments->find()
@@ -333,10 +336,10 @@ class DepartmentsController extends AppController
 
         foreach ($departments as $department) {
             $totalUsers = count($department->users ?? []);
-            $activeUsers = count(array_filter($department->users ?? [], function($user) {
+            $activeUsers = count(array_filter($department->users ?? [], function ($user) {
                 return $user->is_active;
             }));
-            
+
             $csvData[] = [
                 $department->name,
                 $department->description ?? '',
@@ -350,14 +353,14 @@ class DepartmentsController extends AppController
 
         // Generar CSV
         $filename = 'departments_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         $this->response = $this->response->withType('text/csv');
         $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
         // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         foreach ($csvData as $row) {
             fputcsv($output, $row, ';', '"');
         }
@@ -374,19 +377,19 @@ class DepartmentsController extends AppController
     private function _getDepartmentStats(): array
     {
         $total = $this->Departments->find()->count();
-        
+
         $active = $this->Departments->find()
             ->where(['active' => true])
             ->count();
-            
+
         $withUsers = $this->Departments->find()
             ->matching('Users')
             ->count();
-            
+
         $thisMonth = $this->Departments->find()
             ->where([
                 'MONTH(Departments.created)' => date('m'),
-                'YEAR(Departments.created)' => date('Y')
+                'YEAR(Departments.created)' => date('Y'),
             ])
             ->count();
 
@@ -395,7 +398,7 @@ class DepartmentsController extends AppController
             ->contain(['Companies'])
             ->select([
                 'Companies.name',
-                'count' => 'COUNT(Departments.id)'
+                'count' => 'COUNT(Departments.id)',
             ])
             ->group(['Departments.company_id', 'Companies.name'])
             ->toArray();
@@ -415,30 +418,30 @@ class DepartmentsController extends AppController
      * @param \JornaticCore\Model\Entity\Department $department
      * @return array
      */
-    private function _getSpecificDepartmentStats($department): array
+    private function _getSpecificDepartmentStats(Department $department): array
     {
         $totalUsers = count($department->users ?? []);
-        
-        $activeUsers = count(array_filter($department->users ?? [], function($user) {
+
+        $activeUsers = count(array_filter($department->users ?? [], function ($user) {
             return $user->is_active;
         }));
 
         // Obtener asistencias del departamento en el mes actual
         $Attendances = $this->getTable('JornaticCore.Attendances');
         $thisMonthAttendances = $Attendances->find()
-            ->matching('Users', function($q) use ($department) {
+            ->matching('Users', function ($q) use ($department) {
                 return $q->where(['Users.department_id' => $department->id]);
             })
             ->where([
                 'MONTH(Attendances.datetime)' => date('m'),
-                'YEAR(Attendances.datetime)' => date('Y')
+                'YEAR(Attendances.datetime)' => date('Y'),
             ])
             ->count();
 
         // Obtener ausencias pendientes del departamento
         $Absences = $this->getTable('JornaticCore.Absences');
         $pendingAbsences = $Absences->find()
-            ->matching('Users', function($q) use ($department) {
+            ->matching('Users', function ($q) use ($department) {
                 return $q->where(['Users.department_id' => $department->id]);
             })
             ->where(['Absences.status' => 'pending'])
@@ -447,7 +450,7 @@ class DepartmentsController extends AppController
         // Obtener contratos activos del departamento
         $Contracts = $this->getTable('JornaticCore.Contracts');
         $activeContracts = $Contracts->find()
-            ->matching('Users', function($q) use ($department) {
+            ->matching('Users', function ($q) use ($department) {
                 return $q->where(['Users.department_id' => $department->id]);
             })
             ->where(['Contracts.is_active' => true])
