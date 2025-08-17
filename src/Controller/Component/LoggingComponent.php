@@ -10,7 +10,6 @@ use Cake\ORM\TableRegistry;
 
 /**
  * Logging component
- *
  * Componente para registrar automáticamente todas las acciones de los usuarios master
  */
 class LoggingComponent extends Component
@@ -33,15 +32,26 @@ class LoggingComponent extends Component
     protected MasterAccessLogsTable $MasterAccessLogs;
 
     /**
-     * Initialize method
+     * Función de inicialización
      *
-     * @param array $config The config data.
+     * @param array $config Datos de configuración
      * @return void
      */
     public function initialize(array $config): void
     {
         parent::initialize($config);
         $this->MasterAccessLogs = TableRegistry::getTableLocator()->get('MasterAccessLogs');
+    }
+
+    /**
+     * Registrar login exitoso
+     *
+     * @param array $details Detalles adicionales del login
+     * @return bool
+     */
+    public function logLogin(array $details = []): bool
+    {
+        return $this->logAction(self::ACTION_LOGIN, true, 'authentication', null, $details);
     }
 
     /**
@@ -54,8 +64,13 @@ class LoggingComponent extends Component
      * @param array|string|null $details Detalles adicionales (opcional)
      * @return bool
      */
-    public function logAction(string $action, bool $success = true, ?string $resource = null, ?int $resourceId = null, array|string|null $details = null): bool
-    {
+    public function logAction(
+        string $action,
+        bool $success = true,
+        ?string $resource = null,
+        ?int $resourceId = null,
+        array|string|null $details = null,
+    ): bool {
         $controller = $this->getController();
         $request = $controller->getRequest();
 
@@ -94,14 +109,51 @@ class LoggingComponent extends Component
     }
 
     /**
-     * Registrar login exitoso
+     * Obtener la IP real del cliente
      *
-     * @param array $details Detalles adicionales del login
-     * @return bool
+     * @param \Cake\Http\ServerRequest $request
+     * @return string
      */
-    public function logLogin(array $details = []): bool
+    private function _getClientIp(ServerRequest $request): string
     {
-        return $this->logAction(self::ACTION_LOGIN, true, 'authentication', null, $details);
+        // Verificar headers de proxy/load balancer
+        $ipKeys = [
+            'HTTP_CF_CONNECTING_IP',// Cloudflare
+            'HTTP_CLIENT_IP',// Proxy
+            'HTTP_X_FORWARDED_FOR',// Load balancer/proxy
+            'HTTP_X_FORWARDED',// Proxy
+            'HTTP_X_CLUSTER_CLIENT_IP',// Cluster
+            'HTTP_FORWARDED_FOR',// Proxy
+            'HTTP_FORWARDED',// Proxy
+            'REMOTE_ADDR',// Standard
+        ];
+
+        foreach ($ipKeys as $key) {
+            if (!empty($_SERVER[$key])) {
+                $ip = $_SERVER[$key];
+
+                // Si hay múltiples IPs (proxy chain), tomar la primera
+                if (strpos($ip, ',') !== false) {
+                    $ip = explode(',', $ip)[0];
+                }
+
+                $ip = trim($ip);
+
+                // Validar que sea una IP válida
+                if (
+                    filter_var(
+                        $ip,
+                        FILTER_VALIDATE_IP,
+                        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE,
+                    )
+                ) {
+                    return $ip;
+                }
+            }
+        }
+
+        // Fallback a REMOTE_ADDR incluso si es IP privada
+        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     }
 
     /**
@@ -209,47 +261,5 @@ class LoggingComponent extends Component
     public function logExport(string $resource, array $details = []): bool
     {
         return $this->logAction(self::ACTION_EXPORT, true, $resource, null, $details);
-    }
-
-    /**
-     * Obtener la IP real del cliente
-     *
-     * @param \Cake\Http\ServerRequest $request
-     * @return string
-     */
-    private function _getClientIp(ServerRequest $request): string
-    {
-        // Verificar headers de proxy/load balancer
-        $ipKeys = [
-            'HTTP_CF_CONNECTING_IP',     // Cloudflare
-            'HTTP_CLIENT_IP',            // Proxy
-            'HTTP_X_FORWARDED_FOR',      // Load balancer/proxy
-            'HTTP_X_FORWARDED',          // Proxy
-            'HTTP_X_CLUSTER_CLIENT_IP',  // Cluster
-            'HTTP_FORWARDED_FOR',        // Proxy
-            'HTTP_FORWARDED',            // Proxy
-            'REMOTE_ADDR',                // Standard
-        ];
-
-        foreach ($ipKeys as $key) {
-            if (!empty($_SERVER[$key])) {
-                $ip = $_SERVER[$key];
-
-                // Si hay múltiples IPs (proxy chain), tomar la primera
-                if (strpos($ip, ',') !== false) {
-                    $ip = explode(',', $ip)[0];
-                }
-
-                $ip = trim($ip);
-
-                // Validar que sea una IP válida
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                    return $ip;
-                }
-            }
-        }
-
-        // Fallback a REMOTE_ADDR incluso si es IP privada
-        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     }
 }

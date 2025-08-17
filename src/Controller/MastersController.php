@@ -152,9 +152,9 @@ class MastersController extends AppController
         // Cargar tablas necesarias para estadísticas
         $Companies = $this->getTable('JornaticCore.Companies');
         $Subscriptions = $this->getTable('JornaticCore.Subscriptions');
-        $Plans = $this->getTable('JornaticCore.Plans');
+        //$Plans = $this->getTable('JornaticCore.Plans');
         $Prices = $this->getTable('JornaticCore.Prices');
-        $Users = $this->getTable('JornaticCore.Users');
+        //$Users = $this->getTable('JornaticCore.Users');
         $Attendances = $this->getTable('JornaticCore.Attendances');
         $MasterAccessLogs = $this->fetchTable('MasterAccessLogs');
 

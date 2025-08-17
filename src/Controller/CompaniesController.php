@@ -21,7 +21,7 @@ class CompaniesController extends AppController
     protected CompaniesTable $Companies;
 
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -37,7 +37,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de empresas
+     * Función index - Lista paginada de empresas
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -129,7 +129,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * View method - Detalle de una empresa
+     * Función view - Detalle de una empresa
      *
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null|void
@@ -202,7 +202,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * Edit method - Editar una empresa
+     * Función edit - Editar una empresa
      *
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null|void
@@ -234,7 +234,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * Delete method - Eliminar una empresa (soft delete)
+     * Función delete - Eliminar una empresa (soft delete)
      *
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null
@@ -264,7 +264,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * Activate method - Activar una empresa desactivada
+     * Función activate - Activar una empresa desactivada
      *
      * @param string|null $id Company id.
      * @return \Cake\Http\Response|null
@@ -292,7 +292,7 @@ class CompaniesController extends AppController
     }
 
     /**
-     * Export method - Exportar lista de empresas a CSV
+     * Función export - Exportar lista de empresas a CSV
      *
      * @return \Cake\Http\Response
      */

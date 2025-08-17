@@ -7,7 +7,6 @@ use JornaticCore\Model\Entity\Department;
 
 /**
  * Departments Controller
- *
  * Gestión completa de departamentos del ecosistema Jornatic
  *
  * @property \JornaticCore\Model\Table\DepartmentsTable $Departments
@@ -15,7 +14,7 @@ use JornaticCore\Model\Entity\Department;
 class DepartmentsController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -34,7 +33,7 @@ class DepartmentsController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de departamentos
+     * Función index - Lista paginada de departamentos
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -88,288 +87,6 @@ class DepartmentsController extends AppController
     }
 
     /**
-     * View method - Detalle de un departamento
-     *
-     * @param string|null $id Department id.
-     * @return \Cake\Http\Response|null|void
-     */
-    public function view(?string $id = null)
-    {
-        $department = $this->Departments->get($id, [
-            'contain' => [
-                'Companies',
-                'Users' => function ($q) {
-                    return $q->contain(['Roles'])->orderBy(['Users.name' => 'ASC']);
-                },
-                'CompanySchedules' => function ($q) {
-                    return $q->orderBy(['CompanySchedules.created' => 'DESC']);
-                },
-            ],
-        ]);
-
-        // Registrar visualización
-        $this->Logging->logView('departments', (int)$id);
-
-        // Obtener estadísticas del departamento
-        $departmentStats = $this->_getSpecificDepartmentStats($department);
-
-        $this->set(compact('department', 'departmentStats'));
-    }
-
-    /**
-     * Add method - Crear un nuevo departamento
-     *
-     * @return \Cake\Http\Response|null|void
-     */
-    public function add()
-    {
-        $department = $this->Departments->newEmptyEntity();
-
-        if ($this->request->is('post')) {
-            $department = $this->Departments->patchEntity($department, $this->request->getData());
-
-            if ($this->Departments->save($department)) {
-                // Registrar creación
-                $this->Logging->logCreate('departments', $department->id, [
-                    'department_name' => $department->name,
-                    'company_id' => $department->company_id,
-                    'is_active' => $department->active,
-                ]);
-
-                $this->Flash->success(__('_DEPARTAMENTO_CREADO_CORRECTAMENTE'));
-
-                return $this->redirect(['action' => 'view', $department->id]);
-            }
-
-            $this->Flash->error(__('_ERROR_AL_CREAR_DEPARTAMENTO'));
-        }
-
-        // Obtener empresas para el formulario
-        $Companies = $this->getTable('JornaticCore.Companies');
-        $companies = $Companies->find('list')->toArray();
-
-        $this->set(compact('department', 'companies'));
-    }
-
-    /**
-     * Edit method - Editar un departamento
-     *
-     * @param string|null $id Department id.
-     * @return \Cake\Http\Response|null|void
-     */
-    public function edit(?string $id = null)
-    {
-        $department = $this->Departments->get($id, [
-            'contain' => ['Companies'],
-        ]);
-
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $department = $this->Departments->patchEntity($department, $this->request->getData());
-
-            if ($this->Departments->save($department)) {
-                // Registrar actualización
-                $this->Logging->logUpdate('departments', (int)$id, [
-                    'updated_fields' => array_keys($this->request->getData()),
-                    'department_name' => $department->name,
-                    'company_name' => $department->company->name ?? '',
-                ]);
-
-                $this->Flash->success(__('_DEPARTAMENTO_ACTUALIZADO_CORRECTAMENTE'));
-
-                return $this->redirect(['action' => 'view', $id]);
-            }
-
-            $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_DEPARTAMENTO'));
-        }
-
-        // Obtener empresas para el formulario
-        $Companies = $this->getTable('JornaticCore.Companies');
-        $companies = $Companies->find('list')->toArray();
-
-        $this->set(compact('department', 'companies'));
-    }
-
-    /**
-     * Delete method - Eliminar un departamento (soft delete)
-     *
-     * @param string|null $id Department id.
-     * @return \Cake\Http\Response|null
-     */
-    public function delete(?string $id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-
-        $department = $this->Departments->get($id, ['contain' => ['Companies', 'Users']]);
-
-        // Verificar si el departamento tiene usuarios activos
-        $activeUsers = count(array_filter($department->users ?? [], function ($user) {
-            return $user->is_active;
-        }));
-
-        if ($activeUsers > 0) {
-            $this->Flash->error(__('_NO_SE_PUEDE_ELIMINAR_DEPARTAMENTO_CON_USUARIOS_ACTIVOS'));
-
-            return $this->redirect(['action' => 'view', $id]);
-        }
-
-        // Marcar como inactivo en lugar de eliminar
-        $department->active = false;
-
-        if ($this->Departments->save($department)) {
-            // Registrar eliminación lógica
-            $this->Logging->logDelete('departments', (int)$id, [
-                'department_name' => $department->name,
-                'company_name' => $department->company->name ?? '',
-                'users_count' => count($department->users ?? []),
-                'soft_delete' => true,
-            ]);
-
-            $this->Flash->success(__('_DEPARTAMENTO_DESACTIVADO_CORRECTAMENTE'));
-        } else {
-            $this->Flash->error(__('_ERROR_AL_DESACTIVAR_DEPARTAMENTO'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * Activate method - Activar un departamento desactivado
-     *
-     * @param string|null $id Department id.
-     * @return \Cake\Http\Response|null
-     */
-    public function activate(?string $id = null)
-    {
-        $this->request->allowMethod(['post']);
-
-        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
-        $department->active = true;
-
-        if ($this->Departments->save($department)) {
-            // Registrar activación
-            $this->Logging->logUpdate('departments', (int)$id, [
-                'action' => 'activate',
-                'department_name' => $department->name,
-                'company_name' => $department->company->name ?? '',
-            ]);
-
-            $this->Flash->success(__('_DEPARTAMENTO_ACTIVADO_CORRECTAMENTE'));
-        } else {
-            $this->Flash->error(__('_ERROR_AL_ACTIVAR_DEPARTAMENTO'));
-        }
-
-        return $this->redirect(['action' => 'view', $id]);
-    }
-
-    /**
-     * Users method - Ver usuarios de un departamento
-     *
-     * @param string|null $id Department id.
-     * @return \Cake\Http\Response|null|void
-     */
-    public function users(?string $id = null)
-    {
-        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
-
-        // Registrar acceso a usuarios del departamento
-        $this->Logging->logView('department_users', (int)$id);
-
-        $Users = $this->getTable('JornaticCore.Users');
-
-        $query = $Users->find()
-            ->contain(['Roles', 'Contracts'])
-            ->where(['department_id' => $id])
-            ->orderBy(['Users.name' => 'ASC']);
-
-        // Aplicar filtros si existen
-        $filters = $this->request->getQueryParams();
-
-        if (isset($filters['is_active'])) {
-            $query->where(['Users.is_active' => (bool)$filters['is_active']]);
-        }
-
-        if (!empty($filters['role_id'])) {
-            $query->where(['Users.role_id' => $filters['role_id']]);
-        }
-
-        $this->paginate = ['limit' => 25];
-        $users = $this->paginate($query);
-
-        // Obtener roles para filtros
-        $Roles = $this->getTable('JornaticCore.Roles');
-        $roles = $Roles->find('list')->toArray();
-
-        $this->set(compact('department', 'users', 'filters', 'roles'));
-    }
-
-    /**
-     * Export method - Exportar lista de departamentos a CSV
-     *
-     * @return \Cake\Http\Response
-     */
-    public function export()
-    {
-        $this->request->allowMethod(['get']);
-
-        // Registrar exportación
-        $this->Logging->logExport('departments', [
-            'format' => 'csv',
-            'timestamp' => date('Y-m-d H:i:s'),
-        ]);
-
-        $departments = $this->Departments->find()
-            ->contain(['Companies', 'Users'])
-            ->orderBy(['Departments.created' => 'DESC'])
-            ->toArray();
-
-        // Preparar datos CSV
-        $csvData = [];
-        $csvData[] = [
-            __('_NOMBRE'),
-            __('_DESCRIPCION'),
-            __('_EMPRESA'),
-            __('_USUARIOS_TOTAL'),
-            __('_USUARIOS_ACTIVOS'),
-            __('_ACTIVO'),
-            __('_FECHA_CREACION'),
-        ];
-
-        foreach ($departments as $department) {
-            $totalUsers = count($department->users ?? []);
-            $activeUsers = count(array_filter($department->users ?? [], function ($user) {
-                return $user->is_active;
-            }));
-
-            $csvData[] = [
-                $department->name,
-                $department->description ?? '',
-                $department->company->name ?? '',
-                $totalUsers,
-                $activeUsers,
-                $department->active ? __('_SI') : __('_NO'),
-                $department->created->format('Y-m-d'),
-            ];
-        }
-
-        // Generar CSV
-        $filename = 'departments_' . date('Y-m-d_H-i-s') . '.csv';
-
-        $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
-
-        // Crear contenido CSV
-        $output = fopen('php://output', 'w');
-        // UTF-8 BOM para Excel
-        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
-        foreach ($csvData as $row) {
-            fputcsv($output, $row, ';', '"');
-        }
-        fclose($output);
-
-        return $this->response;
-    }
-
-    /**
      * Obtener estadísticas generales de departamentos
      *
      * @return array
@@ -410,6 +127,35 @@ class DepartmentsController extends AppController
             'new_this_month' => $thisMonth,
             'by_company' => $byCompany,
         ];
+    }
+
+    /**
+     * Función view - Detalle de un departamento
+     *
+     * @param string|null $id Department id.
+     * @return \Cake\Http\Response|null|void
+     */
+    public function view(?string $id = null)
+    {
+        $department = $this->Departments->get($id, [
+            'contain' => [
+                'Companies',
+                'Users' => function ($q) {
+                    return $q->contain(['Roles'])->orderBy(['Users.name' => 'ASC']);
+                },
+                'CompanySchedules' => function ($q) {
+                    return $q->orderBy(['CompanySchedules.created' => 'DESC']);
+                },
+            ],
+        ]);
+
+        // Registrar visualización
+        $this->Logging->logView('departments', (int)$id);
+
+        // Obtener estadísticas del departamento
+        $departmentStats = $this->_getSpecificDepartmentStats($department);
+
+        $this->set(compact('department', 'departmentStats'));
     }
 
     /**
@@ -464,5 +210,262 @@ class DepartmentsController extends AppController
             'pending_absences' => $pendingAbsences,
             'active_contracts' => $activeContracts,
         ];
+    }
+
+    /**
+     * Función add - Crear un nuevo departamento
+     *
+     * @return \Cake\Http\Response|null|void
+     */
+    public function add()
+    {
+        $department = $this->Departments->newEmptyEntity();
+
+        if ($this->request->is('post')) {
+            $department = $this->Departments->patchEntity($department, $this->request->getData());
+
+            if ($this->Departments->save($department)) {
+                // Registrar creación
+                $this->Logging->logCreate('departments', $department->id, [
+                    'department_name' => $department->name,
+                    'company_id' => $department->company_id,
+                    'is_active' => $department->active,
+                ]);
+
+                $this->Flash->success(__('_DEPARTAMENTO_CREADO_CORRECTAMENTE'));
+
+                return $this->redirect(['action' => 'view', $department->id]);
+            }
+
+            $this->Flash->error(__('_ERROR_AL_CREAR_DEPARTAMENTO'));
+        }
+
+        // Obtener empresas para el formulario
+        $Companies = $this->getTable('JornaticCore.Companies');
+        $companies = $Companies->find('list')->toArray();
+
+        $this->set(compact('department', 'companies'));
+    }
+
+    /**
+     * Función edit - Editar un departamento
+     *
+     * @param string|null $id Department id.
+     * @return \Cake\Http\Response|null|void
+     */
+    public function edit(?string $id = null)
+    {
+        $department = $this->Departments->get($id, [
+            'contain' => ['Companies'],
+        ]);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $department = $this->Departments->patchEntity($department, $this->request->getData());
+
+            if ($this->Departments->save($department)) {
+                // Registrar actualización
+                $this->Logging->logUpdate('departments', (int)$id, [
+                    'updated_fields' => array_keys($this->request->getData()),
+                    'department_name' => $department->name,
+                    'company_name' => $department->company->name ?? '',
+                ]);
+
+                $this->Flash->success(__('_DEPARTAMENTO_ACTUALIZADO_CORRECTAMENTE'));
+
+                return $this->redirect(['action' => 'view', $id]);
+            }
+
+            $this->Flash->error(__('_ERROR_AL_ACTUALIZAR_DEPARTAMENTO'));
+        }
+
+        // Obtener empresas para el formulario
+        $Companies = $this->getTable('JornaticCore.Companies');
+        $companies = $Companies->find('list')->toArray();
+
+        $this->set(compact('department', 'companies'));
+    }
+
+    /**
+     * Función delete - Eliminar un departamento (soft delete)
+     *
+     * @param string|null $id Department id.
+     * @return \Cake\Http\Response|null
+     */
+    public function delete(?string $id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        $department = $this->Departments->get($id, ['contain' => ['Companies', 'Users']]);
+
+        // Verificar si el departamento tiene usuarios activos
+        $activeUsers = count(array_filter($department->users ?? [], function ($user) {
+            return $user->is_active;
+        }));
+
+        if ($activeUsers > 0) {
+            $this->Flash->error(__('_NO_SE_PUEDE_ELIMINAR_DEPARTAMENTO_CON_USUARIOS_ACTIVOS'));
+
+            return $this->redirect(['action' => 'view', $id]);
+        }
+
+        // Marcar como inactivo en lugar de eliminar
+        $department->active = false;
+
+        if ($this->Departments->save($department)) {
+            // Registrar eliminación lógica
+            $this->Logging->logDelete('departments', (int)$id, [
+                'department_name' => $department->name,
+                'company_name' => $department->company->name ?? '',
+                'users_count' => count($department->users ?? []),
+                'soft_delete' => true,
+            ]);
+
+            $this->Flash->success(__('_DEPARTAMENTO_DESACTIVADO_CORRECTAMENTE'));
+        } else {
+            $this->Flash->error(__('_ERROR_AL_DESACTIVAR_DEPARTAMENTO'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Función activate - Activar un departamento desactivado
+     *
+     * @param string|null $id Department id.
+     * @return \Cake\Http\Response|null
+     */
+    public function activate(?string $id = null)
+    {
+        $this->request->allowMethod(['post']);
+
+        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
+        $department->active = true;
+
+        if ($this->Departments->save($department)) {
+            // Registrar activación
+            $this->Logging->logUpdate('departments', (int)$id, [
+                'action' => 'activate',
+                'department_name' => $department->name,
+                'company_name' => $department->company->name ?? '',
+            ]);
+
+            $this->Flash->success(__('_DEPARTAMENTO_ACTIVADO_CORRECTAMENTE'));
+        } else {
+            $this->Flash->error(__('_ERROR_AL_ACTIVAR_DEPARTAMENTO'));
+        }
+
+        return $this->redirect(['action' => 'view', $id]);
+    }
+
+    /**
+     * Función users - Ver usuarios de un departamento
+     *
+     * @param string|null $id Department id.
+     * @return \Cake\Http\Response|null|void
+     */
+    public function users(?string $id = null)
+    {
+        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
+
+        // Registrar acceso a usuarios del departamento
+        $this->Logging->logView('department_users', (int)$id);
+
+        $Users = $this->getTable('JornaticCore.Users');
+
+        $query = $Users->find()
+            ->contain(['Roles', 'Contracts'])
+            ->where(['department_id' => $id])
+            ->orderBy(['Users.name' => 'ASC']);
+
+        // Aplicar filtros si existen
+        $filters = $this->request->getQueryParams();
+
+        if (isset($filters['is_active'])) {
+            $query->where(['Users.is_active' => (bool)$filters['is_active']]);
+        }
+
+        if (!empty($filters['role_id'])) {
+            $query->where(['Users.role_id' => $filters['role_id']]);
+        }
+
+        $this->paginate = ['limit' => 25];
+        $users = $this->paginate($query);
+
+        // Obtener roles para filtros
+        $Roles = $this->getTable('JornaticCore.Roles');
+        $roles = $Roles->find('list')->toArray();
+
+        $this->set(compact('department', 'users', 'filters', 'roles'));
+    }
+
+    /**
+     * Función export - Exportar lista de departamentos a CSV
+     *
+     * @return \Cake\Http\Response
+     */
+    public function export()
+    {
+        $this->request->allowMethod(['get']);
+
+        // Registrar exportación
+        $this->Logging->logExport('departments', [
+            'format' => 'csv',
+            'timestamp' => date('Y-m-d H:i:s'),
+        ]);
+
+        $departments = $this->Departments->find()
+            ->contain(['Companies', 'Users'])
+            ->orderBy(['Departments.created' => 'DESC'])
+            ->toArray();
+
+        // Preparar datos CSV
+        $csvData = [];
+        $csvData[] = [
+            __('_NOMBRE'),
+            __('_DESCRIPCION'),
+            __('_EMPRESA'),
+            __('_USUARIOS_TOTAL'),
+            __('_USUARIOS_ACTIVOS'),
+            __('_ACTIVO'),
+            __('_FECHA_CREACION'),
+        ];
+
+        foreach ($departments as $department) {
+            $totalUsers = count($department->users ?? []);
+            $activeUsers = count(array_filter($department->users ?? [], function ($user) {
+                return $user->is_active;
+            }));
+
+            $csvData[] = [
+                $department->name,
+                $department->description ?? '',
+                $department->company->name ?? '',
+                $totalUsers,
+                $activeUsers,
+                $department->active
+                    ? __('_SI')
+                    : __('_NO'),
+                $department->created->format('Y-m-d'),
+            ];
+        }
+
+        // Generar CSV
+        $filename = 'departments_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $this->response = $this->response->withType('text/csv');
+        $this->response =
+            $this->response
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Crear contenido CSV
+        $output = fopen('php://output', 'w');
+        // UTF-8 BOM para Excel
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        foreach ($csvData as $row) {
+            fputcsv($output, $row, ';', '"');
+        }
+        fclose($output);
+
+        return $this->response;
     }
 }

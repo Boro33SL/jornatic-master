@@ -10,7 +10,9 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Masters Model
+ * Modelo Masters
+ *
+ * Gestión de usuarios master del sistema
  *
  * @property \App\Model\Table\MasterRolesTable&\Cake\ORM\Association\BelongsTo $Role
  * @property \App\Model\Table\MasterAccessLogsTable&\Cake\ORM\Association\HasMany $MasterAccessLogs
@@ -32,9 +34,9 @@ use Cake\Validation\Validator;
 class MastersTable extends Table
 {
     /**
-     * Initialize method
+     * Función de inicialización
      *
-     * @param array<string, mixed> $config The configuration for the Table.
+     * @param array<string, mixed> $config Configuración de la tabla
      * @return void
      */
     public function initialize(array $config): void
@@ -58,9 +60,9 @@ class MastersTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * Reglas de validación por defecto
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @param \Cake\Validation\Validator $validator Instancia del validador
      * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
@@ -120,10 +122,10 @@ class MastersTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * Devuelve un objeto de verificación de reglas para validar
+     * la integridad de la aplicación
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @param \Cake\ORM\RulesChecker $rules Objeto de reglas a modificar
      * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
@@ -135,10 +137,10 @@ class MastersTable extends Table
     }
 
     /**
-     * Finder for authentication - returns active masters only
+     * Finder para autenticación - devuelve solo masters activos
      *
-     * @param \Cake\ORM\Query\SelectQuery $query Query object
-     * @param array $options Options array
+     * @param \Cake\ORM\Query\SelectQuery $query Objeto de consulta
+     * @param array $options Array de opciones
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findAuth(SelectQuery $query, array $options): SelectQuery

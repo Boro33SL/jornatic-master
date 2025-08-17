@@ -15,10 +15,10 @@ use Exception;
 class SortPoCommand extends Command
 {
     /**
-     * Hook method for defining this command's option parser.
+     * Función para definir el analizador de opciones de este comando
      *
-     * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
-     * @return \Cake\Console\ConsoleOptionParser The built parser.
+     * @param \Cake\Console\ConsoleOptionParser $parser El analizador a definir
+     * @return \Cake\Console\ConsoleOptionParser El analizador construido
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -43,11 +43,11 @@ class SortPoCommand extends Command
     }
 
     /**
-     * Implement this method with your command's logic.
+     * Implementa esta función con la lógica de tu comando
      *
-     * @param \Cake\Console\Arguments $args The command arguments.
-     * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null|void The exit code or null for success
+     * @param \Cake\Console\Arguments $args Los argumentos del comando
+     * @param \Cake\Console\ConsoleIo $io La IO de consola
+     * @return int|null|void El código de salida o null para éxito
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -91,7 +91,7 @@ class SortPoCommand extends Command
     }
 
     /**
-     * Ordena el contenido de un archivo .po alfabéticamente por msgid
+     * Función para ordenar el contenido de un archivo .po alfabéticamente por msgid
      *
      * @param string $content Contenido del archivo .po
      * @return string Contenido ordenado
@@ -163,7 +163,7 @@ class SortPoCommand extends Command
     }
 
     /**
-     * Procesa una entrada individual extrayendo el msgid
+     * Función para procesar una entrada individual extrayendo el msgid
      *
      * @param array $lines Líneas de la entrada
      * @return array Entrada procesada con msgid y líneas
@@ -189,7 +189,7 @@ class SortPoCommand extends Command
     }
 
     /**
-     * Get the command description.
+     * Obtiene la descripción del comando
      *
      * @return string
      */

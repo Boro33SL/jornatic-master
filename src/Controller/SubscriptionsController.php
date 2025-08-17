@@ -23,7 +23,7 @@ class SubscriptionsController extends AppController
     protected SubscriptionsTable $Subscriptions;
 
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -42,7 +42,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de suscripciones
+     * Función index - Lista paginada de suscripciones
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -110,7 +110,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * View method - Detalle de una suscripción
+     * Función view - Detalle de una suscripción
      *
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null|void
@@ -131,7 +131,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * Edit method - Editar una suscripción
+     * Función edit - Editar una suscripción
      *
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null|void
@@ -171,7 +171,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * Cancel method - Cancelar una suscripción
+     * Función cancel - Cancelar una suscripción
      *
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null
@@ -204,7 +204,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * Reactivate method - Reactivar una suscripción cancelada
+     * Función reactivate - Reactivar una suscripción cancelada
      *
      * @param string|null $id Subscription id.
      * @return \Cake\Http\Response|null
@@ -237,7 +237,7 @@ class SubscriptionsController extends AppController
     }
 
     /**
-     * Export method - Exportar lista de suscripciones a CSV
+     * Función export - Exportar lista de suscripciones a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -288,7 +288,8 @@ class SubscriptionsController extends AppController
         $filename = 'subscriptions_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response = $this->response
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');

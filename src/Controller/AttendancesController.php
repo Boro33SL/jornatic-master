@@ -15,7 +15,7 @@ use JornaticCore\Model\Entity\Attendance;
 class AttendancesController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -34,7 +34,7 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de asistencias
+     * Función index - Lista paginada de asistencias
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -126,9 +126,9 @@ class AttendancesController extends AppController
     }
 
     /**
-     * View method - Detalle de una asistencia
+     * Función view - Detalle de una asistencia
      *
-     * @param string|null $id Attendance id.
+     * @param string|null $id ID de la asistencia
      * @return \Cake\Http\Response|null|void
      */
     public function view(?string $id = null)
@@ -164,9 +164,9 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Edit method - Editar una asistencia
+     * Función edit - Editar una asistencia
      *
-     * @param string|null $id Attendance id.
+     * @param string|null $id ID de la asistencia
      * @return \Cake\Http\Response|null|void
      */
     public function edit(?string $id = null)
@@ -206,9 +206,9 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Delete method - Eliminar una asistencia
+     * Función delete - Eliminar una asistencia
      *
-     * @param string|null $id Attendance id.
+     * @param string|null $id ID de la asistencia
      * @return \Cake\Http\Response|null
      */
     public function delete(?string $id = null)
@@ -238,7 +238,7 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Daily method - Ver asistencias por día
+     * Función daily - Ver asistencias por día
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -287,7 +287,7 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Reports method - Reportes de asistencias
+     * Función reports - Reportes de asistencias
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -315,7 +315,7 @@ class AttendancesController extends AppController
     }
 
     /**
-     * Export method - Exportar asistencias a CSV
+     * Función export - Exportar asistencias a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -384,7 +384,8 @@ class AttendancesController extends AppController
         $filename = 'attendances_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response = $this->response
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
@@ -564,6 +565,8 @@ class AttendancesController extends AppController
             'total_hours' => $totalHoursFormatted,
             'first_in' => count($checkIns) > 0 ? reset($checkIns)->timestamp->format('H:i') : null,
             'last_out' => count($checkOuts) > 0 ? end($checkOuts)->timestamp->format('H:i') : null,
+            'breakEnds' => count($breakEnds),
+            'hoursWorked' => $hoursWorked,
         ];
     }
 

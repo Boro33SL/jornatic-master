@@ -17,23 +17,24 @@ declare(strict_types=1);
 namespace App\View;
 
 /**
- * A view class that is used for AJAX responses.
- * Currently only switches the default layout and sets the response type -
- * which just maps to text/html by default.
+ * Clase de vista para respuestas AJAX
+ *
+ * Actualmente solo cambia el layout por defecto y establece el tipo de respuesta -
+ * que se mapea a text/html por defecto
  */
 class AjaxView extends AppView
 {
     /**
-     * The name of the layout file to render the view inside of. The name
-     * specified is the filename of the layout in /templates/Layout without
-     * the .php extension.
+     * El nombre del archivo de layout para renderizar la vista dentro de él. El nombre
+     * especificado es el nombre del archivo del layout en /templates/Layout sin
+     * la extensión .php
      *
      * @var string
      */
     protected string $layout = 'ajax';
 
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */

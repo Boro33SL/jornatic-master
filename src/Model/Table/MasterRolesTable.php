@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * MasterRoles Model
+ * Modelo MasterRoles
+ *
+ * Gestión de roles de usuarios master
  *
  * @property \App\Model\Table\MastersTable&\Cake\ORM\Association\HasMany $Masters
- *
  * @method \App\Model\Entity\MasterRole newEmptyEntity()
  * @method \App\Model\Entity\MasterRole newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\MasterRole> newEntities(array $data, array $options = [])
@@ -30,9 +29,9 @@ use Cake\Validation\Validator;
 class MasterRolesTable extends Table
 {
     /**
-     * Initialize method
+     * Función de inicialización
      *
-     * @param array<string, mixed> $config The configuration for the Table.
+     * @param array<string, mixed> $config Configuración de la tabla
      * @return void
      */
     public function initialize(array $config): void
@@ -49,9 +48,9 @@ class MasterRolesTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * Reglas de validación por defecto
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @param \Cake\Validation\Validator $validator Instancia del validador
      * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator

@@ -19,9 +19,9 @@ use App\View\Helper\IconHelper;
 use Cake\View\View;
 
 /**
- * Application View
+ * Vista de Aplicación
  *
- * Your application's default view class
+ * Clase de vista por defecto de tu aplicación
  *
  * @link https://book.cakephp.org/5/en/views.html#the-app-view
  * @property \App\View\Helper\IconHelper $Icon
@@ -31,11 +31,11 @@ class AppView extends View
     private IconHelper $Icon;
 
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
-     * Use this method to add common initialization code like adding helpers.
+     * Usa esta función para agregar código de inicialización común como añadir helpers
      *
-     * e.g. `$this->addHelper('Html');`
+     * ej. `$this->addHelper('Html');`
      *
      * @return void
      */

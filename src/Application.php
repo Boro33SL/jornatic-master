@@ -40,10 +40,10 @@ use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Application setup class.
+ * Clase de configuración de la aplicación
  *
- * This defines the bootstrapping logic and middleware layers you
- * want to use in your application.
+ * Define la lógica de arranque y las capas de middleware que
+ * quieres usar en tu aplicación.
  *
  * @extends \Cake\Http\BaseApplication<\App\Application>
  */
@@ -52,7 +52,7 @@ class Application extends BaseApplication implements
     AuthorizationServiceProviderInterface
 {
     /**
-     * Load all the application configuration and bootstrap logic.
+     * Cargar toda la configuración de la aplicación y lógica de arranque
      *
      * @return void
      */
@@ -76,7 +76,7 @@ class Application extends BaseApplication implements
     }
 
     /**
-     * Setup the middleware queue your application will use.
+     * Configurar la cola de middleware que usará tu aplicación
      *
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
      * @return \Cake\Http\MiddlewareQueue The updated middleware queue.

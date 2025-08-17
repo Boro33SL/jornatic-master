@@ -9,7 +9,6 @@ use JornaticCore\Model\Entity\Feature;
 
 /**
  * Features Controller
- *
  * Gestión completa de características del ecosistema Jornatic
  *
  * @property \JornaticCore\Model\Table\FeaturesTable $Features
@@ -17,7 +16,7 @@ use JornaticCore\Model\Entity\Feature;
 class FeaturesController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -36,7 +35,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de características
+     * Función index - Lista paginada de características
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -91,7 +90,47 @@ class FeaturesController extends AppController
     }
 
     /**
-     * View method - Detalle de una característica
+     * Obtener estadísticas generales de características
+     *
+     * @return array
+     */
+    private function _getFeatureStats(): array
+    {
+        $total = $this->Features->find()->count();
+
+        $withPlans = $this->Features->find()
+            ->matching('Plans')
+            ->count();
+
+        // Características por tipo de dato
+        $byDataType = $this->Features->find()
+            ->select([
+                'data_type',
+                'count' => 'COUNT(Features.id)',
+            ])
+            ->group(['Features.data_type'])
+            ->toArray();
+
+        // Características más usadas (por número de planes)
+        $mostUsed = $this->Features->find()
+            ->contain(['Plans'])
+            ->toArray();
+
+        // Ordenar por número de planes
+        usort($mostUsed, function ($a, $b) {
+            return count($b->plans ?? []) - count($a->plans ?? []);
+        });
+
+        return [
+            'total' => $total,
+            'with_plans' => $withPlans,
+            'by_data_type' => $byDataType,
+            'most_used' => array_slice($mostUsed, 0, 5), // Top 5
+        ];
+    }
+
+    /**
+     * Función view - Detalle de una característica
      *
      * @param string|null $id Feature id.
      * @return \Cake\Http\Response|null|void
@@ -114,7 +153,51 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Add method - Crear una nueva característica
+     * Obtener estadísticas específicas de una característica
+     *
+     * @param \JornaticCore\Model\Entity\Feature $feature
+     * @return array
+     */
+    private function _getSpecificFeatureStats(Feature $feature): array
+    {
+        $totalPlans = count($feature->plans ?? []);
+
+        $activePlans = count($feature->plans ?? []);
+
+        $totalSubscriptions = 0;
+        $activeSubscriptions = 0;
+        $totalCompanies = [];
+
+        foreach ($feature->plans as $plan) {
+            $planSubscriptions = $plan->subscriptions ?? [];
+            $totalSubscriptions += count($planSubscriptions);
+
+            foreach ($planSubscriptions as $subscription) {
+                if (in_array($subscription->status, ['active', 'trial'])) {
+                    $activeSubscriptions++;
+                }
+
+                // Recopilar empresas únicas
+                if (!empty($subscription->company)) {
+                    $totalCompanies[$subscription->company->id] = $subscription->company;
+                }
+            }
+        }
+
+        return [
+            'total_plans' => $totalPlans,
+            'active_plans' => $activePlans,
+            'total_subscriptions' => $totalSubscriptions,
+            'active_subscriptions' => $activeSubscriptions,
+            'total_companies' => count($totalCompanies),
+            'usage_percentage' => $totalPlans > 0
+                ? round($activePlans / $totalPlans * 100, 1)
+                : 0,
+        ];
+    }
+
+    /**
+     * Función add - Crear una nueva característica
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -150,7 +233,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Edit method - Editar una característica
+     * Función edit - Editar una característica
      *
      * @param string|null $id Feature id.
      * @return \Cake\Http\Response|null|void
@@ -188,7 +271,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Delete method - Eliminar una característica (soft delete)
+     * Función delete - Eliminar una característica (soft delete)
      *
      * @param string|null $id Feature id.
      * @return \Cake\Http\Response|null
@@ -226,7 +309,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Usage method - Ver uso de características por plan
+     * Función usage - Ver uso de características por plan
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -272,7 +355,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Export method - Exportar lista de características a CSV
+     * Función export - Exportar lista de características a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -321,7 +404,9 @@ class FeaturesController extends AppController
         $filename = 'features_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response =
+            $this->response
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
@@ -336,47 +421,7 @@ class FeaturesController extends AppController
     }
 
     /**
-     * Obtener estadísticas generales de características
-     *
-     * @return array
-     */
-    private function _getFeatureStats(): array
-    {
-        $total = $this->Features->find()->count();
-
-        $withPlans = $this->Features->find()
-            ->matching('Plans')
-            ->count();
-
-        // Características por tipo de dato
-        $byDataType = $this->Features->find()
-            ->select([
-                'data_type',
-                'count' => 'COUNT(Features.id)',
-            ])
-            ->group(['Features.data_type'])
-            ->toArray();
-
-        // Características más usadas (por número de planes)
-        $mostUsed = $this->Features->find()
-            ->contain(['Plans'])
-            ->toArray();
-
-        // Ordenar por número de planes
-        usort($mostUsed, function ($a, $b) {
-            return count($b->plans ?? []) - count($a->plans ?? []);
-        });
-
-        return [
-            'total' => $total,
-            'with_plans' => $withPlans,
-            'by_data_type' => $byDataType,
-            'most_used' => array_slice($mostUsed, 0, 5), // Top 5
-        ];
-    }
-
-    /**
-     * Reorder method - Actualizar orden de características via AJAX
+     * Función reorder - Actualizar orden de características via AJAX
      *
      * @return \Cake\Http\Response
      */
@@ -423,49 +468,9 @@ class FeaturesController extends AppController
             $connection->rollback();
 
             return $this->response->withType('application/json')
-                ->withStringBody(json_encode(['success' => false, 'message' => 'Error al actualizar el orden: ' . $e->getMessage()]));
+                ->withStringBody(json_encode([
+                    'success' => false, 'message' => 'Error al actualizar el orden: ' . $e->getMessage(),
+                ]));
         }
-    }
-
-    /**
-     * Obtener estadísticas específicas de una característica
-     *
-     * @param \JornaticCore\Model\Entity\Feature $feature
-     * @return array
-     */
-    private function _getSpecificFeatureStats(Feature $feature): array
-    {
-        $totalPlans = count($feature->plans ?? []);
-
-        $activePlans = count($feature->plans ?? []);
-
-        $totalSubscriptions = 0;
-        $activeSubscriptions = 0;
-        $totalCompanies = [];
-
-        foreach ($feature->plans as $plan) {
-            $planSubscriptions = $plan->subscriptions ?? [];
-            $totalSubscriptions += count($planSubscriptions);
-
-            foreach ($planSubscriptions as $subscription) {
-                if (in_array($subscription->status, ['active', 'trial'])) {
-                    $activeSubscriptions++;
-                }
-
-                // Recopilar empresas únicas
-                if (!empty($subscription->company)) {
-                    $totalCompanies[$subscription->company->id] = $subscription->company;
-                }
-            }
-        }
-
-        return [
-            'total_plans' => $totalPlans,
-            'active_plans' => $activePlans,
-            'total_subscriptions' => $totalSubscriptions,
-            'active_subscriptions' => $activeSubscriptions,
-            'total_companies' => count($totalCompanies),
-            'usage_percentage' => $totalPlans > 0 ? round($activePlans / $totalPlans * 100, 1) : 0,
-        ];
     }
 }

@@ -7,33 +7,35 @@ use App\Model\Table\MastersTable;
 use Authorization\IdentityInterface;
 
 /**
- * Masters table policy
+ * Política de tabla Masters
+ *
+ * Define las reglas de autorización para las operaciones sobre la tabla Masters
  */
 class MastersTablePolicy
 {
     /**
-     * Check if $user can create masters
+     * Función para verificar si el usuario puede crear masters
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Table\MastersTable $masters
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Table\MastersTable $masters La tabla masters
      * @return bool
      */
     public function canCreate(IdentityInterface $user, MastersTable $masters): bool
     {
-        // Only authenticated masters can create new masters
+        // Solo masters autenticados pueden crear nuevos masters
         return true;
     }
 
     /**
-     * Check if $user can access index
+     * Función para verificar si el usuario puede acceder al índice
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Table\MastersTable $masters
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Table\MastersTable $masters La tabla masters
      * @return bool
      */
     public function canIndex(IdentityInterface $user, MastersTable $masters): bool
     {
-        // Any authenticated master can list masters
+        // Cualquier master autenticado puede listar masters
         return true;
     }
 }

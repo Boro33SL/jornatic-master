@@ -7,59 +7,61 @@ use App\Model\Entity\Master;
 use Authorization\IdentityInterface;
 
 /**
- * Master policy
+ * Política de Master
+ *
+ * Define las reglas de autorización para las operaciones sobre la entidad Master
  */
 class MasterPolicy
 {
     /**
-     * Check if $user can view Master
+     * Función para verificar si el usuario puede ver Master
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Entity\Master $master
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Entity\Master $master La entidad master
      * @return bool
      */
     public function canView(IdentityInterface $user, Master $master): bool
     {
-        // Masters can only view their own profile
+        // Los masters solo pueden ver su propio perfil
         return $user->getIdentifier() === $master->id;
     }
 
     /**
-     * Check if $user can edit Master
+     * Función para verificar si el usuario puede editar Master
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Entity\Master $master
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Entity\Master $master La entidad master
      * @return bool
      */
     public function canEdit(IdentityInterface $user, Master $master): bool
     {
-        // Masters can only edit their own profile
+        // Los masters solo pueden editar su propio perfil
         return $user->getIdentifier() === $master->id;
     }
 
     /**
-     * Check if $user can delete Master
+     * Función para verificar si el usuario puede eliminar Master
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Entity\Master $master
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Entity\Master $master La entidad master
      * @return bool
      */
     public function canDelete(IdentityInterface $user, Master $master): bool
     {
-        // Prevent deletion of own account for safety
+        // Prevenir eliminación de la propia cuenta por seguridad
         return false;
     }
 
     /**
-     * Check if $user can access dashboard
+     * Función para verificar si el usuario puede acceder al dashboard
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Entity\Master $master
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Entity\Master $master La entidad master
      * @return bool
      */
     public function canDashboard(IdentityInterface $user, Master $master): bool
     {
-        // Any authenticated master can access dashboard
+        // Cualquier master autenticado puede acceder al dashboard
         if ($user->getIdentifier() === $master->id) {
             return true;
         }
@@ -68,15 +70,15 @@ class MasterPolicy
     }
 
     /**
-     * Check if $user can logout
+     * Función para verificar si el usuario puede cerrar sesión
      *
-     * @param \Authorization\IdentityInterface $user The user.
-     * @param \App\Model\Entity\Master $master
+     * @param \Authorization\IdentityInterface $user El usuario
+     * @param \App\Model\Entity\Master $master La entidad master
      * @return bool
      */
     public function canLogout(IdentityInterface $user, Master $master): bool
     {
-        // Any authenticated master can logout
+        // Cualquier master autenticado puede cerrar sesión
         return true;
     }
 }

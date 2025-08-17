@@ -16,7 +16,7 @@ use JornaticCore\Model\Entity\Holiday;
 class HolidaysController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -35,7 +35,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de festivos
+     * Función index - Lista paginada de festivos
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -118,7 +118,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * View method - Detalle de un festivo
+     * Función view - Detalle de un festivo
      *
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null|void
@@ -150,7 +150,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Add method - Crear un nuevo festivo
+     * Función add - Crear un nuevo festivo
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -187,7 +187,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Edit method - Editar un festivo
+     * Función edit - Editar un festivo
      *
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null|void
@@ -225,7 +225,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Delete method - Eliminar un festivo
+     * Función delete - Eliminar un festivo
      *
      * @param string|null $id Holiday id.
      * @return \Cake\Http\Response|null
@@ -254,7 +254,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Calendar method - Vista de calendario de festivos
+     * Función calendar - Vista de calendario de festivos
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -298,7 +298,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Bulk method - Creación masiva de festivos
+     * Función bulk - Creación masiva de festivos
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -341,7 +341,7 @@ class HolidaysController extends AppController
     }
 
     /**
-     * Export method - Exportar lista de festivos a CSV
+     * Función export - Exportar lista de festivos a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -400,7 +400,8 @@ class HolidaysController extends AppController
         $filename = 'holidays_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response = $this->response
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
@@ -417,9 +418,11 @@ class HolidaysController extends AppController
     /**
      * Obtener estadísticas generales de festivos
      *
+     * @param int|null $year Año específico, si no se pasa se usa el actual
+     * @param array $filters Filtros adicionales (is_active, company_id, etc
      * @return array
      */
-    private function _getHolidayStats($year = null, $filters = []): array
+    private function _getHolidayStats(?int $year = null, array $filters = []): array
     {
         $year = $year ?? date('Y');
 

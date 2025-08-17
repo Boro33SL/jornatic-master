@@ -8,7 +8,9 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * MasterAccessLogs Model
+ * Modelo MasterAccessLogs
+ *
+ * Gestión de registros de acceso de usuarios master
  *
  * @property \App\Model\Table\MastersTable&\Cake\ORM\Association\BelongsTo $Masters
  * @method \App\Model\Entity\MasterAccessLog newEmptyEntity()
@@ -29,9 +31,9 @@ use Cake\Validation\Validator;
 class MasterAccessLogsTable extends Table
 {
     /**
-     * Initialize method
+     * Función de inicialización
      *
-     * @param array<string, mixed> $config The configuration for the Table.
+     * @param array<string, mixed> $config Configuración de la tabla
      * @return void
      */
     public function initialize(array $config): void
@@ -51,9 +53,9 @@ class MasterAccessLogsTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * Reglas de validación por defecto
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @param \Cake\Validation\Validator $validator Instancia del validador
      * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
@@ -100,10 +102,10 @@ class MasterAccessLogsTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * Devuelve un objeto de verificación de reglas para validar
+     * la integridad de la aplicación
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @param \Cake\ORM\RulesChecker $rules Objeto de reglas a modificar
      * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker

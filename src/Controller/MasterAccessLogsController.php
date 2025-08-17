@@ -5,7 +5,6 @@ namespace App\Controller;
 
 /**
  * MasterAccessLogs Controller
- *
  * Sistema de auditoría y logging para usuarios master
  *
  * @property \App\Model\Table\MasterAccessLogsTable $MasterAccessLogs
@@ -13,7 +12,7 @@ namespace App\Controller;
 class MasterAccessLogsController extends AppController
 {
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -26,7 +25,7 @@ class MasterAccessLogsController extends AppController
     }
 
     /**
-     * Index action - Lista paginada de logs con filtros
+     * Función index - Lista paginada de logs con filtros
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -91,7 +90,48 @@ class MasterAccessLogsController extends AppController
     }
 
     /**
-     * View action - Detalle de un log específico
+     * Obtener estadísticas del día actual
+     *
+     * @return array
+     */
+    private function _getTodayStats(): array
+    {
+        $today = date('Y-m-d');
+
+        $total = $this->MasterAccessLogs->find()
+            ->where(['DATE(created)' => $today])
+            ->count();
+
+        $successful = $this->MasterAccessLogs->find()
+            ->where([
+                'DATE(created)' => $today,
+                'success' => true,
+            ])
+            ->count();
+
+        $failed = $this->MasterAccessLogs->find()
+            ->where([
+                'DATE(created)' => $today,
+                'success' => false,
+            ])
+            ->count();
+
+        $uniqueIps = $this->MasterAccessLogs->find()
+            ->select(['ip_address'])
+            ->distinct(['ip_address'])
+            ->where(['DATE(created)' => $today])
+            ->count();
+
+        return [
+            'total' => $total,
+            'successful' => $successful,
+            'failed' => $failed,
+            'unique_ips' => $uniqueIps,
+        ];
+    }
+
+    /**
+     * Función view - Detalle de un log específico
      *
      * @param string|null $id Master Access Log id.
      * @return \Cake\Http\Response|null|void
@@ -118,7 +158,7 @@ class MasterAccessLogsController extends AppController
     }
 
     /**
-     * Export action - Exportar logs a CSV
+     * Función export - Exportar logs a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -184,7 +224,9 @@ class MasterAccessLogsController extends AppController
                 $log->resource_id ?? '',
                 $log->ip_address,
                 $log->user_agent ?? '',
-                $log->success ? __('_SI') : __('_NO'),
+                $log->success
+                    ? __('_SI')
+                    : __('_NO'),
                 $log->details ?? '',
             ];
         }
@@ -193,7 +235,8 @@ class MasterAccessLogsController extends AppController
         $filename = 'master_access_logs_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response = $this->response
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
@@ -203,46 +246,5 @@ class MasterAccessLogsController extends AppController
         fclose($output);
 
         return $this->response;
-    }
-
-    /**
-     * Obtener estadísticas del día actual
-     *
-     * @return array
-     */
-    private function _getTodayStats(): array
-    {
-        $today = date('Y-m-d');
-
-        $total = $this->MasterAccessLogs->find()
-            ->where(['DATE(created)' => $today])
-            ->count();
-
-        $successful = $this->MasterAccessLogs->find()
-            ->where([
-                'DATE(created)' => $today,
-                'success' => true,
-            ])
-            ->count();
-
-        $failed = $this->MasterAccessLogs->find()
-            ->where([
-                'DATE(created)' => $today,
-                'success' => false,
-            ])
-            ->count();
-
-        $uniqueIps = $this->MasterAccessLogs->find()
-            ->select(['ip_address'])
-            ->distinct(['ip_address'])
-            ->where(['DATE(created)' => $today])
-            ->count();
-
-        return [
-            'total' => $total,
-            'successful' => $successful,
-            'failed' => $failed,
-            'unique_ips' => $uniqueIps,
-        ];
     }
 }

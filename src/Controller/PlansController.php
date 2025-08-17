@@ -18,7 +18,7 @@ class PlansController extends AppController
     protected PlansTable $Plans;
 
     /**
-     * Initialization hook method.
+     * Función de inicialización
      *
      * @return void
      */
@@ -37,7 +37,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Index method - Lista paginada de planes
+     * Función index - Lista paginada de planes
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -83,7 +83,7 @@ class PlansController extends AppController
     }
 
     /**
-     * View method - Detalle de un plan
+     * Función view - Detalle de un plan
      *
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
@@ -110,7 +110,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Add method - Crear un nuevo plan
+     * Función add - Crear un nuevo plan
      *
      * @return \Cake\Http\Response|null|void
      */
@@ -145,7 +145,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Edit method - Editar un plan
+     * Función edit - Editar un plan
      *
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
@@ -209,7 +209,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Delete method - Eliminar un plan (soft delete)
+     * Función delete - Eliminar un plan (soft delete)
      *
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null
@@ -252,7 +252,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Prices method - Gestionar precios de un plan
+     * Función prices - Gestionar precios de un plan
      *
      * @param string|null $id Plan id.
      * @return \Cake\Http\Response|null|void
@@ -307,7 +307,7 @@ class PlansController extends AppController
     }
 
     /**
-     * Export method - Exportar lista de planes a CSV
+     * Función export - Exportar lista de planes a CSV
      *
      * @return \Cake\Http\Response
      */
@@ -369,7 +369,8 @@ class PlansController extends AppController
         $filename = 'plans_' . date('Y-m-d_H-i-s') . '.csv';
 
         $this->response = $this->response->withType('text/csv');
-        $this->response = $this->response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $this->response = $this->response
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         // Crear contenido CSV
         $output = fopen('php://output', 'w');
