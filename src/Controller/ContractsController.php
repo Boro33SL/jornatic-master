@@ -160,11 +160,9 @@ class ContractsController extends AppController
      */
     public function view(?string $id = null)
     {
-        $contract = $this->Contracts->get($id, [
-            'contain' => [
-                'Users' => ['Companies', 'Departments', 'Roles'],
-                'ProfessionalCategories',
-            ],
+        $contract = $this->Contracts->get($id, contain: [
+            'Users' => ['Companies', 'Departments', 'Roles'],
+            'ProfessionalCategories',
         ]);
 
         // Registrar visualización

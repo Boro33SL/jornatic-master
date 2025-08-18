@@ -125,9 +125,7 @@ class HolidaysController extends AppController
      */
     public function view(?string $id = null)
     {
-        $holiday = $this->Holidays->get($id, [
-            'contain' => ['Companies'],
-        ]);
+        $holiday = $this->Holidays->get($id, contain: ['Companies']);
 
         // Registrar visualización
         $this->Logging->logView('holidays', (int)$id);
@@ -194,9 +192,7 @@ class HolidaysController extends AppController
      */
     public function edit(?string $id = null)
     {
-        $holiday = $this->Holidays->get($id, [
-            'contain' => ['Companies'],
-        ]);
+        $holiday = $this->Holidays->get($id, contain: ['Companies']);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $holiday = $this->Holidays->patchEntity($holiday, $this->request->getData());
@@ -234,7 +230,7 @@ class HolidaysController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $holiday = $this->Holidays->get($id, ['contain' => ['Companies']]);
+        $holiday = $this->Holidays->get($id, contain: ['Companies']);
 
         if ($this->Holidays->delete($holiday)) {
             // Registrar eliminación
@@ -519,7 +515,7 @@ class HolidaysController extends AppController
                 'count' => 'COUNT(Holidays.id)',
             ])
             ->where(['YEAR(date)' => $year])
-            ->group(['type'])
+            ->groupBy(['type'])
             ->toArray();
 
         return [

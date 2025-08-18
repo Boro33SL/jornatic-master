@@ -80,7 +80,7 @@ class FeaturesController extends AppController
         // Obtener tipos de datos para filtros
         $dataTypes = $this->Features->find()
             ->select(['data_type'])
-            ->group(['data_type'])
+            ->groupBy(['data_type'])
             ->toArray();
 
         // Extraer solo los valores de data_type
@@ -108,7 +108,7 @@ class FeaturesController extends AppController
                 'data_type',
                 'count' => 'COUNT(Features.id)',
             ])
-            ->group(['Features.data_type'])
+            ->groupBy(['Features.data_type'])
             ->toArray();
 
         // Características más usadas (por número de planes)
@@ -280,7 +280,7 @@ class FeaturesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $feature = $this->Features->get($id, ['contain' => ['Plans']]);
+        $feature = $this->Features->get($id, contain: ['Plans']);
 
         // Verificar si la característica está siendo usada en planes
         $plansUsing = count($feature->plans ?? []);

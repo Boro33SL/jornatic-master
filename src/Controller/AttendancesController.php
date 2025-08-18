@@ -134,10 +134,8 @@ class AttendancesController extends AppController
      */
     public function view(?string $id = null)
     {
-        $attendance = $this->Attendances->get($id, [
-            'contain' => [
-                'Users' => ['Companies', 'Departments', 'Roles'],
-            ],
+        $attendance = $this->Attendances->get($id, contain: [
+            'Users' => ['Companies', 'Departments', 'Roles'],
         ]);
 
         // Registrar visualización
@@ -597,7 +595,7 @@ class AttendancesController extends AppController
         $uniqueUsers = $this->Attendances->find()
             ->select(['user_id'])
             ->where(['DATE(timestamp)' => $date])
-            ->group(['user_id'])
+            ->groupBy(['user_id'])
             ->count();
 
         return [

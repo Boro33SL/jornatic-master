@@ -117,7 +117,7 @@ class DepartmentsController extends AppController
                 'Companies.name',
                 'count' => 'COUNT(Departments.id)',
             ])
-            ->group(['Departments.company_id', 'Companies.name'])
+            ->groupBy(['Departments.company_id', 'Companies.name'])
             ->toArray();
 
         return [
@@ -295,7 +295,7 @@ class DepartmentsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $department = $this->Departments->get($id, ['contain' => ['Companies', 'Users']]);
+        $department = $this->Departments->get($id, contain: ['Companies', 'Users']);
 
         // Verificar si el departamento tiene usuarios activos
         $activeUsers = count(array_filter($department->users ?? [], function ($user) {
@@ -338,7 +338,7 @@ class DepartmentsController extends AppController
     {
         $this->request->allowMethod(['post']);
 
-        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
+        $department = $this->Departments->get($id, contain: ['Companies']);
         $department->active = true;
 
         if ($this->Departments->save($department)) {
@@ -365,7 +365,7 @@ class DepartmentsController extends AppController
      */
     public function users(?string $id = null)
     {
-        $department = $this->Departments->get($id, ['contain' => ['Companies']]);
+        $department = $this->Departments->get($id, contain: ['Companies']);
 
         // Registrar acceso a usuarios del departamento
         $this->Logging->logView('department_users', (int)$id);

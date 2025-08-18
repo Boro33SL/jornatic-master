@@ -292,7 +292,7 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $user = $this->Users->get($id, ['contain' => ['Companies']]);
+        $user = $this->Users->get($id, contain: ['Companies']);
 
         // Marcar como inactivo en lugar de eliminar
         $user->is_active = false;
@@ -323,7 +323,7 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post']);
 
-        $user = $this->Users->get($id, ['contain' => ['Companies']]);
+        $user = $this->Users->get($id, contain: ['Companies']);
         $user->is_active = true;
 
         if ($this->Users->save($user)) {
@@ -350,7 +350,7 @@ class UsersController extends AppController
      */
     public function attendances(?string $id = null)
     {
-        $user = $this->Users->get($id, ['contain' => ['Companies']]);
+        $user = $this->Users->get($id, contain: ['Companies']);
 
         // Registrar acceso a asistencias
         $this->Logging->logView('user_attendances', (int)$id);
@@ -424,7 +424,7 @@ class UsersController extends AppController
      */
     public function absences(?string $id = null)
     {
-        $user = $this->Users->get($id, ['contain' => ['Companies']]);
+        $user = $this->Users->get($id, contain: ['Companies']);
 
         // Registrar acceso a ausencias
         $this->Logging->logView('user_absences', (int)$id);
