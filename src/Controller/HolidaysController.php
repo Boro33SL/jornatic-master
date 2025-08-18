@@ -104,7 +104,7 @@ class HolidaysController extends AppController
         // Años disponibles
         $years = $this->Holidays->find()
             ->select(['year' => 'YEAR(date)'])
-            ->group(['YEAR(date)'])
+            ->groupBy(['YEAR(date)'])
             ->orderBy(['year' => 'DESC'])
             ->toArray();
 
@@ -466,7 +466,7 @@ class HolidaysController extends AppController
             $byTypeQuery->where(['is_active' => true]);
         }
 
-        $byType = $byTypeQuery->group(['type'])->toArray();
+        $byType = $byTypeQuery->groupBy(['type'])->toArray();
 
         // Próximos festivos del año (desde hoy)
         $upcomingQuery = $this->Holidays->find()
