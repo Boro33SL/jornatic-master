@@ -5,11 +5,11 @@ namespace App\Controller;
 
 use Cake\Collection\Collection;
 use Cake\Database\Query;
+use Cake\Http\Response;
 use Exception;
 use JornaticCore\Model\Entity\Company;
 use JornaticCore\Model\Table\CompaniesTable;
 use JornaticCore\Service\StripeService;
-use Mpdf\Tag\Q;
 
 /**
  * Companies Controller
@@ -89,7 +89,7 @@ class CompaniesController extends AppController
         } else {
             $this->Authorization->authorize($this->Companies->newEmptyEntity());
         }
-        
+
         // Estadísticas optimizadas
         $stats = $this->_getCompanyStats();
 
@@ -130,6 +130,7 @@ class CompaniesController extends AppController
     private function _applySearchFilter(Query $query, string $searchTerm): Query
     {
         $search = '%' . $searchTerm . '%';
+
         return $query->where([
             'OR' => [
                 'Companies.name LIKE' => $search,
@@ -168,7 +169,7 @@ class CompaniesController extends AppController
         } elseif ($isActive === '0') {
             return $query->where(['Companies.status' => 'inactive']);
         }
-        
+
         return $query;
     }
 
@@ -186,15 +187,15 @@ class CompaniesController extends AppController
                 'active' => $this->Companies->find()->func()->count(
                     $this->Companies->find()->newExpr()->case()
                         ->when(['status !=' => 'inactive'])
-                        ->then(1)
+                        ->then(1),
                 ),
                 'new_this_month' => $this->Companies->find()->func()->count(
                     $this->Companies->find()->newExpr()->case()
                         ->when([
                             'MONTH(Companies.created)' => date('m'),
-                            'YEAR(Companies.created)' => date('Y')
+                            'YEAR(Companies.created)' => date('Y'),
                         ])
-                        ->then(1)
+                        ->then(1),
                 ),
             ])
             ->first();
@@ -241,10 +242,10 @@ class CompaniesController extends AppController
 
         // Generar estadísticas usando Collection API + queries mínimas necesarias
         $companyStats = $this->_generateCompanyStats($company, $id);
-        
+
         // Obtener datos de Stripe si están disponibles
         $stripeCustomerData = $this->_getStripeCustomerData($company);
-        
+
         // Verificar estado de contratos usando Collection API
         $contractsNotification = $this->_getContractsNotification($company);
 
@@ -258,12 +259,12 @@ class CompaniesController extends AppController
      * @param string $companyId ID de la empresa
      * @return array Estadísticas de la empresa
      */
-    private function _generateCompanyStats($company, string $companyId): array
+    private function _generateCompanyStats(Company $company, string $companyId): array
     {
         // Usar Collection API para estadísticas calculables con datos ya cargados
         $usersCollection = new Collection($company->users ?? []);
         $departmentsCollection = new Collection($company->departments ?? []);
-        
+
         // Solo queries necesarias para datos no cargados en las relaciones
         $Attendances = $this->getTable('JornaticCore.Attendances');
         $Absences = $this->getTable('JornaticCore.Absences');
@@ -298,9 +299,11 @@ class CompaniesController extends AppController
     private function _getStripeCustomerData(Company $company): ?array
     {
         // Verificar condiciones previas
-        if (empty($company->active_subscription) || 
-            empty($company->active_subscription->stripe_customer_id) || 
-            !$this->stripeService->isConfigured()) {
+        if (
+            empty($company->active_subscription) ||
+            empty($company->active_subscription->stripe_customer_id) ||
+            !$this->stripeService->isConfigured()
+        ) {
             return null;
         }
 
@@ -330,6 +333,7 @@ class CompaniesController extends AppController
                 'stripe_customer_id' => $company->active_subscription->stripe_customer_id,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -353,7 +357,7 @@ class CompaniesController extends AppController
 
         $usersCollection = new Collection($company->users);
         $usersWithoutContracts = $usersCollection->filter(fn($user) => $user->current_contract === null);
-        
+
         return [
             'all_have_contracts' => $usersWithoutContracts->count() === 0,
             'users_without_contracts' => $usersWithoutContracts,
@@ -403,6 +407,7 @@ class CompaniesController extends AppController
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+
         return $this->_changeCompanyStatus($id, 'inactive', 'DESACTIVAR', 'index');
     }
 
@@ -415,6 +420,7 @@ class CompaniesController extends AppController
     public function activate(?string $id = null)
     {
         $this->request->allowMethod(['post']);
+
         return $this->_changeCompanyStatus($id, 'active', 'ACTIVAR', 'view');
     }
 
@@ -427,7 +433,7 @@ class CompaniesController extends AppController
      * @param string $redirectAction Acción de redirección
      * @return \Cake\Http\Response
      */
-    private function _changeCompanyStatus(?string $id, string $status, string $action, string $redirectAction): \Cake\Http\Response
+    private function _changeCompanyStatus(?string $id, string $status, string $action, string $redirectAction): Response
     {
         $company = $this->Companies->get($id);
         $originalStatus = $company->status;
@@ -447,6 +453,7 @@ class CompaniesController extends AppController
         }
 
         $this->Flash->error(__("_ERROR_AL_{$action}_EMPRESA"));
+
         return $this->redirect(['action' => 'index']);
     }
 
@@ -458,7 +465,7 @@ class CompaniesController extends AppController
      * @param string $originalStatus Estado original
      * @return void
      */
-    private function _logStatusChange($company, string $action, string $originalStatus): void
+    private function _logStatusChange(Company $company, string $action, string $originalStatus): void
     {
         $logData = [
             'company_name' => $company->name,
@@ -550,7 +557,7 @@ class CompaniesController extends AppController
      * @param \JornaticCore\Model\Entity\Company $company Entidad empresa
      * @return array Fila formateada para CSV
      */
-    private function _formatCompanyForCsv($company): array
+    private function _formatCompanyForCsv(Company $company): array
     {
         $subscription = $company->subscriptions[0] ?? null;
 
@@ -573,7 +580,7 @@ class CompaniesController extends AppController
      * @param array $csvData Datos del CSV
      * @return \Cake\Http\Response Respuesta con archivo CSV
      */
-    private function _generateCsvResponse(array $csvData): \Cake\Http\Response
+    private function _generateCsvResponse(array $csvData): Response
     {
         $filename = 'companies_' . date('Y-m-d_H-i-s') . '.csv';
 
