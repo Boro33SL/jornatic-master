@@ -156,30 +156,31 @@ class Application extends BaseApplication implements
             'unauthenticatedRedirect' => Router::url('/masters/login'),
             'queryParam' => 'redirect',
             'logoutRedirect' => '/masters/login',
-        ]);
-
-        // Load identifiers, ensure we check email and password fields
-        $service->loadIdentifier('Authentication.Password', [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password',
+            // Configuración del identificador directamente en el constructor
+            'identifiers' => [
+                'Authentication.Password' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password',
+                    ],
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'userModel' => 'Masters',
+                        'finder' => 'auth',
+                    ],
+                ],
             ],
-            'resolver' => [
-                'className' => 'Authentication.Orm',
-                'userModel' => 'Masters',
-                'finder' => 'auth',
+            // Configuración de los autenticadores directamente en el constructor
+            'authenticators' => [
+                'Authentication.Session' => [],
+                'Authentication.Form' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password',
+                    ],
+                    'loginUrl' => Router::url('/masters/login'),
+                ],
             ],
-        ]);
-
-        // Load the authenticators, you want session first
-        $service->loadAuthenticator('Authentication.Session');
-        // Configure form data check to pick email and password
-        $service->loadAuthenticator('Authentication.Form', [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password',
-            ],
-            'loginUrl' => Router::url('/masters/login'),
         ]);
 
         return $service;
