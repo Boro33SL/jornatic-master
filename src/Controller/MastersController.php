@@ -261,7 +261,7 @@ class MastersController extends AppController
                 'count' => 'COUNT(Subscriptions.id)',
             ])
             ->where(['Subscriptions.status' => 'active'])
-            ->group(['Subscriptions.plan_id', 'Plans.name'])
+            ->groupBy(['Subscriptions.plan_id', 'Plans.name'])
             ->toArray();
 
         // ============================================================
@@ -383,7 +383,7 @@ class MastersController extends AppController
         $inactiveCompanies = $Companies->find()
             ->select(['Companies.id'])
             ->leftJoinWith('Users.Attendances')
-            ->group(['Companies.id'])
+            ->groupBy(['Companies.id'])
             ->having([
                 'OR' => [
                     'MAX(Attendances.timestamp) <' => date('Y-m-d', strtotime('-30 days')),

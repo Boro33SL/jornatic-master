@@ -225,17 +225,15 @@ class CompaniesController extends AppController
     public function view(?string $id = null)
     {
         // Cargar empresa con todas las relaciones necesarias de una vez
-        $company = $this->Companies->get($id, [
-            'contain' => [
-                'Subscriptions' => ['Plans' => ['Prices']],
-                'Users' => function ($q) {
-                    return $q->contain(['Contracts'])->orderBy(['Users.created' => 'DESC']);
-                },
-                'Departments',
-                'Holidays',
-                'CompanyGeolocationPolicies',
-                'AbsenceApprovalSettings',
-            ],
+        $company = $this->Companies->get($id, contain: [
+            'Subscriptions' => ['Plans' => ['Prices']],
+            'Users' => function ($q) {
+                return $q->contain(['Contracts'])->orderBy(['Users.created' => 'DESC']);
+            },
+            'Departments',
+            'Holidays',
+            'CompanyGeolocationPolicies',
+            'AbsenceApprovalSettings',
         ]);
 
         $this->Authorization->authorize($company);
