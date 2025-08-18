@@ -48,8 +48,8 @@ class HolidaysController extends AppController
         $filters = $this->request->getQueryParams();
 
         // Filtrar por año actual por defecto
-        $currentYear = date('Y');
-        $year = $filters['year'] ?? $currentYear;
+        $currentYear = (int)date('Y');
+        $year = isset($filters['year']) ? (int)$filters['year'] : $currentYear;
 
         // Query base con relaciones y filtro de año
         $query = $this->Holidays->find()

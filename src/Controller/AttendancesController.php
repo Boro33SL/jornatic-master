@@ -112,12 +112,13 @@ class AttendancesController extends AppController
         $users = [];
         if (!empty($filters['company_id'])) {
             $Users = $this->getTable('JornaticCore.Users');
-            $users = $Users->find('list', [
-                'keyField' => 'id',
-                'valueField' => function ($user) {
+            $users = $Users->find(
+                'list',
+                keyField: 'id',
+                valueField: function ($user) {
                     return $user->name . ' ' . $user->lastname;
                 },
-            ])
+            )
             ->where(['company_id' => $filters['company_id']])
             ->toArray();
         }

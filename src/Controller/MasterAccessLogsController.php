@@ -72,10 +72,11 @@ class MasterAccessLogsController extends AppController
         $masterAccessLogs = $this->paginate($query);
 
         // Obtener datos para filtros
-        $masters = $this->MasterAccessLogs->Masters->find('list', [
-            'keyField' => 'id',
-            'valueField' => 'name',
-        ])->toArray();
+        $masters = $this->MasterAccessLogs->Masters->find(
+            'list',
+            keyField: 'id',
+            valueField: 'name',
+        )->toArray();
 
         $actions = $this->MasterAccessLogs->find()
             ->select(['action'])
