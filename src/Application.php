@@ -152,28 +152,42 @@ class Application extends BaseApplication implements
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
+        // Configuración moderna para cakephp/authentication 3.3.x
+        // Cada autenticador tiene su propio identifier configurado
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => Router::url('/masters/login'),
             'queryParam' => 'redirect',
             'logoutRedirect' => '/masters/login',
-            // Configuración del identificador directamente en el constructor
-            'identifiers' => [
-                'Authentication.Password' => [
-                    'fields' => [
-                        'username' => 'email',
-                        'password' => 'password',
-                    ],
-                    'resolver' => [
-                        'className' => 'Authentication.Orm',
-                        'userModel' => 'Masters',
-                        'finder' => 'auth',
+            'authenticators' => [
+                'Authentication.Session' => [
+                    'identifier' => [
+                        'Authentication.Password' => [
+                            'fields' => [
+                                'username' => 'email',
+                                'password' => 'password',
+                            ],
+                            'resolver' => [
+                                'className' => 'Authentication.Orm',
+                                'userModel' => 'Masters',
+                                'finder' => 'auth',
+                            ],
+                        ],
                     ],
                 ],
-            ],
-            // Configuración de los autenticadores directamente en el constructor
-            'authenticators' => [
-                'Authentication.Session' => [],
                 'Authentication.Form' => [
+                    'identifier' => [
+                        'Authentication.Password' => [
+                            'fields' => [
+                                'username' => 'email',
+                                'password' => 'password',
+                            ],
+                            'resolver' => [
+                                'className' => 'Authentication.Orm',
+                                'userModel' => 'Masters',
+                                'finder' => 'auth',
+                            ],
+                        ],
+                    ],
                     'fields' => [
                         'username' => 'email',
                         'password' => 'password',
